@@ -1,0 +1,25 @@
+<!--
+Expected timing:
+speech1:s1 = 10
+speech1:start = nod1:start
+speech1:start < 10
+speech1:end > 10
+
+Constraints:
+c1 speech1:start, nod1:start
+c2 speech1:s1, 10
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id="speech1"> 
+  	<text>Welcome <sync id="s1"/>ladies and gentlemen!</text>
+  </speech>    
+  <head id="nod1" lexeme="NOD" start="speech1:start"/>
+  <constraint>
+		<synchronize ref="speech1:s1">
+			<sync ref="10"/>
+		</synchronize>
+	</constraint>
+</bml>

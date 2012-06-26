@@ -1,0 +1,11 @@
+<!--
+Expected execution:
+Warning: speech timing cannot be achieved, speech1 should be omitted
+
+Tested in TestScheduler.java
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id="speech1" end="0.1"> 
+  	<text>Welcome ladies and gentlemen!</text>
+  </speech>    
+</bml>

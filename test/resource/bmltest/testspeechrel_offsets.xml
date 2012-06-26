@@ -1,0 +1,24 @@
+<!--
+Expected timing:
+speech1:start = 4
+speech2:start = speech1:end+5;
+nod2:start = speech1:start-2
+nod2:end = speech2:end+3
+
+Constraints:
+c1 speech1:start, 4, nod2:start+2
+c2 speech2:start, speech1:end+5
+c3 nod2:end, speech2:end+3
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id="speech1" start="4"> 
+  	<text>Welcome ladies and gentlemen!</text>
+  </speech>  
+  <speech id="speech2" start="speech1:end+5"> 
+  	<text>This is the BMLT speech test.</text>
+  </speech>
+  <head id="nod2" repetition="20" start="speech1:start-2" end="speech2:end+3" lexeme="NOD"/>
+</bml>

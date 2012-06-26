@@ -1,0 +1,11 @@
+<!--
+Required timing:
+g1:start = 0
+g1:stroke = speech1:this
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml2">
+	<speech id="speech1"> 
+  	<text><sync id="this"/>This is the second chunk.</text>
+  </speech>
+  <gesture id="g1" stroke="speech1:this" mode="RIGHT_HAND" lexeme="BEAT"/>
+</bml>

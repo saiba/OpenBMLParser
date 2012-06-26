@@ -1,0 +1,15 @@
+<!--
+Expected timing:
+speech1:start = 0
+
+Constraints:
+none
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+<speech id="welkom">
+  <text><sync id="deicticheart1"/> Welcome! I am Griet, I am 16 year old and I would like to tell you something about my life. People know me as the girl with the pearl ear ring. My father can no longer work since he was blinded. <sync id="beat1b1"/>Because we still need to eat, I took service with a local painter. His name is Johannes Vermeer. </text>
+</speech>
+</bml>

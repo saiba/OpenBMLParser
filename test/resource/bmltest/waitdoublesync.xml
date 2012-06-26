@@ -1,0 +1,23 @@
+<!--
+Required timing:
+w1:start = speech1:start = 0
+
+Constraints:
+w1:start = speech1:start
+w1:stroke = speech1:end = speech2:start
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+<speech id="speech1">
+	<text>Elckerlyc is a BML compliant behavior realizer for generating multimodal verbal and nonverbal behavior for Virtual Humans (VHs). 
+	</text>
+	</speech>	
+	
+	<speech id="speech2" start="speech1:end">
+		<text>It is designed specifically for continuous (as opposed to turn-based) interaction with tight temporal coordination between the behavior of a VH and its interaction partners.</text>
+	</speech>
+	
+	<wait id="w1" start="speech1:start" end="speech1:end"/> 
+</bml>

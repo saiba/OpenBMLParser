@@ -1,0 +1,6 @@
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+<speech start="nod1:relax:2" id="speech1">
+	<text>Hello world</text>
+</speech>
+<head id="nod1" repetition="2" start="0" lexeme="NOD"/>
+</bml>

@@ -1,0 +1,15 @@
+<!--
+Expected timing:
+speech1:end = 5
+
+Constraints:
+c1 speech1:end, 5
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id="speech1" end="5"> 
+  	<text>Welcome ladies and gentlemen!</text>
+  </speech>    
+</bml>

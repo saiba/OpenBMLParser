@@ -1,0 +1,24 @@
+<!--
+Constraints:
+c1 speech1:start, 0
+c2 speech1:s1 ,10
+
+Required timing:
+-
+
+Realization:
+Invalid timing for speech1, behaviour should be removed and a warning should be generated
+
+Constraints tested in: test.bml.ParserTest
+Realization tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id="speech1" start="0">	
+		<text>Hello<sync id="s1"/> world.</text>
+	</speech>
+	<constraint>
+		<synchronize ref="speech1:s1">
+			<sync ref="10"/>
+		</synchronize>
+	</constraint>
+</bml>

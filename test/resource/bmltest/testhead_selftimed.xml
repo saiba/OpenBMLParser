@@ -1,0 +1,15 @@
+<!--
+Required timing:
+shake1:start = 0
+shake1:end = 1
+
+Constraints:
+c1 shake1:start, 0
+c2 shake1:end, shake1:start+1
+
+Constraints tested in: test.bml.ParserTest 
+Timing tested in: test.bml.TestScheduler ->TODO
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<head id="shake1" start="0" end="shake1:start+1" lexeme="Y"/>
+</bml>

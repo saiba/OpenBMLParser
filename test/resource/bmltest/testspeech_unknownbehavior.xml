@@ -1,0 +1,13 @@
+<!--
+Expected timing:
+Error: unknownbeh not found
+
+Expected behavior:
+Error: unknownbeh not found
+
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id = "welkom"  start="unknownbeh:end">
+  	<text>Welcome! I am Griet, I am 16 year old and I would like to tell you something about my life. People know me as the girl with the pearl ear ring. My father can no longer work since he was blinded. Because we still need to eat, I took service with a local painter. His name is Johannes Vermeer. </text>
+	</speech>	
+</bml>

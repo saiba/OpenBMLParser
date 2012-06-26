@@ -1,0 +1,19 @@
+<!--
+Required timing:
+beat1:start = 3
+beat1:end = 5
+beat1:stroke-end = nod:start
+
+Constraints:
+beat1:start, 3
+beat1:end, 7
+beat1:stroke-end, nod:start
+
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<gesture id="beat1" start="3" end="7" lexeme="BEAT" mode="RIGHT_HAND"/>
+	<head id="nod1" start="beat1:strokeEnd" lexeme="NOD"/>	
+</bml>

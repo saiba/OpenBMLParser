@@ -1,0 +1,17 @@
+<!--
+Required timing:
+nod1:start = 1
+tilt1:start = nod1:end+1
+nod1:end > nod1:start
+
+Constraints:
+c1 nod1:start,1
+c2 tilt1:start, nod1:end+1
+
+Constraints tested in: test.bml.ParserTest
+Realization tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<head id="nod1" start="1"  lexeme="TILT" />
+	<head id="tilt1" start="nod1:end+1"  lexeme="SHAKE" />
+</bml>

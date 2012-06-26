@@ -1,0 +1,13 @@
+<!--
+Required timing:
+nod1:start = 0
+
+Constraints:
+none
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<head id="nod1" lexeme="NOD"/>
+</bml>

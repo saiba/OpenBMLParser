@@ -1,0 +1,23 @@
+<!--
+Required timing:
+nod1:start = 1
+g1:start = 1
+speech1:start = 1
+
+Constraints:
+c1 nod1:start, 1
+c2 g1:start 1
+c3 speech1:start 1
+Note that this script should create 3 seperate constraints. 
+The 3 behaviors have the same start time, but are not linked together.
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<head id="nod1" start="1" lexeme="NOD"/>
+	<gesture id="g1" lexeme="BEAT" start="1"/>
+	<speech id="speech1" start="1">
+		<text>Yes.</text>
+	</speech>	
+</bml>

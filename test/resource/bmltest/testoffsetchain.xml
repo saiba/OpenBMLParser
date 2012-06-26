@@ -1,0 +1,21 @@
+<!--
+Required timing:
+h1:start = 4
+h2:start = 6
+h3:start = 8
+h4:start = 10
+
+Constraints:
+h1:start = h2:start-2 = h3:start-4 = h4:start-6 = 4
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+
+Same as testoffset.xml, but with h1 as last behavior instead of 1st behavior
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+  <head id="h1" lexeme="NOD" start="h2:start-2"/>  
+  <head id="h2" lexeme="NOD" start="h3:start-2"/>  
+  <head id="h3" lexeme="NOD" start="h4:start-2"/>  
+  <head id="h4" lexeme="NOD" start="10"/>  
+</bml>

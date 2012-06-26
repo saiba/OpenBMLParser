@@ -1,0 +1,20 @@
+<!--
+Required timing:
+nod1:start = 0
+nod2:start = 2
+
+Constraints:
+c1 nod1:start+1,nod2:start-1
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<head id="nod1" lexeme="NOD"/>
+	<head id="nod2" lexeme="NOD"/>	
+	<constraint>
+		<synchronize ref="nod1:start+1">
+    	<sync ref="nod2:start-1"/>    	
+  	</synchronize>
+	</constraint>
+</bml>

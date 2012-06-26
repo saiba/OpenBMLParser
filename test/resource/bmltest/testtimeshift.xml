@@ -1,0 +1,17 @@
+<!--
+Required timing:
+speech1:start = nod1:end
+nod1:start = 0
+
+Constraints:
+c1 speech1:start, nod1:end
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id="speech1"> 
+  	<text>Welcome ladies and gentlemen!</text>
+  </speech>  
+  <head id="nod1" end="speech1:start" lexeme="NOD"/>
+</bml>

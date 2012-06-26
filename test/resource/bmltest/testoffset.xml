@@ -1,0 +1,19 @@
+<!--
+Required timing:
+g1:start = 4
+g2:end = 4
+g2:start = 3
+h1:start = g1:end, > 4
+
+Constraints:
+h1:start =g1:end
+g2:start = g1:start-1 = g2:end-1 = 3
+
+Constraints tested in: test.bml.ParserTest (currently fails!)
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+  <head id="h1" lexeme="NOD" start="g1:end"/>
+  <gesture id="g2" lexeme="BEAT" start="g1:start-1" end="g1:start"/>
+  <gesture id="g1" lexeme="BEAT" start="4"/>
+</bml>

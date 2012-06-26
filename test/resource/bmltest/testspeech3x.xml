@@ -1,0 +1,25 @@
+<!--
+Required timing:
+speech10:start = 4
+speech11:start = speech10:end+4
+speech12:start = speech11:end+4
+
+Constraints:
+c1 speech10:start,4
+c2 speech11:start,speech10:end+4
+c3 speech12:start,speech11:end+4
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id="speech10" start="4"> 
+    <text>Herwin greet.</text>
+  </speech>
+  <speech id="speech11" start="speech10:end+4"> 
+    <text>Herwin allright. This gesture sometimes takes a different transition for the left hand.</text>
+  </speech>
+  <speech id="speech12" start="speech11:end+4"> 
+    <text>Herwin deictic heart. The wrist rotation of this gesture is remembered somehow when you reset the animation player.</text>
+  </speech>
+</bml>

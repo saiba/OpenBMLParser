@@ -1,0 +1,18 @@
+<!--
+Required timing:
+speech1:start = 6
+speech1:syncstart1+1 = nod1:start
+nod1:end = 9
+
+Constraints:
+c1 speech1:start, 6
+c2 speech1:syncstart1, nod1:start-1
+c3 nod1:end, 9
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id="speech1" start="6"><text>Hey punk <sync id="syncstart1" />what do ya want?</text></speech>
+	<head id="nod1" lexeme="TILT" start="speech1:syncstart1+1" end="9"/>		
+</bml>

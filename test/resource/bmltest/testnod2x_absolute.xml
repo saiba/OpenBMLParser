@@ -1,0 +1,16 @@
+<!--
+Required timing:
+nod1:start = 1
+nod1:end = 3
+
+Constraints:
+c1 nod1:start,1
+c2 nod2:start,3
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<head id="nod1" lexeme="NOD" start="1"/>	
+	<head id="nod2" lexeme="NOD" start="3"/>	
+</bml>

@@ -1,0 +1,16 @@
+<!--
+Required timing:
+beat1:start = 1
+beat1:ready = 2
+
+Constraints:
+c1 beat1:start, 1
+c2 beat1:ready, 2
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<!--  Error: invalid timing for behavior bml1:beat1, behavior ommitted -->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<gesture id="beat1" start="1" ready="2" lexeme="BEAT" mode="RIGHT_HAND"/>	
+</bml>

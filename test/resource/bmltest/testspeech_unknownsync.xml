@@ -1,0 +1,16 @@
+<!--
+Required timing:
+nod1:start = speech1:unknown
+
+Constraints:
+nod1:start, speech1:unknown
+
+Constraints tested in: test.bml.ParserTest
+Realization tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">	
+	<speech id = "speech1">
+  	<text>Welcome! I am Griet, I am 16 year old and I would like to tell you something about my life. People know me as the girl with the pearl ear ring. My father can no longer work since he was blinded. Because we still need to eat, I took service with a local painter. His name is Johannes Vermeer. </text>
+	</speech>	
+	<head id="nod1" lexeme="NOD" start="speech1:unknown"/>
+</bml>

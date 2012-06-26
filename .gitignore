@@ -1,0 +1,9 @@
+/dist
+/build
+/test/report
+/dist
+/privateprops
+/.classpath
+/.project
+*.*~
+/**/*.*~

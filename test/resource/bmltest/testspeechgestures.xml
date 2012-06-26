@@ -1,0 +1,22 @@
+<!--
+Required timing:
+g1:start = welkom:deicticheart1 = transleft:end-1 = 1
+g1:end = welkom:deicticheart1+2 = 3
+relaxleft:start=g1:end+0.5 = 3.5
+relaxleft:end=g1:end+2.8 = 5.8
+transleft:start=g1:start-1=0
+
+Constraints:
+g1:start, welkom:deicticheart1, transleft:end, g1:end-1, relaxleft:start-1.5, relaxleft:end-1.8, transleft:start+1
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+<speech id = "welkom">
+  <text><sync id="deicticheart1"/> Welcome! I am Griet, I am 16 year old and I would like to tell you something about my life. People know me as the girl with the pearl ear ring. My father can no longer work since he was blinded. <sync id="beat1b1"/>Because we still need to eat, I took service with a local painter. His name is Johannes Vermeer. </text>
+</speech>
+<gesture id="g1" lexeme="BEAT" mode="RIGHT_HAND" start="welkom:deicticheart1" end="welkom:deicticheart1+2" />
+<gesture id="relaxleft" lexeme="BEAT" start="g1:end+0.5" end="g1:end+2.8"/>  
+<gesture id="transleft" lexeme="BEAT" start="g1:start-1" end="g1:start+1"/>  
+</bml>
