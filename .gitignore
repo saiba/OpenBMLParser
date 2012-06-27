@@ -1,6 +1,7 @@
 /dist
 /build
 /test/report
+/test/build/**
 /dist
 /privateprops
 /.classpath

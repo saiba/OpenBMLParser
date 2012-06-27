@@ -10,8 +10,8 @@
    <property name="test.lib.dir"           value="${test.dir}/lib/" />
    <property name="test.resource.dir"      value="${test.dir}/resource/" />
    <property name="test.report.dir"        value="${test.dir}/report" />
-   <property name="build.test.classes.dir" location="${build}/test/classes" />
-   <property name="build.test.results.dir" location="${build}/test/results" />
+   <property name="build.test.classes.dir" location="test/build/classes" />
+   <property name="build.test.results.dir" location="test/build/results" />
    <property name="junit.include"          value="**/*Test.class"/>
    <property name="junit.exclude"          value="**/Abstract*.class"/>
 
@@ -119,6 +119,11 @@
     <jar jarfile="${dist}/lib/saibabml.jar">
       <fileset dir="${build}"/>      
     </jar>
+    <jar jarfile="${dist}/lib/saibabml-test.jar">
+      <fileset dir="${build.test.classes.dir}"/>      
+    </jar>
+
+
   </target>
   
   <target name="clean"

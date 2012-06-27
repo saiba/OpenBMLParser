@@ -22,13 +22,13 @@ public class FaceLexemeBehaviourTest extends AbstractBehaviourTest
     {
         String str = "<faceLexeme "+TestUtil.getDefNS()+"amount=\"0.25\" lexeme=\"lex1\" id=\"beh1\""+ 
         extraAttributeString+"/>";        
-        return new FaceLexemeBehaviour("bml1", new XMLTokenizer(str));
+        return new FaceLexemeBehaviour(bmlId, new XMLTokenizer(str));
     }
     
     @Override
     protected Behaviour parseBehaviour(String bmlId, String bmlString) throws IOException
     {
-        return new FaceLexemeBehaviour("bml1", new XMLTokenizer(bmlString));
+        return new FaceLexemeBehaviour(bmlId, new XMLTokenizer(bmlString));
     }
     
     @Test
