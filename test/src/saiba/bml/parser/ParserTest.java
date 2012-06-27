@@ -234,7 +234,7 @@ public class ParserTest
     public void constraintNodTest()throws IOException
     {
         readXML("testnod.xml");
-        ArrayList<Constraint> constraints = parser.getConstraints();
+        List<Constraint> constraints = parser.getConstraints();
         assertEquals(0, constraints.size());
     }
 
@@ -255,7 +255,7 @@ public class ParserTest
     public void constraintNodUnkownAttributeTest()throws IOException
     {
         readXML("testnod_unknownattributes.xml");
-        ArrayList<Constraint> constraints = parser.getConstraints();
+        List<Constraint> constraints = parser.getConstraints();
         assertEquals(0, constraints.size());
     }
 
@@ -380,7 +380,7 @@ public class ParserTest
     public void constraintEmptyTest()throws IOException
     {
         readXML("empty.xml");
-        ArrayList<Constraint> constraints = parser.getConstraints();
+        List<Constraint> constraints = parser.getConstraints();
         assertEquals(0, constraints.size());
     }
 

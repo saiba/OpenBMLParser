@@ -137,4 +137,50 @@
     <delete dir="${dist}"/>
   </target>
 
+
+   <!-- Settings for "javadoc" -->
+   <property name="docs.dir"              value="docs"     />
+   <property name="javadoc.dir"           location="${docs.dir}/saibabml"/>
+   <property name="javadoc.test.dir"           location="${docs.dir}/saibabml-test"/>
+   <property name="javadoc.doctitle"      value="saibabml API Documentation"/>
+   <property name="javadoc.test.doctitle"      value="saibabml-test API Documentation"/>
+   <property name="javadoc.overview"      value="javadoc-overview.html"/>
+   <property name="javadoc.noindex"       value="false"/>
+   <property name="javadoc.nonavbar"      value="false"/>
+   <property name="javadoc.notree"        value="false"/>
+   <property name="javadoc.private"       value="false"/>
+   <property name="javadoc.splitindex"    value="false"/>
+   <property name="javadoc.use"           value="true"/>
+   <property name="javadoc.author"        value="true"/>
+   <property name="javadoc.version"       value="true"/>
+   <property name="javadoc.windowtitle"   value="saibabml"/>
+   <property name="javadoc.link"          value="http://java.sun.com/javase/6/docs/api/"/>
+   <property name="javadoc.linksource"    value="yes"/>
+   <property name="javadoc.packages"      value="*"/>
+   
+   <target name="-docsrc" description="Generates javadoc documentation">      
+      <javadoc 
+         source="${javac.source}"        
+         sourcepath="${src}"  
+         destdir="${javadoc.dir}" 
+         packagenames="${javadoc.packages}"
+         doctitle="${javadoc.doctitle}"
+         verbose="false">
+      <classpath refid="javac-classpath"/>
+      </javadoc>
+   </target>
+   
+   <target name="-doctest" description="Generates javadoc documentation">      
+      <javadoc 
+         source="${javac.source}"        
+         sourcepath="${test.src.dir}"  
+         destdir="${javadoc.test.dir}" 
+         packagenames="${javadoc.packages}"
+         doctitle="${javadoc.test.doctitle}"
+         verbose="false">
+      <classpath refid="javac-classpath"/>
+      </javadoc>
+   </target>
+   
+   <target name="doc" depends="-docsrc, -doctest" description="Generates javadoc documentation"/>      
 </project>

@@ -427,7 +427,7 @@ public class BMLParser
     /**
      * @return the constraints
      */
-    public ArrayList<Constraint> getConstraints()
+    public List<Constraint> getConstraints()
     {
         return constraints;
     }
