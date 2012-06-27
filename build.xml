@@ -50,6 +50,8 @@
       <pathelement path="${resource.path}"/> 
       <pathelement path="${test.resource.path}"/>   
    </path> 
+   
+   
    <target name="-junit" depends="compile-tests"  >
       <delete dir="${build.test.results.dir}" failonerror="false" quiet="true"/>
       <mkdir dir="${build.test.results.dir}"/>
@@ -75,6 +77,8 @@
        
       
    </target>
+   
+   <target name="junit-nofail" depends="-junit" description="Run all JUnit tests, do not fail on test failure"/>      
    
    <target name="junit" depends="-junit" description="Run all JUnit tests">
       <fail if="test.failed">
