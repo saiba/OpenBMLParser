@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import saiba.bml.parser.BMLParser;
 import saiba.bml.parser.InvalidSyncRefException;
 import saiba.bml.parser.SyncRef;
 
@@ -113,6 +114,11 @@ public class After extends BMLElement
     {
         appendAttribute(buf, "ref", ref.toString());
         return super.appendAttributeString(buf);
+    }
+    
+    public void constructConstraints(BMLParser scheduler)
+    {
+        scheduler.constructConstraints(this);
     }
 
     /*

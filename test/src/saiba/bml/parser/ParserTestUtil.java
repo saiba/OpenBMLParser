@@ -46,15 +46,15 @@ public final class ParserTestUtil
         return true;
     }
 
-    public static  boolean constraintMatch(ExpectedConstraint ec, Constraint ac)
+    private static boolean syncListMatch(List<ExpectedSync> ecList, List<SyncPoint> acList)
     {
-        if (ec.expectedSyncs.size() != ac.getTargets().size())
+        if (ecList.size() != acList.size())
             return false;
 
-        for (ExpectedSync es : ec.expectedSyncs)
+        for (ExpectedSync es : ecList)
         {
             boolean matches = false;
-            for (SyncPoint as : ac.getTargets())
+            for (SyncPoint as : acList)
             {
                 if (syncMatch(es, as))
                 {
@@ -67,7 +67,37 @@ public final class ParserTestUtil
         }
         return true;
     }
+    
+    public static  boolean constraintMatch(ExpectedAfterConstraint ec, AfterConstraint ac)
+    {
+        if(!syncListMatch(ec.expectedSync, ac.getTargets()))return false;
+        return (syncMatch(ec.expectedRef,ac.getRef()));
+    }
+    
+    public static  boolean constraintMatch(ExpectedConstraint ec, Constraint ac)
+    {
+        return syncListMatch(ec.expectedSyncs, ac.getTargets());
+    }
 
+    public static  void assertEqualAfterConstraints(List<ExpectedAfterConstraint> expected, List<AfterConstraint> actual)
+    {
+        assertEquals("Size of actual constraint list: " + actual + " does not match size of expected constraint list " + expected, expected.size(),
+                actual.size());
+        for (AfterConstraint ac : actual)
+        {
+            boolean matches = false;
+            for (ExpectedAfterConstraint ec : expected)
+            {
+                if (constraintMatch(ec, ac))
+                {
+                    matches = true;
+                    break;
+                }
+            }
+            assertTrue("Constraint " + ac + " is not matched by any of the expected constraints " + expected, matches);
+        }
+    }
+    
     public static  void assertEqualConstraints(List<ExpectedConstraint> expected, List<Constraint> actual)
     {
         assertEquals("Size of actual constraint list: " + actual + " does not match size of expected constraint list " + expected, expected.size(),

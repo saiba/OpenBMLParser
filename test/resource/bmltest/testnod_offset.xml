@@ -13,7 +13,8 @@ Timing tested in: test.bml.TestScheduler
 	<head id="nod1" lexeme="NOD"/>
 	<head id="nod2" lexeme="NOD"/>	
 	<constraint>
-		<synchronize ref="nod1:start+1">
+		<synchronize >
+			<sync ref="nod1:start+1"/>
     	<sync ref="nod2:start-1"/>    	
   	</synchronize>
 	</constraint>

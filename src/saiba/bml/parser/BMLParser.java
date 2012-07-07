@@ -18,7 +18,6 @@
  ******************************************************************************/
 package saiba.bml.parser;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +26,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import saiba.bml.core.After;
 import saiba.bml.core.BMLBehaviorAttributeExtension;
 import saiba.bml.core.BMLElement;
 import saiba.bml.core.Behaviour;
@@ -44,11 +44,12 @@ import com.google.common.collect.ImmutableSet;
  */
 public class BMLParser
 {
-    private ArrayList<BehaviourBlock> bbs;
+    private List<BehaviourBlock> bbs;
 
     private HashMap<String, BMLElement> BMLElementsById;
 
-    private ArrayList<Constraint> constraints;
+    private List<Constraint> constraints;
+    private List<AfterConstraint> afterConstraints = new ArrayList<AfterConstraint>();
 
     private static Logger logger = LoggerFactory.getLogger(BMLParser.class.getName());
 
@@ -349,19 +350,52 @@ public class BMLParser
         }
     }
 
+    public void constructConstraints(After after)
+    {
+        SyncPoint syncRef = new SyncPoint(after.getBmlId(),after.getRef());
+        SyncPoint ref = syncRef.getForeignSyncPoint(this);
+        for(Sync sync: after.getSyncs())
+        {
+            syncRef = new SyncPoint(sync.getBmlId(),sync.ref);
+            SyncPoint right = syncRef.getForeignSyncPoint(this);
+            constructAfterConstraint(ref,right);
+        }
+    }
+    
     public void constructConstraints(Synchronize synchronize)
     {
-        SyncPoint synchronizeRef = new SyncPoint(synchronize.bmlId, synchronize.getRef());
-        SyncPoint left = synchronizeRef.getForeignSyncPoint(this);
-        ArrayList<Sync> syncs = synchronize.getSyncs();
-        for (Sync sync : syncs)
+        SyncPoint left = null;
+        for (Sync sync : synchronize.getSyncs())
         {
             SyncPoint syncRef = new SyncPoint(synchronize.bmlId, sync.ref);
             SyncPoint right = syncRef.getForeignSyncPoint(this);
-            constructConstraint(left, right);
+            if (left == null)
+            {
+                left = right;
+            }
+            else
+            {
+                constructConstraint(left, right);
+            }
         }
     }
 
+    public void constructAfterConstraint(SyncPoint ref, SyncPoint target)
+    {
+        AfterConstraint constraint;
+        if(ref.isRefInAfterConstraint())
+        {
+            constraint = ref.getAfterConstraint();
+        }
+        else
+        {
+            constraint = new AfterConstraint(ref);
+            ref.setAsRefForAfterConstraint(constraint);
+            afterConstraints.add(constraint);
+        }
+        constraint.addTarget(target);        
+    }
+    
     public void constructConstraint(SyncPoint left, SyncPoint right)
     {
         Constraint constraint;
@@ -430,6 +464,11 @@ public class BMLParser
     public List<Constraint> getConstraints()
     {
         return constraints;
+    }
+    
+    public List<AfterConstraint> getAfterConstraints()
+    {
+        return afterConstraints;
     }
 
     /**

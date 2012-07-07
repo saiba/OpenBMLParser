@@ -24,7 +24,6 @@ import hmi.xml.XMLTokenizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import saiba.bml.parser.BMLParser;
 /**
@@ -129,9 +128,14 @@ public class ConstraintBlock extends BMLElement
 
     public void constructConstraints(BMLParser scheduler)
     {
-        // Synchronize-elements.
-        Iterator<Synchronize> si = synchronizes.iterator();
-        while (si.hasNext())
-            si.next().constructConstraints(scheduler);
+        for(Synchronize sync:synchronizes)
+        {
+            sync.constructConstraints(scheduler);
+        }
+        for(After aft:after)
+        {
+            aft.constructConstraints(scheduler);
+        }
+        //TODO: befores
     }
 }

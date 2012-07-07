@@ -26,20 +26,11 @@ import java.util.ArrayList;
  */
 public class Constraint
 {
-    // private SyncPoint source; // Only applicable when type != Type.AT.
     private ArrayList<SyncPoint> targets;
-
-    private enum Type
-    {
-        AT, BEFORE, AFTER
-    }
-
-    private Type type;
 
     public Constraint()
     {
         targets = new ArrayList<SyncPoint>();
-        type = Type.AT;
     }
 
     public Constraint(SyncPoint target1, SyncPoint target2)
@@ -84,7 +75,7 @@ public class Constraint
     public String toString()
     {
         StringBuffer retval = new StringBuffer();
-        retval.append("Type: " + type + ", targets: ");
+        retval.append("Targets: ");
         for (SyncPoint target : targets)
         {
             retval.append(target.toString() + ", ");

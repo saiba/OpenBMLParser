@@ -19,12 +19,14 @@ Timing tested in: test.bml.TestScheduler
   	<text>Hello <sync id="s1"/>world!</text>
   </speech>
   <constraint>
-		<synchronize ref="speech1:s1">
+	  <synchronize >
+		  <sync ref="speech1:s1"/>
 			<sync ref="10"/>
 		</synchronize>		
 	</constraint>
 	<constraint>
-		<synchronize ref="speech2:s1">
+		<synchronize> 
+			<sync ref="speech2:s1"/>
 			<sync ref="speech1:s1+10"/>
 		</synchronize>		
 	</constraint>

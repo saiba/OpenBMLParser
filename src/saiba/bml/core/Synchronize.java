@@ -19,7 +19,6 @@
 package saiba.bml.core;
 
 import hmi.xml.XMLFormatting;
-import hmi.xml.XMLScanException;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
@@ -27,25 +26,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import saiba.bml.parser.BMLParser;
-import saiba.bml.parser.InvalidSyncRefException;
-import saiba.bml.parser.SyncRef;
 
 /**
- * The Synchronize BML Element 
+ * The Synchronize BML Element
  * @author paulrc
  */
 public class Synchronize extends BMLElement
 {
     private ArrayList<Sync> syncs;
-
-    private SyncRef ref;
     public final String bmlId;
 
     public Synchronize(String bmlId)
     {
         this.bmlId = bmlId;
         syncs = new ArrayList<Sync>();
-        ref = null;
     }
 
     @Override
@@ -53,8 +47,8 @@ public class Synchronize extends BMLElement
     {
         return bmlId;
     }
-    
-    public Synchronize(String bmlId,XMLTokenizer tokenizer) throws IOException
+
+    public Synchronize(String bmlId, XMLTokenizer tokenizer) throws IOException
     {
         this(bmlId);
         readXML(tokenizer);
@@ -68,23 +62,9 @@ public class Synchronize extends BMLElement
         return syncs;
     }
 
-    public SyncRef getRef()
-    {
-        return ref;
-    }
-
     @Override
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
-        String r = getRequiredAttribute("ref", attrMap, tokenizer);
-        try
-        {
-            ref = new SyncRef(bmlId, r);
-        }
-        catch (InvalidSyncRefException e)
-        {
-            throw new XMLScanException("Invalid sync ref");            
-        }
         // super.decodeAttributes(attrMap, tokenizer);
     }
 
@@ -94,7 +74,7 @@ public class Synchronize extends BMLElement
         while (tokenizer.atSTag())
         {
             String tag = tokenizer.getTagName();
-            if (tag.equals(Sync.xmlTag())) syncs.add(new Sync(bmlId,tokenizer));
+            if (tag.equals(Sync.xmlTag())) syncs.add(new Sync(bmlId, tokenizer));
             ensureDecodeProgress(tokenizer);
         }
     }
@@ -109,9 +89,7 @@ public class Synchronize extends BMLElement
     @Override
     public StringBuilder appendAttributeString(StringBuilder buf)
     {
-        appendAttribute(buf, "ref", ref.toString());
         return buf;
-        // return super.appendAttributeString(buf);
     }
 
     /*

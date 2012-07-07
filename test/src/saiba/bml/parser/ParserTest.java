@@ -20,6 +20,7 @@ package saiba.bml.parser;
 
 import static org.junit.Assert.assertEquals;
 import static saiba.bml.parser.ParserTestUtil.assertEqualConstraints;
+import static saiba.bml.parser.ParserTestUtil.assertEqualAfterConstraints;
 import hmi.util.Resources;
 import hmi.xml.XMLScanException;
 
@@ -29,6 +30,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
 
 import saiba.bml.core.BehaviourBlock;
 /**
@@ -45,10 +48,6 @@ public class ParserTest
 
     private List<ExpectedConstraint> expectedConstraints;
     private static final int PARSE_TIMEOUT = 300;
-
-    
-    
-    
 
     @Before
     public void setup()
@@ -67,15 +66,17 @@ public class ParserTest
         parser.addBehaviourBlock(block);
     }
 
+    @Test(timeout = PARSE_TIMEOUT)
+    public void afterConstraintTest() throws IOException
+    {
+        ExpectedAfterConstraint expected = new ExpectedAfterConstraint();
+        expected.expectedSync.add(new ExpectedSync("bml1","nod1","stroke",0));
+        expected.expectedSync.add(new ExpectedSync("bml1","beat1","stroke",0));
+        expected.expectedRef = new ExpectedSync("bml1","speech1","sync4",0);
+        readXML("after.xml");
+        assertEqualAfterConstraints(ImmutableList.of(expected),parser.getAfterConstraints());
+    }
     
-
-        
-    
-
-    
-
-
-
     @Test(timeout = PARSE_TIMEOUT)
     public void constraintSpeechRelTest()throws IOException
     {

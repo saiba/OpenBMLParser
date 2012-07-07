@@ -64,8 +64,9 @@ public class SyncPoint
         return bmlId;
     }
 
-    private Constraint constraint; // The (AT) constraint the SyncPoint is in.
-
+    private Constraint constraint;      // The (AT) constraint the SyncPoint is in.
+    private AfterConstraint afterConstraint;   //set if the constraint is an after reference in constraint afterRef
+    
     public SyncPoint(String bmlId,  String behaviorId, String name)
     {
         this.bmlId = bmlId;
@@ -168,10 +169,28 @@ public class SyncPoint
     {
         this.constraint = constraint;
     }
+    
+    public void setAsRefForAfterConstraint(AfterConstraint constraint)
+    {
+        this.afterConstraint = constraint;
+    }
 
+    public boolean isRefInAfterConstraint()
+    {
+        return this.afterConstraint!=null;
+    }
+    
     public boolean inConstraint()
     {
-        return (this.constraint != null);
+        return this.constraint != null;
+    }
+    
+    /**
+     * Get the after constraint this constraint is a reference for.
+     */
+    public AfterConstraint getAfterConstraint()
+    {
+        return afterConstraint;
     }
 
     public Constraint getConstraint()
