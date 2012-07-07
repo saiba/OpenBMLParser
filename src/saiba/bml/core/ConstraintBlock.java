@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import saiba.bml.parser.BMLParser;
+
 /**
  * BML constraint block
  * @author paulrc
@@ -52,8 +53,8 @@ public class ConstraintBlock extends BMLElement
     {
         return bmlId;
     }
-    
-    public ConstraintBlock(String bmlId,XMLTokenizer tokenizer) throws IOException
+
+    public ConstraintBlock(String bmlId, XMLTokenizer tokenizer) throws IOException
     {
         this(bmlId);
         readXML(tokenizer);
@@ -73,15 +74,15 @@ public class ConstraintBlock extends BMLElement
             String tag = tokenizer.getTagName();
             if (tag.equals(Synchronize.xmlTag()))
             {
-                synchronizes.add(new Synchronize(bmlId,tokenizer));
+                synchronizes.add(new Synchronize(bmlId, tokenizer));
             }
             else if (tag.equals(After.xmlTag()))
             {
-                after.add(new After(bmlId,tokenizer));
+                after.add(new After(bmlId, tokenizer));
             }
             else if (tag.equals(Before.xmlTag()))
             {
-                before.add(new Before(bmlId,tokenizer));
+                before.add(new Before(bmlId, tokenizer));
             }
             ensureDecodeProgress(tokenizer);
         }
@@ -128,14 +129,17 @@ public class ConstraintBlock extends BMLElement
 
     public void constructConstraints(BMLParser scheduler)
     {
-        for(Synchronize sync:synchronizes)
+        for (Synchronize sync : synchronizes)
         {
             sync.constructConstraints(scheduler);
         }
-        for(After aft:after)
+        for (After aft : after)
         {
             aft.constructConstraints(scheduler);
         }
-        //TODO: befores
+        for (Before bef : before)
+        {
+            bef.constructConstraints(scheduler);
+        }
     }
 }

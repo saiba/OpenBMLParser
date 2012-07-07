@@ -69,12 +69,26 @@ public class ParserTest
     @Test(timeout = PARSE_TIMEOUT)
     public void afterConstraintTest() throws IOException
     {
+        readXML("after.xml");
+        
         ExpectedAfterConstraint expected = new ExpectedAfterConstraint();
         expected.expectedSync.add(new ExpectedSync("bml1","nod1","stroke",0));
-        expected.expectedSync.add(new ExpectedSync("bml1","beat1","stroke",0));
-        expected.expectedRef = new ExpectedSync("bml1","speech1","sync4",0);
-        readXML("after.xml");
+        expected.expectedSync.add(new ExpectedSync("bml1","beat1","stroke",2));
+        expected.expectedRef = new ExpectedSync("bml1","speech1","sync4",0);        
         assertEqualAfterConstraints(ImmutableList.of(expected),parser.getAfterConstraints());
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT)
+    public void beforeConstraintTest() throws IOException
+    {
+        readXML("before.xml");        
+        ExpectedAfterConstraint expected1 = new ExpectedAfterConstraint();        
+        expected1.expectedSync.add(new ExpectedSync("bml1","speech1","sync4",0));
+        expected1.expectedRef = new ExpectedSync("bml1","nod1","stroke",0);
+        ExpectedAfterConstraint expected2 = new ExpectedAfterConstraint();
+        expected2.expectedSync.add(new ExpectedSync("bml1","speech1","sync4",0));
+        expected2.expectedRef = new ExpectedSync("bml1","beat1","stroke",2);                
+        assertEqualAfterConstraints(ImmutableList.of(expected1,expected2),parser.getAfterConstraints());
     }
     
     @Test(timeout = PARSE_TIMEOUT)

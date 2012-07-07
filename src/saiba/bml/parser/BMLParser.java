@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import saiba.bml.core.After;
 import saiba.bml.core.BMLBehaviorAttributeExtension;
 import saiba.bml.core.BMLElement;
+import saiba.bml.core.Before;
 import saiba.bml.core.Behaviour;
 import saiba.bml.core.BehaviourBlock;
 import saiba.bml.core.Sync;
@@ -349,7 +350,19 @@ public class BMLParser
             }
         }
     }
-
+    
+    public void constructConstraints(Before before)
+    {
+        SyncPoint syncRef = new SyncPoint(before.getBmlId(),before.getRef());
+        SyncPoint right = syncRef.getForeignSyncPoint(this);
+        for(Sync sync: before.getSyncs())
+        {
+            syncRef = new SyncPoint(sync.getBmlId(),sync.ref);
+            SyncPoint ref = syncRef.getForeignSyncPoint(this);
+            constructAfterConstraint(ref,right);
+        }
+    }
+    
     public void constructConstraints(After after)
     {
         SyncPoint syncRef = new SyncPoint(after.getBmlId(),after.getRef());

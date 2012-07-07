@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import saiba.bml.parser.BMLParser;
 import saiba.bml.parser.InvalidSyncRefException;
 import saiba.bml.parser.SyncRef;
 /**
@@ -58,6 +59,11 @@ public class Before extends BMLElement
         readXML(tokenizer);
     }
 
+    public void constructConstraints(BMLParser scheduler)
+    {
+        scheduler.constructConstraints(this);
+    }
+    
     /**
      * @return the syncs, excluding the reference before sync
      */
