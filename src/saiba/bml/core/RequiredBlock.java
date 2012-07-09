@@ -113,30 +113,29 @@ public class RequiredBlock extends BMLElement
             {
                 constraintBlocks.add(new ConstraintBlock(bmlId, tokenizer));
             }
-            else
+            Behaviour b = BehaviourParser.parseBehaviour(bmlId, tokenizer);
+            if (b != null)
             {
-                Behaviour b = BehaviourParser.parseBehaviour(id, tokenizer);
-                if (b != null)
+                if (b.descBehaviour != null)
                 {
-                    if (b.descBehaviour != null)
-                    {
-                        behaviours.add(b.descBehaviour);
-                    }
-                    else
-                    {
-                        behaviours.add(b);
-                    }
+                    behaviours.add(b.descBehaviour);
                 }
+                else
+                {
+                    behaviours.add(b);
+                }
+                b.setRequired(true);
             }
             ensureDecodeProgress(tokenizer);
-        }        
+        }
     }
 
     public void constructConstraints(BMLParser scheduler)
     {
         // Behaviours.
-        Iterator<Behaviour> bi = behaviours.iterator();
-        while (bi.hasNext())
-            bi.next().constructConstraints(scheduler);
+        for (Behaviour bi : behaviours)
+        {
+            bi.constructConstraints(scheduler);
+        }
     }
 }

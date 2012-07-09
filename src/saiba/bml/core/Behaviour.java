@@ -55,6 +55,18 @@ public abstract class Behaviour extends BMLElement
     private Map<String, String> customStringAttributes = new HashMap<String, String>();
     private Map<String, Float> customFloatAttributes = new HashMap<String, Float>();
 
+    private boolean required = false;
+    
+    public void setRequired(boolean required)
+    {
+        this.required = required;
+    }
+
+    public boolean isRequired()
+    {
+        return required;
+    }
+
     @Override
     public String getBmlId()
     {

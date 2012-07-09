@@ -33,8 +33,7 @@ import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 
 /**
- * This class represents a block of behaviour. This is represented in BML by the
- * <code>&lt;bml&gt;</code>-tag.
+ * This class represents a block of behaviour. This is represented in BML by the <code>&lt;bml&gt;</code>-tag.
  * 
  * @author PaulRC
  */
@@ -47,30 +46,30 @@ public class BehaviourBlock extends BMLElement
     public ArrayList<Behaviour> behaviours;
 
     ClassToInstanceMap<BMLBehaviorAttributeExtension> bmlBehaviorAttributeExtensions;
-    
+
     public BehaviourBlock(BMLBehaviorAttributeExtension... bmlBehaviorAttributeExtensions)
     {
         this.bmlBehaviorAttributeExtensions = MutableClassToInstanceMap.create();
-        for(BMLBehaviorAttributeExtension ext:bmlBehaviorAttributeExtensions)
+        for (BMLBehaviorAttributeExtension ext : bmlBehaviorAttributeExtensions)
         {
-            this.bmlBehaviorAttributeExtensions.put(ext.getClass(),ext);
+            this.bmlBehaviorAttributeExtensions.put(ext.getClass(), ext);
         }
         requiredBlocks = new ArrayList<RequiredBlock>();
         constraintBlocks = new ArrayList<ConstraintBlock>();
         behaviours = new ArrayList<Behaviour>();
     }
-    
+
     protected void addBMLBehaviorAttributeExtension(BMLBehaviorAttributeExtension ext)
     {
         bmlBehaviorAttributeExtensions.put(ext.getClass(), ext);
     }
-    
+
     @Override
     public String getBmlId()
     {
         return id;
-    }    
-    
+    }
+
     private BMLBlockComposition composition = CoreComposition.UNKNOWN;
 
     public BMLBlockComposition getSchedulingMechanism()
@@ -78,7 +77,6 @@ public class BehaviourBlock extends BMLElement
         return composition;
     }
 
-    
     public BehaviourBlock(XMLTokenizer tokenizer) throws IOException
     {
         this();
@@ -116,21 +114,19 @@ public class BehaviourBlock extends BMLElement
         appendAttribute(buf, "composition", composition.toString().toLowerCase(Locale.US));
         return super.appendAttributes(buf);
     }
-    
 
     @Override
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
         id = getRequiredAttribute("id", attrMap, tokenizer);
         String sm = getOptionalAttribute("composition", attrMap, "MERGE");
-        
-        
+
         composition = CoreComposition.parse(sm);
-                
-        for(BMLBehaviorAttributeExtension ext:bmlBehaviorAttributeExtensions.values())
+
+        for (BMLBehaviorAttributeExtension ext : bmlBehaviorAttributeExtensions.values())
         {
             ext.decodeAttributes(this, attrMap, tokenizer);
-            if(composition == CoreComposition.UNKNOWN)
+            if (composition == CoreComposition.UNKNOWN)
             {
                 composition = ext.handleComposition(sm);
             }
@@ -142,7 +138,7 @@ public class BehaviourBlock extends BMLElement
     {
         return bmlBehaviorAttributeExtensions.getInstance(c);
     }
-    
+
     @Override
     public StringBuilder appendContent(StringBuilder buf, XMLFormatting fmt)
     {
@@ -158,13 +154,21 @@ public class BehaviourBlock extends BMLElement
         while (tokenizer.atSTag())
         {
             String tag = tokenizer.getTagName();
-            if (tag.equals(RequiredBlock.xmlTag())) requiredBlocks.add(new RequiredBlock(id, tokenizer));
-            if (tag.equals(ConstraintBlock.xmlTag())) constraintBlocks.add(new ConstraintBlock(id, tokenizer));
-
-            Behaviour b = BehaviourParser.parseBehaviour(id,tokenizer);
-            if(b!=null)
+            if (tag.equals(RequiredBlock.xmlTag()))
             {
-                if(b.descBehaviour!=null)
+                RequiredBlock rb = new RequiredBlock(id, tokenizer);
+                requiredBlocks.add(rb);
+                behaviours.addAll(rb.behaviours);
+            }
+            if (tag.equals(ConstraintBlock.xmlTag()))
+            {
+                constraintBlocks.add(new ConstraintBlock(id, tokenizer));
+            }
+
+            Behaviour b = BehaviourParser.parseBehaviour(id, tokenizer);
+            if (b != null)
+            {
+                if (b.descBehaviour != null)
                 {
                     behaviours.add(b.descBehaviour);
                 }
@@ -176,8 +180,6 @@ public class BehaviourBlock extends BMLElement
             ensureDecodeProgress(tokenizer);
         }
     }
-
-    
 
     /**
      * Recursively calls resolveIDs(Scheduler, Breadcrumb) on top level behaviours and on
@@ -192,33 +194,34 @@ public class BehaviourBlock extends BMLElement
         for (Behaviour b : behaviours)
             b.registerElementsById(scheduler);
 
+        /*
         // Register the behaviours within one or more required-blocks.
         for (RequiredBlock ri : requiredBlocks)
         {
             ri.registerElementsById(scheduler);
-        }
-
-        // Remove crumb.
-        // breadcrumb.remove();
+        } 
+        */       
     }
 
     public void constructConstraints(BMLParser scheduler)
     {
         // Top level behaviours.
-        for(Behaviour b:behaviours)
+        for (Behaviour b : behaviours)
         {
             b.constructConstraints(scheduler);
         }
-        
+
+        /*
         // Behaviours within one or more required-blocks.
         Iterator<RequiredBlock> ri = requiredBlocks.iterator();
         while (ri.hasNext())
             ri.next().constructConstraints(scheduler);
-
+        */
+        
         // Constraint blocks.
         Iterator<ConstraintBlock> ci = constraintBlocks.iterator();
         while (ci.hasNext())
             ci.next().constructConstraints(scheduler);
 
-    }    
+    }
 }

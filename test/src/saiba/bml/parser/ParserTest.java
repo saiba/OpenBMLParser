@@ -19,6 +19,8 @@
 package saiba.bml.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static saiba.bml.parser.ParserTestUtil.assertEqualConstraints;
 import static saiba.bml.parser.ParserTestUtil.assertEqualAfterConstraints;
 import hmi.util.Resources;
@@ -64,6 +66,27 @@ public class ParserTest
         BehaviourBlock block = new BehaviourBlock();
         block.readXML(res.getReader(file));
         parser.addBehaviourBlock(block);
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT)
+    public void testRequiredBehavior()throws IOException
+    {
+        readXML("testrequiredbeh.xml");
+        assertEquals(4,parser.getBehaviours().size());
+        assertTrue(parser.getBehaviour("bml1", "h1").isRequired());        
+        assertTrue(parser.getBehaviour("bml1", "h2").isRequired());
+        assertFalse(parser.getBehaviour("bml1", "h3").isRequired());
+        assertFalse(parser.getBehaviour("bml1", "h4").isRequired());
+        
+        
+        ExpectedConstraint expected1 = new ExpectedConstraint();
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 4));
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", "h1", "start", 0));
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", "h2", "start", -2));
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", "h3", "start", -4));
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", "h4", "start", -6));
+        expectedConstraints.add(expected1);
+        assertEqualConstraints(expectedConstraints, parser.getConstraints());
     }
 
     @Test(timeout = PARSE_TIMEOUT)
