@@ -49,6 +49,7 @@ public class ParserTest
     private BMLParser parser;
 
     private List<ExpectedConstraint> expectedConstraints;
+    private List<ExpectedConstraint> expectedReqConstraints;
     private static final int PARSE_TIMEOUT = 300;
 
     @Before
@@ -57,6 +58,7 @@ public class ParserTest
         
         res = new Resources("bmltest");
         expectedConstraints = new ArrayList<ExpectedConstraint>();
+        expectedReqConstraints = new ArrayList<ExpectedConstraint>();
         parser = new BMLParser();
     }
 
@@ -66,6 +68,25 @@ public class ParserTest
         BehaviourBlock block = new BehaviourBlock();
         block.readXML(res.getReader(file));
         parser.addBehaviourBlock(block);
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT)
+    public void testRequiredConstraints()throws IOException
+    {
+        readXML("testspeech_synctimed2x_required.xml");
+
+        ExpectedConstraint expected1 = new ExpectedConstraint();
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 10));
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", "speech1", "s1", 0));
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", "speech2", "s1", -10));
+        expectedConstraints.add(expected1);
+        assertEqualConstraints(expectedConstraints, parser.getConstraints());
+        
+        ExpectedConstraint expectedReq = new ExpectedConstraint();
+        expectedReq.expectedSyncs.add(new ExpectedSync("bml1", "speech1", "s1", 10));
+        expectedReq.expectedSyncs.add(new ExpectedSync("bml1", "speech2", "s1", 0));
+        expectedReqConstraints.add(expectedReq);
+        assertEqualConstraints(expectedReqConstraints, parser.getRequiredConstraints());
     }
     
     @Test(timeout = PARSE_TIMEOUT)

@@ -23,10 +23,7 @@ import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import saiba.bml.parser.BMLParser;
 
 /**
  * This class represents a block of required behaviours or constraints. This is represented in
@@ -111,7 +108,9 @@ public class RequiredBlock extends BMLElement
             String tag = tokenizer.getTagName();
             if (tag.equals(ConstraintBlock.xmlTag()))
             {
-                constraintBlocks.add(new ConstraintBlock(bmlId, tokenizer));
+                ConstraintBlock block = new ConstraintBlock(bmlId, tokenizer);
+                block.setRequired(true);
+                constraintBlocks.add(block);
             }
             Behaviour b = BehaviourParser.parseBehaviour(bmlId, tokenizer);
             if (b != null)
@@ -128,14 +127,5 @@ public class RequiredBlock extends BMLElement
             }
             ensureDecodeProgress(tokenizer);
         }
-    }
-
-    public void constructConstraints(BMLParser scheduler)
-    {
-        // Behaviours.
-        for (Behaviour bi : behaviours)
-        {
-            bi.constructConstraints(scheduler);
-        }
-    }
+    }    
 }

@@ -39,7 +39,25 @@ public class ConstraintBlock extends BMLElement
 
     public ArrayList<After> after;
     public final String bmlId;
-
+    
+    public void setRequired(boolean req)
+    {
+        for(Synchronize s:synchronizes)
+        {
+            s.setRequired(req);
+        }
+        
+        for(Before b:before)
+        {
+            b.setRequired(req);
+        }
+        
+        for(After a:after)
+        {
+            a.setRequired(req);
+        }
+    }
+    
     public ConstraintBlock(String bmlId)
     {
         this.bmlId = bmlId;

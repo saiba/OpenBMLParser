@@ -120,4 +120,16 @@ public class Synchronize extends BMLElement
     {
         scheduler.constructConstraints(this);
     }
+    
+    private boolean required = false;
+
+    public boolean isRequired()
+    {
+        return required;
+    }
+
+    public void setRequired(boolean required)
+    {
+        this.required = required;
+    }
 }

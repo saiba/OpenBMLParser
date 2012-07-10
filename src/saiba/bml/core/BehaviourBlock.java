@@ -24,7 +24,6 @@ import hmi.xml.XMLTokenizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 
 import saiba.bml.parser.BMLParser;
@@ -159,10 +158,11 @@ public class BehaviourBlock extends BMLElement
                 RequiredBlock rb = new RequiredBlock(id, tokenizer);
                 requiredBlocks.add(rb);
                 behaviours.addAll(rb.behaviours);
+                constraintBlocks.addAll(rb.constraintBlocks);
             }
             if (tag.equals(ConstraintBlock.xmlTag()))
             {
-                constraintBlocks.add(new ConstraintBlock(id, tokenizer));
+                constraintBlocks.add(new ConstraintBlock(id, tokenizer));                
             }
 
             Behaviour b = BehaviourParser.parseBehaviour(id, tokenizer);
@@ -193,14 +193,6 @@ public class BehaviourBlock extends BMLElement
         // Register top level behaviours.
         for (Behaviour b : behaviours)
             b.registerElementsById(scheduler);
-
-        /*
-        // Register the behaviours within one or more required-blocks.
-        for (RequiredBlock ri : requiredBlocks)
-        {
-            ri.registerElementsById(scheduler);
-        } 
-        */       
     }
 
     public void constructConstraints(BMLParser scheduler)
@@ -211,17 +203,10 @@ public class BehaviourBlock extends BMLElement
             b.constructConstraints(scheduler);
         }
 
-        /*
-        // Behaviours within one or more required-blocks.
-        Iterator<RequiredBlock> ri = requiredBlocks.iterator();
-        while (ri.hasNext())
-            ri.next().constructConstraints(scheduler);
-        */
-        
         // Constraint blocks.
-        Iterator<ConstraintBlock> ci = constraintBlocks.iterator();
-        while (ci.hasNext())
-            ci.next().constructConstraints(scheduler);
-
+        for (ConstraintBlock ci : constraintBlocks)
+        {
+            ci.constructConstraints(scheduler);
+        }
     }
 }

@@ -51,6 +51,12 @@ public class BMLParser
 
     private List<Constraint> constraints;
     private List<AfterConstraint> afterConstraints = new ArrayList<AfterConstraint>();
+    private List<Constraint>requiredConstraints = new ArrayList<Constraint>();
+
+    public List<Constraint> getRequiredConstraints()
+    {
+        return requiredConstraints;
+    }
 
     private static Logger logger = LoggerFactory.getLogger(BMLParser.class.getName());
 
@@ -342,7 +348,7 @@ public class BMLParser
             try
             {
                 foreignSyncPoint = syncPoint.getForeignSyncPoint(this);
-                constructConstraint(syncPoint, foreignSyncPoint);
+                constructConstraint(syncPoint, foreignSyncPoint, false);
             }
             catch (MissingSyncPointException e)
             {
@@ -388,7 +394,7 @@ public class BMLParser
             }
             else
             {
-                constructConstraint(left, right);
+                constructConstraint(left, right, synchronize.isRequired());
             }
         }
     }
@@ -409,10 +415,53 @@ public class BMLParser
         constraint.addTarget(target);        
     }
     
-    public void constructConstraint(SyncPoint left, SyncPoint right)
+    public void constructConstraint(SyncPoint left, SyncPoint right, boolean required)
+    {
+        constructConstraint(left, right, constraints);
+        if(required)
+        {
+            constructConstraint(left, right, requiredConstraints);
+        }
+    }
+    
+    private void constructConstraint(SyncPoint left, SyncPoint right, List<Constraint>constraints)
     {
         Constraint constraint;
 
+        if (constraints.contains(right.getConstraint()) && constraints.contains(left.getConstraint()))
+        {
+            // Both are in a constraint. Merge them.
+            Constraint masterConstraint = left.getConstraint();
+            Constraint slaveConstraint = right.getConstraint();
+            ArrayList<SyncPoint> targets = slaveConstraint.getTargets();
+            for (SyncPoint target : targets)
+            {
+                target.setConstraint(masterConstraint);
+                masterConstraint.addTarget(target);
+            }
+            constraints.remove(slaveConstraint);
+        }
+        else if (constraints.contains(right.getConstraint()))
+        {
+            constraint = right.getConstraint();
+            constraint.addTarget(left);
+            left.setConstraint(constraint);
+        }
+        else if (constraints.contains(left.getConstraint()))
+        {
+            constraint = left.getConstraint();
+            constraint.addTarget(right);
+            right.setConstraint(constraint);
+        }
+        else
+        {
+            constraint = new Constraint(left, right);
+            left.setConstraint(constraint);
+            right.setConstraint(constraint);
+            constraints.add(constraint);
+        }
+        
+        /*
         // The SyncPoints might already be present in (a) existing constraint(s).
         if (right.inConstraint() && left.inConstraint())
         {
@@ -446,6 +495,7 @@ public class BMLParser
             right.setConstraint(constraint);
             constraints.add(constraint);
         }
+        */
     }
 
     public void registerBMLElement(BMLElement element)

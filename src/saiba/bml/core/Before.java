@@ -144,4 +144,15 @@ public class Before extends BMLElement
         return XMLTAG;
     }
 
+    private boolean required = false;
+
+    public boolean isRequired()
+    {
+        return required;
+    }
+
+    public void setRequired(boolean required)
+    {
+        this.required = required;
+    }
 }
