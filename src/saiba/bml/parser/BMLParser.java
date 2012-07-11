@@ -52,6 +52,12 @@ public class BMLParser
     private List<Constraint> constraints;
     private List<AfterConstraint> afterConstraints = new ArrayList<AfterConstraint>();
     private List<Constraint>requiredConstraints = new ArrayList<Constraint>();
+    private List<AfterConstraint>requiredAfterConstraints = new ArrayList<AfterConstraint>();
+
+    public List<AfterConstraint> getRequiredAfterConstraints()
+    {
+        return requiredAfterConstraints;
+    }
 
     public List<Constraint> getRequiredConstraints()
     {
@@ -365,7 +371,7 @@ public class BMLParser
         {
             syncRef = new SyncPoint(sync.getBmlId(),sync.ref);
             SyncPoint ref = syncRef.getForeignSyncPoint(this);
-            constructAfterConstraint(ref,right);
+            constructAfterConstraint(ref,right, before.isRequired());
         }
     }
     
@@ -377,7 +383,7 @@ public class BMLParser
         {
             syncRef = new SyncPoint(sync.getBmlId(),sync.ref);
             SyncPoint right = syncRef.getForeignSyncPoint(this);
-            constructAfterConstraint(ref,right);
+            constructAfterConstraint(ref,right, after.isRequired());
         }
     }
     
@@ -399,10 +405,10 @@ public class BMLParser
         }
     }
 
-    public void constructAfterConstraint(SyncPoint ref, SyncPoint target)
+    public void constructAfterConstraint(SyncPoint ref, SyncPoint target, List<AfterConstraint> constraints)
     {
         AfterConstraint constraint;
-        if(ref.isRefInAfterConstraint())
+        if(constraints.contains(ref.getAfterConstraint()))
         {
             constraint = ref.getAfterConstraint();
         }
@@ -410,9 +416,17 @@ public class BMLParser
         {
             constraint = new AfterConstraint(ref);
             ref.setAsRefForAfterConstraint(constraint);
-            afterConstraints.add(constraint);
+            constraints.add(constraint);
         }
-        constraint.addTarget(target);        
+        constraint.addTarget(target);
+    }
+    public void constructAfterConstraint(SyncPoint ref, SyncPoint target, boolean required)
+    {
+        constructAfterConstraint(ref,target,afterConstraints);
+        if(required)
+        {
+            constructAfterConstraint(ref,target,requiredAfterConstraints);
+        }
     }
     
     public void constructConstraint(SyncPoint left, SyncPoint right, boolean required)
@@ -459,43 +473,7 @@ public class BMLParser
             left.setConstraint(constraint);
             right.setConstraint(constraint);
             constraints.add(constraint);
-        }
-        
-        /*
-        // The SyncPoints might already be present in (a) existing constraint(s).
-        if (right.inConstraint() && left.inConstraint())
-        {
-            // Both are in a constraint. Merge them.
-            Constraint masterConstraint = left.getConstraint();
-            Constraint slaveConstraint = right.getConstraint();
-            ArrayList<SyncPoint> targets = slaveConstraint.getTargets();
-            for (SyncPoint target : targets)
-            {
-                target.setConstraint(masterConstraint);
-                masterConstraint.addTarget(target);
-            }
-            constraints.remove(slaveConstraint);
-        }
-        else if (right.inConstraint())
-        {
-            constraint = right.getConstraint();
-            constraint.addTarget(left);
-            left.setConstraint(constraint);
-        }
-        else if (left.inConstraint())
-        {
-            constraint = left.getConstraint();
-            constraint.addTarget(right);
-            right.setConstraint(constraint);
-        }
-        else
-        {
-            constraint = new Constraint(left, right);
-            left.setConstraint(constraint);
-            right.setConstraint(constraint);
-            constraints.add(constraint);
-        }
-        */
+        }        
     }
 
     public void registerBMLElement(BMLElement element)

@@ -1,0 +1,28 @@
+<!--
+Required timing:
+none
+
+Constraints:
+none
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<speech id="speech1"><text>blah blah <sync id="sync4"/> blah.</text></speech>
+	<gesture id="beat1" lexeme="BEAT"/>
+	<head id="nod1" lexeme="NOD"/>
+<constraint id="synchronize_example">
+  <after  ref="speech1:sync4">
+    
+	  <sync ref="beat1:stroke+2"/>
+  </after>
+  </constraint>
+  <required>
+  <constraint>
+  <after ref="speech1:sync4">
+    <sync ref="nod1:stroke"/>
+  </after>
+  </constraint>
+  </required>
+</bml>

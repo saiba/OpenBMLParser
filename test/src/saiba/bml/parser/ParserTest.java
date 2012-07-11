@@ -123,6 +123,23 @@ public class ParserTest
     }
     
     @Test(timeout = PARSE_TIMEOUT)
+    public void afterConstraintRequiredTest() throws IOException
+    {
+        readXML("after_required.xml");
+        
+        ExpectedAfterConstraint expected = new ExpectedAfterConstraint();
+        expected.expectedSync.add(new ExpectedSync("bml1","nod1","stroke",0));
+        expected.expectedSync.add(new ExpectedSync("bml1","beat1","stroke",2));
+        expected.expectedRef = new ExpectedSync("bml1","speech1","sync4",0);        
+        assertEqualAfterConstraints(ImmutableList.of(expected),parser.getAfterConstraints());
+        
+        ExpectedAfterConstraint expectedReq = new ExpectedAfterConstraint();
+        expectedReq.expectedSync.add(new ExpectedSync("bml1","nod1","stroke",0));
+        expectedReq.expectedRef = new ExpectedSync("bml1","speech1","sync4",0);        
+        assertEqualAfterConstraints(ImmutableList.of(expectedReq),parser.getRequiredAfterConstraints());
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT)
     public void beforeConstraintTest() throws IOException
     {
         readXML("before.xml");        
