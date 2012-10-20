@@ -35,6 +35,24 @@ public class FaceFacsBehaviour extends Behaviour
     }
 
     @Override
+    public boolean satisfiesConstraint(String name, String value)
+    {
+        if (name.equals("amount"))
+        {
+            return Float.parseFloat(value) == amount;
+        }
+        else if (name.equals("au"))
+        {
+            return Integer.parseInt(value) == au;
+        }
+        else if (name.equals("side"))
+        {
+            return Side.valueOf(value) == side;
+        }
+        return super.satisfiesConstraint(name, value);
+    }
+
+    @Override
     public float getFloatParameterValue(String name)
     {
         if (name.equals("amount"))
