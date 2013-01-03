@@ -29,13 +29,6 @@ public class BMLFeedbackParserTest
     }
     
     @Test
-    public void testBMLBlockPrediction() throws IOException
-    {
-        String str = "<bml "+TestUtil.getDefNS()+" id=\"bml1\" globalStart=\"1\" globalEnd=\"2\"/>";
-        assertFeedbackType(BMLBlockPredictionFeedback.class, str);
-    }
-    
-    @Test
     public void testBMLBlockProgressFeedback() throws IOException
     {
         String str = "<blockProgress "+TestUtil.getDefNS()+

@@ -610,7 +610,7 @@ public class ParserTest
         readXML("testgazereadytimed.xml");
 
         ExpectedConstraint expected1 = new ExpectedConstraint();
-        expected1.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 1));
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 3));
         expected1.expectedSyncs.add(new ExpectedSync("bml1", "gaze1", "ready", 0));
         expectedConstraints.add(expected1);
 

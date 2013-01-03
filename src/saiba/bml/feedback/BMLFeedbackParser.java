@@ -21,13 +21,8 @@ public class BMLFeedbackParser
     public static final BMLFeedback parseFeedback(String str) throws IOException
     {
         XMLTokenizer tok = new XMLTokenizer(str);
-        if(tok.atSTag(BMLBlockPredictionFeedback.xmlTag()))
-        {
-            BMLBlockPredictionFeedback fb = new BMLBlockPredictionFeedback();
-            fb.readXML(tok);
-            return fb;                        
-        }
-        else if(tok.atSTag(BMLBlockProgressFeedback.xmlTag()))
+       
+        if(tok.atSTag(BMLBlockProgressFeedback.xmlTag()))
         {
             BMLBlockProgressFeedback fb = new BMLBlockProgressFeedback();
             fb.readXML(tok);

@@ -1,15 +1,15 @@
 <!--
 Required timing:
-gaze1:ready = 1
+gaze1:ready = 3
 gaze1:end = 10
 
 Constraints:
-c1 gaze1:ready,1
+c1 gaze1:ready,3
 c2 gaze1:end,10
 
 Constraints tested in: test.bml.ParserTest
 Realization tested in: test.bml.TestScheduler
 -->
 <bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
-	<gaze id="gaze1" ready="1" end="10" influence="NECK" target="bluebox"/>	
+	<gaze id="gaze1" ready="3" end="10" influence="NECK" target="bluebox"/>	
 </bml>
