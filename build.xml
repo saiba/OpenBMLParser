@@ -21,7 +21,7 @@
         <include name="**/*.jar"/>
       </fileset>
    </path>
-<path id="javac-test-classpath">
+   <path id="javac-test-classpath">
       <path refid="javac-classpath"/>
 	    <pathelement path="${build}"/>
 	    <fileset dir="${test.lib.dir}">
@@ -62,8 +62,7 @@
            failureProperty="test.failed">
       
          <classpath refid="junit-test-run-classpath"/>
-         <sysproperty key="shared.project.root" path="${shared.project.root}"/> 
-         <sysproperty key="java.library.path" path="${test.library.path}"/> 
+         <sysproperty key="java.library.path" path="${test.library.path}"/>
          <formatter type="brief" usefile="false"/>
          <formatter type="xml"/>
          <batchtest todir="${build.test.results.dir}" >
