@@ -13,8 +13,8 @@ Timing tested in: test.bml.TestScheduler
 
 -->
 <bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">	
-	<speech id="speech1" start="gaze1:ready">
+        <gaze id="gaze1" start="2" influence="NECK" target="bluebox"/>
+        <speech id="speech1" start="gaze1:ready">
 		  <text>Welcome ladies and gentlemen!</text>
-	</speech>	
-	<gaze id="gaze1" start="2" influence="NECK" target="bluebox"/>
+	</speech>
 </bml>
