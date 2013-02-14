@@ -92,11 +92,11 @@ public abstract class Behaviour extends BMLElement
 
     public String getStringParameterValue(String name)
     {
-        if (customFloatAttributes.containsKey(name))
+        if (customStringAttributes.containsKey(name))
         {
-            return "" + customFloatAttributes.get(name);
+            return customStringAttributes.get(name);
         }
-        return customStringAttributes.get(name);
+        return ""+getFloatParameterValue(name);
     }
 
     /**
