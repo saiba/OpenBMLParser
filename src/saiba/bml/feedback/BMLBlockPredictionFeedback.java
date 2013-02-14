@@ -11,7 +11,7 @@ import java.util.HashMap;
  * @author hvanwelbergen
  * 
  */
-public final class BMLBlockPredictionFeedback extends XMLStructureAdapter 
+public final class BMLBlockPredictionFeedback extends XMLStructureAdapter implements BMLFeedback
 {
     public static final double UNKNOWN_TIME = -Double.MAX_VALUE;
     private String id;

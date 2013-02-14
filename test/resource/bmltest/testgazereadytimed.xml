@@ -1,10 +1,10 @@
 <!--
 Required timing:
-gaze1:ready = 1
+gaze1:ready = 3
 gaze1:end = 10
 
 Constraints:
-c1 gaze1:ready,1
+c1 gaze1:ready,3
 c2 gaze1:end,10
 
 Constraints tested in: test.bml.ParserTest

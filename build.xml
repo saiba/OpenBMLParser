@@ -121,6 +121,7 @@
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
     <jar jarfile="${dist}/lib/saibabml.jar">
       <fileset dir="${build}"/>      
+      <fileset dir="${src}"/>      
     </jar>
     <jar jarfile="${dist}/lib/saibabml-test.jar">
       <fileset dir="${build.test.classes.dir}"/>      
