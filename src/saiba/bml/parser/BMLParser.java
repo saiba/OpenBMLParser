@@ -230,7 +230,7 @@ public class BMLParser
     {
         if (directLink(bmlId1, behId1, bmlId2, behId2)) return true;
 
-        Set<Behaviour> linkedBehaviours = new HashSet<>();
+        Set<Behaviour> linkedBehaviours = new HashSet<Behaviour>();
         for (Constraint c : getConstraints())
         {
             for (SyncPoint s : c.getTargets())
@@ -261,7 +261,7 @@ public class BMLParser
     {
         if (directGround(bmlId, behId)) return true;
 
-        Set<Behaviour> linkedBehaviours = new HashSet<>();
+        Set<Behaviour> linkedBehaviours = new HashSet<Behaviour>();
         for (Constraint c : getConstraints())
         {
             for (SyncPoint s : c.getTargets())
@@ -630,11 +630,11 @@ public class BMLParser
     
     private Set<String> getLinkDependencies(String bmlId)
     {
-        Set<String> dependencies = new HashSet<>();
+        Set<String> dependencies = new HashSet<String>();
         
         for (Constraint c: getConstraints())
         {
-            Set<String> ldeps = new HashSet<>();
+            Set<String> ldeps = new HashSet<String>();
             for(SyncPoint sp:c.getTargets())
             {
                 ldeps.add(sp.getBmlId());                
@@ -650,10 +650,10 @@ public class BMLParser
     
     private Set<String> getLinkAfterDependencies(String bmlId)
     {
-        Set<String> dependencies = new HashSet<>();
+        Set<String> dependencies = new HashSet<String>();
         for(AfterConstraint c: getAfterConstraints())
         {
-            Set<String> ldeps = new HashSet<>();
+            Set<String> ldeps = new HashSet<String>();
             for(SyncPoint sp:c.getTargets())
             {
                 ldeps.add(sp.getBmlId());                
@@ -673,7 +673,7 @@ public class BMLParser
      */
     public Set<String> getDependencies(String bmlId)
     {
-        Set<String> dependencies = new HashSet<>();
+        Set<String> dependencies = new HashSet<String>();
         dependencies.addAll(getLinkDependencies(bmlId));
         dependencies.addAll(getLinkAfterDependencies(bmlId));
         return dependencies;
