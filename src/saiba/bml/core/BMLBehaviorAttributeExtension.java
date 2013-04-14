@@ -3,6 +3,7 @@ package saiba.bml.core;
 import hmi.xml.XMLTokenizer;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * This interface can be used to enhance the &ltbml&gt tag with external elements and provides 
@@ -23,4 +24,9 @@ public interface BMLBehaviorAttributeExtension
      * @return the composition is successfully parsed, CoreSchedulingMechanism.UNKOWN otherwise
      */
     BMLBlockComposition handleComposition(String sm);
+    
+    /**
+     * Get the set of other blocks this block depends upon (e.g. is appended after, activates)
+     */
+    Set<String> getOtherBlockDependencies();
 }

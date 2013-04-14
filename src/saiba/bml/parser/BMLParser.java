@@ -627,5 +627,55 @@ public class BMLParser
     {
         return bbs;
     }
-
+    
+    private Set<String> getLinkDependencies(String bmlId)
+    {
+        Set<String> dependencies = new HashSet<>();
+        
+        for (Constraint c: getConstraints())
+        {
+            Set<String> ldeps = new HashSet<>();
+            for(SyncPoint sp:c.getTargets())
+            {
+                ldeps.add(sp.getBmlId());                
+            }
+            if(ldeps.contains(bmlId))
+            {
+                dependencies.addAll(ldeps);
+            }
+        }
+        dependencies.remove(bmlId);
+        return dependencies;
+    }
+    
+    private Set<String> getLinkAfterDependencies(String bmlId)
+    {
+        Set<String> dependencies = new HashSet<>();
+        for(AfterConstraint c: getAfterConstraints())
+        {
+            Set<String> ldeps = new HashSet<>();
+            for(SyncPoint sp:c.getTargets())
+            {
+                ldeps.add(sp.getBmlId());                
+            }
+            ldeps.add(c.getRef().getBmlId());
+            if(ldeps.contains(bmlId))
+            {
+                dependencies.addAll(ldeps);
+            }
+        }
+        
+        dependencies.remove(bmlId);
+        return dependencies;
+    }
+    /**
+     * Get the BML blocks bmlId depends upon 
+     */
+    public Set<String> getDependencies(String bmlId)
+    {
+        Set<String> dependencies = new HashSet<>();
+        dependencies.addAll(getLinkDependencies(bmlId));
+        dependencies.addAll(getLinkAfterDependencies(bmlId));
+        return dependencies;
+    }
 }

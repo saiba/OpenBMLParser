@@ -19,6 +19,7 @@
 package saiba.bml.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static saiba.bml.parser.ParserTestUtil.assertEqualConstraints;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -948,5 +950,28 @@ public class ParserTest
                 "<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/>" +
                 "<gesture id=\"g4\" ready=\"g3:strokeStart\" start=\"0\" lexeme=\"BEAT\"/></bml>");
         assertTrue(parser.isGrounded("bml1", "g1"));
+    }
+    
+    @Test
+    public void testNoDependencies()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"/>");
+        assertTrue(parser.getDependencies("bml1").isEmpty());
+    }
+    
+    @Test
+    public void testLinkDependency()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" stroke=\"bml2:beh1:start\" lexeme=\"BEAT\"/></bml>");
+        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bml2"));
+    }
+    
+    @Test
+    public void testAfterDependencyGround()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/>" +
+                "<constraint><after ref=\"bml2:g1:start\"><sync ref=\"g1:end\"/><sync ref=\"bml3:g1:end\"/></after></constraint>"+
+                "</bml>");
+        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bml2","bml3"));
     }
 }
