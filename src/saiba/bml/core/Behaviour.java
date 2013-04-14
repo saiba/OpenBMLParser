@@ -29,11 +29,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import saiba.bml.BMLInfo;
 import saiba.bml.parser.BMLParser;
 import saiba.bml.parser.InvalidSyncRefException;
 import saiba.bml.parser.SyncPoint;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * This class is a superclass for all behaviors. It has no representation in BML. It holds common
@@ -62,6 +65,14 @@ public abstract class Behaviour extends BMLElement
         this.required = required;
     }
 
+    /**
+     * Gets the set of external BML blocks that this behavior may affect/depend upon.
+     */
+    public Set<String> getOtherBlockDependencies()
+    {
+        return ImmutableSet.of();
+    }
+    
     public boolean isRequired()
     {
         return required;

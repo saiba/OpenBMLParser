@@ -18,27 +18,36 @@
  ******************************************************************************/
 package saiba.bml.parser;
 
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static saiba.bml.parser.ParserTestUtil.assertEqualConstraints;
 import static saiba.bml.parser.ParserTestUtil.assertEqualAfterConstraints;
+import static saiba.bml.parser.ParserTestUtil.assertEqualConstraints;
 import hmi.util.Resources;
 import hmi.xml.XMLScanException;
+import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
-
+import saiba.bml.BMLInfo;
+import saiba.bml.core.BMLBehaviorAttributeExtension;
+import saiba.bml.core.BMLBlockComposition;
 import saiba.bml.core.BehaviourBlock;
+import saiba.bml.core.CoreComposition;
 import saiba.utils.TestUtil;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
 /**
  * Unit test cases for the BMLParser
  * 
@@ -75,8 +84,12 @@ public class ParserTest
     
     private void read(String bml)
     {
+        read(bml, new BehaviourBlock());        
+    }
+    
+    private void read(String bml, BehaviourBlock block)
+    {
         parser.clear();
-        BehaviourBlock block = new BehaviourBlock();
         block.readXML(bml);
         parser.addBehaviourBlock(block);
     }
@@ -967,11 +980,70 @@ public class ParserTest
     }
     
     @Test
-    public void testAfterDependencyGround()
+    public void testAfterDependency()
     {
         read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/>" +
                 "<constraint><after ref=\"bml2:g1:start\"><sync ref=\"g1:end\"/><sync ref=\"bml3:g1:end\"/></after></constraint>"+
                 "</bml>");
         assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bml2","bml3"));
+    }
+    
+    private class BMLXBMLBehaviorAttributes implements BMLBehaviorAttributeExtension 
+    {
+        @Override
+        public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
+        {
+                       
+        }
+
+        @Override
+        public BMLBlockComposition handleComposition(String sm)
+        {
+            return CoreComposition.UNKNOWN;
+        }
+
+        @Override
+        public Set<String> getOtherBlockDependencies()
+        {
+            return ImmutableSet.of("bmlx");
+        }        
+    }
+    
+    private class BMLYBMLBehaviorAttributes implements BMLBehaviorAttributeExtension 
+    {
+        @Override
+        public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
+        {
+                       
+        }
+
+        @Override
+        public BMLBlockComposition handleComposition(String sm)
+        {
+            return CoreComposition.UNKNOWN;
+        }
+
+        @Override
+        public Set<String> getOtherBlockDependencies()
+        {
+            return ImmutableSet.of("bmly");
+        }        
+    }
+    
+    @Test
+    public void testBlockDependency()
+    {
+        BehaviourBlock block = new BehaviourBlock(new BMLXBMLBehaviorAttributes(),new BMLYBMLBehaviorAttributes());
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"/>",block);
+        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx","bmly"));
+    }
+    
+    
+    @Test
+    public void testBehaviorDependency()
+    {
+        BMLInfo.addBehaviourType(StubBehaviour.XMLTAG, StubBehaviour.class);
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><stub id=\"s1\"/></bml>");
+        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx"));
     }
 }

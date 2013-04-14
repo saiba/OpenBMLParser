@@ -668,6 +668,31 @@ public class BMLParser
         dependencies.remove(bmlId);
         return dependencies;
     }
+    
+    private Set<String> getBlockDependencies(String bmlId)
+    {
+        for(BehaviourBlock bb: getBehaviourBlocks())
+        {
+            if(bb.getBmlId().equals(bmlId))
+            {
+                return bb.getOtherBlockDependencies();
+            }
+        }
+        return ImmutableSet.of();
+    }
+    
+    private Set<String> getBehaviourDependencies(String bmlId)
+    {
+        Set<String> dependencies = new HashSet<String>();
+        for(Behaviour b:getBehaviours())
+        {
+            if(b.getBmlId().equals(bmlId))
+            {
+                dependencies.addAll(b.getOtherBlockDependencies());
+            }
+        }
+        return dependencies;
+    }
     /**
      * Get the BML blocks bmlId depends upon 
      */
@@ -676,6 +701,8 @@ public class BMLParser
         Set<String> dependencies = new HashSet<String>();
         dependencies.addAll(getLinkDependencies(bmlId));
         dependencies.addAll(getLinkAfterDependencies(bmlId));
+        dependencies.addAll(getBlockDependencies(bmlId));
+        dependencies.addAll(getBehaviourDependencies(bmlId));
         return dependencies;
     }
 }
