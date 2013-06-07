@@ -18,24 +18,36 @@
  ******************************************************************************/
 package saiba.bml.parser;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static saiba.bml.parser.ParserTestUtil.assertEqualConstraints;
 import static saiba.bml.parser.ParserTestUtil.assertEqualAfterConstraints;
+import static saiba.bml.parser.ParserTestUtil.assertEqualConstraints;
 import hmi.util.Resources;
 import hmi.xml.XMLScanException;
+import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
+import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
-
+import saiba.bml.BMLInfo;
+import saiba.bml.core.BMLBehaviorAttributeExtension;
+import saiba.bml.core.BMLBlockComposition;
 import saiba.bml.core.BehaviourBlock;
+import saiba.bml.core.CoreComposition;
+import saiba.utils.TestUtil;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
 /**
  * Unit test cases for the BMLParser
  * 
@@ -67,6 +79,18 @@ public class ParserTest
         parser.clear();
         BehaviourBlock block = new BehaviourBlock();
         block.readXML(res.getReader(file));
+        parser.addBehaviourBlock(block);
+    }
+    
+    private void read(String bml)
+    {
+        read(bml, new BehaviourBlock());        
+    }
+    
+    private void read(String bml, BehaviourBlock block)
+    {
+        parser.clear();
+        block.readXML(bml);
         parser.addBehaviourBlock(block);
     }
     
@@ -834,5 +858,192 @@ public class ParserTest
 
         assertEqualConstraints(expectedConstraints, parser.getConstraints());
     }
+    
+    @Test
+    public void testNoDirectLink()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
+        assertFalse(parser.directLink("bml1", "g1", "bml1", "g2"));
+    }
 
+    @Test
+    public void testDirectLink()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
+        assertTrue(parser.directLink("bml1", "g1", "bml1", "g2"));
+    }
+    
+    @Test
+    public void testNoDirectGround()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/></bml>");
+        assertFalse(parser.directGround("bml1", "g1"));
+    }
+    
+    @Test
+    public void testDirectGround()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture stroke=\"2\" id=\"g1\" lexeme=\"BEAT\"/></bml>");
+        assertTrue(parser.directGround("bml1", "g1"));
+    }
+    
+    @Test
+    public void testNoDirectAfterGround()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/></bml>");
+        assertFalse(parser.directAfterGround("bml1", "g1"));
+    }
+    
+    @Test
+    public void testDirectAfterGround()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/>" +
+                "<constraint><after ref=\"1\"><sync ref=\"g1:end\"/></after></constraint>"+
+        		"</bml>");
+        assertTrue(parser.directAfterGround("bml1", "g1"));
+    }
+    
+    @Test
+    public void testIsNotConnected()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
+        assertFalse(parser.isConnected("bml1", "g1", "bml1", "g2"));
+    }
+    
+    @Test
+    public void testIsConnectedDirect()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
+        assertTrue(parser.isConnected("bml1", "g1", "bml1", "g2"));
+    }
+    
+    @Test
+    public void testIsConnectedTwoSteps()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>" +
+        		"<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/></bml>");
+        assertTrue(parser.isConnected("bml1", "g1", "bml1", "g3"));
+    }
+    
+    @Test
+    public void testIsConnectedThreeSteps()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>" +
+                "<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/>" +
+                "<gesture id=\"g4\" ready=\"g3:strokeStart\" lexeme=\"BEAT\"/></bml>");
+        assertTrue(parser.isConnected("bml1", "g1", "bml1", "g4"));
+    }
+    
+    @Test
+    public void testIsNotGrounded()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/></bml>");
+        assertFalse(parser.isGrounded("bml1", "g1"));
+    }
+    
+    @Test
+    public void testIsGroundedDirect()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" stroke=\"1\" lexeme=\"BEAT\"/></bml>");
+        assertTrue(parser.isGrounded("bml1", "g1"));
+    }
+    
+    @Test
+    public void testIsGroundedTwoSteps()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>" +
+                "<gesture id=\"g2\" strokeStart=\"3\" lexeme=\"BEAT\"/></bml>");
+        assertTrue(parser.isGrounded("bml1", "g1"));
+    }
+    
+    @Test
+    public void testIsGroundedFourSteps()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>" +
+                "<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/>" +
+                "<gesture id=\"g4\" ready=\"g3:strokeStart\" start=\"0\" lexeme=\"BEAT\"/></bml>");
+        assertTrue(parser.isGrounded("bml1", "g1"));
+    }
+    
+    @Test
+    public void testNoDependencies()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"/>");
+        assertTrue(parser.getDependencies("bml1").isEmpty());
+    }
+    
+    @Test
+    public void testLinkDependency()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" stroke=\"bml2:beh1:start\" lexeme=\"BEAT\"/></bml>");
+        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bml2"));
+    }
+    
+    @Test
+    public void testAfterDependency()
+    {
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/>" +
+                "<constraint><after ref=\"bml2:g1:start\"><sync ref=\"g1:end\"/><sync ref=\"bml3:g1:end\"/></after></constraint>"+
+                "</bml>");
+        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bml2","bml3"));
+    }
+    
+    private class BMLXBMLBehaviorAttributes implements BMLBehaviorAttributeExtension 
+    {
+        @Override
+        public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
+        {
+                       
+        }
+
+        @Override
+        public BMLBlockComposition handleComposition(String sm)
+        {
+            return CoreComposition.UNKNOWN;
+        }
+
+        @Override
+        public Set<String> getOtherBlockDependencies()
+        {
+            return ImmutableSet.of("bmlx");
+        }        
+    }
+    
+    private class BMLYBMLBehaviorAttributes implements BMLBehaviorAttributeExtension 
+    {
+        @Override
+        public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
+        {
+                       
+        }
+
+        @Override
+        public BMLBlockComposition handleComposition(String sm)
+        {
+            return CoreComposition.UNKNOWN;
+        }
+
+        @Override
+        public Set<String> getOtherBlockDependencies()
+        {
+            return ImmutableSet.of("bmly");
+        }        
+    }
+    
+    @Test
+    public void testBlockDependency()
+    {
+        BehaviourBlock block = new BehaviourBlock(new BMLXBMLBehaviorAttributes(),new BMLYBMLBehaviorAttributes());
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"/>",block);
+        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx","bmly"));
+    }
+    
+    
+    @Test
+    public void testBehaviorDependency()
+    {
+        BMLInfo.addBehaviourType(StubBehaviour.XMLTAG, StubBehaviour.class);
+        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><stub id=\"s1\"/></bml>");
+        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx"));
+    }
 }

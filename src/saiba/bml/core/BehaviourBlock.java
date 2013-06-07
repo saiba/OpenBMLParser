@@ -24,7 +24,9 @@ import hmi.xml.XMLTokenizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import saiba.bml.parser.BMLParser;
 
@@ -133,6 +135,16 @@ public class BehaviourBlock extends BMLElement
         super.decodeAttributes(attrMap, tokenizer);
     }
 
+    public Set<String>getOtherBlockDependencies()
+    {
+        Set<String> deps = new HashSet<String>();
+        for (BMLBehaviorAttributeExtension ext : bmlBehaviorAttributeExtensions.values())
+        {
+            deps.addAll(ext.getOtherBlockDependencies());
+        }
+        return deps;
+    }
+    
     public <E extends BMLBehaviorAttributeExtension> E getBMLBehaviorAttributeExtension(Class<E> c)
     {
         return bmlBehaviorAttributeExtensions.getInstance(c);
