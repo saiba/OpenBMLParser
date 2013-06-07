@@ -71,11 +71,11 @@ public class BehaviourBlock extends BMLElement
 
     private BMLBlockComposition composition = CoreComposition.UNKNOWN;
 
-    public BMLBlockComposition getSchedulingMechanism()
+    public BMLBlockComposition getComposition()
     {
         return composition;
     }
-
+    
     public BehaviourBlock(XMLTokenizer tokenizer) throws IOException
     {
         this();
