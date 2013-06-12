@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="SAIBABML"  default="compile">
+<project name="OpenBMLParser"  default="compile">
   <property name="src" location="src"/>
   <property name="build" location="build"/>
   <property name="dist"  location="dist"/>
@@ -119,11 +119,11 @@
     <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/saibabml.jar">
+    <jar jarfile="${dist}/lib/openbmlparser.jar">
       <fileset dir="${build}"/>      
       <fileset dir="${src}"/>      
     </jar>
-    <jar jarfile="${dist}/lib/saibabml-test.jar">
+    <jar jarfile="${dist}/lib/openbmlparser-test.jar">
       <fileset dir="${build.test.classes.dir}"/>      
     </jar>
 
@@ -140,10 +140,10 @@
 
    <!-- Settings for "javadoc" -->
    <property name="docs.dir"              value="docs"     />
-   <property name="javadoc.dir"           location="${docs.dir}/saibabml"/>
-   <property name="javadoc.test.dir"           location="${docs.dir}/saibabml-test"/>
-   <property name="javadoc.doctitle"      value="saibabml API Documentation"/>
-   <property name="javadoc.test.doctitle"      value="saibabml-test API Documentation"/>
+   <property name="javadoc.dir"           location="${docs.dir}/openbmlparser"/>
+   <property name="javadoc.test.dir"           location="${docs.dir}/openbmlparser-test"/>
+   <property name="javadoc.doctitle"      value="OpenBMLParser API Documentation"/>
+   <property name="javadoc.test.doctitle"      value="OpenBMLParser-test API Documentation"/>
    <property name="javadoc.overview"      value="javadoc-overview.html"/>
    <property name="javadoc.noindex"       value="false"/>
    <property name="javadoc.nonavbar"      value="false"/>
@@ -153,7 +153,7 @@
    <property name="javadoc.use"           value="true"/>
    <property name="javadoc.author"        value="true"/>
    <property name="javadoc.version"       value="true"/>
-   <property name="javadoc.windowtitle"   value="saibabml"/>
+   <property name="javadoc.windowtitle"   value="OpenBMLParser"/>
    <property name="javadoc.link"          value="http://java.sun.com/javase/6/docs/api/"/>
    <property name="javadoc.linksource"    value="yes"/>
    <property name="javadoc.packages"      value="*"/>
