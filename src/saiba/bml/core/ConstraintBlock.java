@@ -38,7 +38,7 @@ public class ConstraintBlock extends BMLElement
     public ArrayList<Before> before;
 
     public ArrayList<After> after;
-    public final String bmlId;
+    public String bmlId;
     
     public void setRequired(boolean req)
     {

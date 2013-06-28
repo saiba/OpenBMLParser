@@ -36,7 +36,7 @@ import saiba.bml.parser.SyncRef;
  */
 public class Sync extends BMLElement
 {
-    public final String bmlId;    
+    public String bmlId;    
     
     public SyncRef ref;
 

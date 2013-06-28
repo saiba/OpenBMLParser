@@ -38,7 +38,7 @@ public class Before extends BMLElement
     private ArrayList<Sync> syncs;
 
     private SyncRef ref;
-    private final String bmlId;
+    public String bmlId;
 
     @Override
     public String getBmlId()
