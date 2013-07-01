@@ -21,14 +21,18 @@ package saiba.bml.core;
 import hmi.xml.XMLFormatting;
 import hmi.xml.XMLTokenizer;
 
+import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
 import saiba.bml.parser.BMLParser;
+import saiba.bml.parser.SyncPoint;
+import saiba.bml.parser.SyncRef;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
@@ -71,13 +75,81 @@ public class BehaviourBlock extends BMLElement
         return id;
     }
 
+    private void setSyncPointBMLId(String newId, Collection<SyncPoint> syncs)
+    {
+        for(SyncPoint s:syncs)
+        {
+            if(s.getBmlId().equals(id))
+            {
+                s.setBMLId(newId);
+            }
+            setBMLId(newId, s.getRef());
+        }
+    }
+    
+    private void setBMLId(String newId, SyncRef r)
+    {
+        if (r != null && r.bbId.equals(id))
+        {
+            r.bbId = newId;
+        }
+    }
+
+    private void setBMLId(String newId, Collection<Sync> syncs)
+    {
+        for (Sync sync : syncs)
+        {
+            if (sync.bmlId.equals(id))
+            {
+                sync.bmlId = newId;
+            }
+            setBMLId(newId, sync.ref);
+        }
+    }
+
+    public void setBmlId(String newId)
+    {
+        for (Behaviour beh : behaviours)
+        {
+            beh.bmlId = newId;
+            setSyncPointBMLId(newId,beh.getSyncPoints());
+        }
+        for (ConstraintBlock cb : constraintBlocks)
+        {
+            cb.bmlId = newId;
+            for (Synchronize s : cb.synchronizes)
+            {
+                s.bmlId = newId;
+                setBMLId(newId, s.getSyncs());
+            }
+            for (After a : cb.after)
+            {
+                a.bmlId = newId;
+                setBMLId(newId, a.getRef());
+                setBMLId(newId, a.getSyncs());
+            }
+            for (Before b : cb.before)
+            {
+                b.bmlId = newId;
+                setBMLId(newId, b.getRef());
+                setBMLId(newId, b.getSyncs());
+            }
+        }
+        id = newId;
+    }
+
     private BMLBlockComposition composition = CoreComposition.UNKNOWN;
+
+    public void setComposition(BMLBlockComposition c)
+    {
+        composition = c;
+    }
 
     public BMLBlockComposition getComposition()
     {
         return composition;
     }
-    
+
     public BehaviourBlock(XMLTokenizer tokenizer) throws IOException
     {
         this();
@@ -135,7 +207,7 @@ public class BehaviourBlock extends BMLElement
         super.decodeAttributes(attrMap, tokenizer);
     }
 
-    public Set<String>getOtherBlockDependencies()
+    public Set<String> getOtherBlockDependencies()
     {
         Set<String> deps = new HashSet<String>();
         for (BMLBehaviorAttributeExtension ext : bmlBehaviorAttributeExtensions.values())
@@ -144,7 +216,7 @@ public class BehaviourBlock extends BMLElement
         }
         return deps;
     }
-    
+
     public <E extends BMLBehaviorAttributeExtension> E getBMLBehaviorAttributeExtension(Class<E> c)
     {
         return bmlBehaviorAttributeExtensions.getInstance(c);
@@ -174,7 +246,7 @@ public class BehaviourBlock extends BMLElement
             }
             if (tag.equals(ConstraintBlock.xmlTag()))
             {
-                constraintBlocks.add(new ConstraintBlock(id, tokenizer));                
+                constraintBlocks.add(new ConstraintBlock(id, tokenizer));
             }
 
             Behaviour b = BehaviourParser.parseBehaviour(id, tokenizer);

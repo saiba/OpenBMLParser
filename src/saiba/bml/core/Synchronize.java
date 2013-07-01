@@ -34,7 +34,7 @@ import saiba.bml.parser.BMLParser;
 public class Synchronize extends BMLElement
 {
     private ArrayList<Sync> syncs;
-    public final String bmlId;
+    public String bmlId;
 
     public Synchronize(String bmlId)
     {
