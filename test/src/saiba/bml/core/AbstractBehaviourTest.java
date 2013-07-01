@@ -22,6 +22,7 @@
 package saiba.bml.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import hmi.xml.XMLFormatting;
 import hmi.xml.XMLNameSpace;
@@ -55,6 +56,14 @@ public abstract class AbstractBehaviourTest
     }
     
     @Test
+    public void testNoFloatAttribute() throws IOException
+    {
+        BMLInfo.addCustomFloatAttribute(createBehaviour("bml1","").getClass(), "customfaceattributes","attr2");
+        Behaviour beh = createBehaviour("bml1", "xmlns:custom=\"customfaceattributes\"");
+        assertFalse(beh.specifiesParameter("customfaceattributes:attr2"));        
+    }
+    
+    @Test
     public void testCustomStringAttribute() throws IOException
     {
         BMLInfo.addCustomStringAttribute(createBehaviour("bml1","").getClass(), "customfaceattributes","attr1");
@@ -62,6 +71,14 @@ public abstract class AbstractBehaviourTest
         assertEquals("blah", beh.getStringParameterValue("customfaceattributes:attr1"));    
         assertTrue(beh.specifiesParameter("customfaceattributes:attr1"));
         assertTrue(beh.satisfiesConstraint("customfaceattributes:attr1", "blah"));
+    }
+    
+    @Test
+    public void testNoCustomStringAttribute() throws IOException
+    {
+        BMLInfo.addCustomStringAttribute(createBehaviour("bml1","").getClass(), "customfaceattributes","attr1");
+        Behaviour beh = createBehaviour("bml1", "xmlns:custom=\"customfaceattributes\" ");    
+        assertFalse(beh.specifiesParameter("customfaceattributes:attr2"));        
     }
     
     @Test 
