@@ -51,7 +51,7 @@ public class SyncPoint
 
     public void setBMLId(String bmlId)
     {
-        this.bmlId = bmlId;
+        this.bmlId = bmlId;        
     }
     
     public String getBehaviourId()

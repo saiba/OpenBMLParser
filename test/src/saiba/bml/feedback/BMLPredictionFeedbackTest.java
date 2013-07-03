@@ -24,11 +24,16 @@ package saiba.bml.feedback;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import hmi.xml.XMLTokenizer;
+
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
 
 import saiba.bml.core.Behaviour;
+import saiba.bml.core.SpeechBehaviour;
+import saiba.bml.parser.InvalidSyncRefException;
 import saiba.bml.parser.SyncPoint;
 import saiba.utils.TestUtil;
 
@@ -149,5 +154,25 @@ public class BMLPredictionFeedbackTest
         assertEquals("bml1",fbOut.getBmlBlockPredictions().get(0).getId());
         assertEquals(10,fbOut.getBmlBlockPredictions().get(0).getGlobalStart(),PREDICTION_PRECISION);
         assertEquals(20,fbOut.getBmlBlockPredictions().get(0).getGlobalEnd(),PREDICTION_PRECISION);
+    }
+    
+    @Test
+    public void testConstructBehaviour() throws IOException, InvalidSyncRefException
+    {
+        BMLPredictionFeedback fbIn = new BMLPredictionFeedback();
+        SpeechBehaviour s = new SpeechBehaviour("bml1",new XMLTokenizer("<speech "+TestUtil.getDefNS()+" id=\"bml1:speech1\"><text>Hello world</text></speech>"));
+        s.removeSyncPoints(s.getSyncPoints());
+        SyncPoint sync = new SyncPoint("bml1","speech1","start");
+        sync.setRefString("3");
+        s.addSyncPoint(sync);
+        fbIn.addBehaviorPrediction(s);
+        
+        StringBuilder buf1 = new StringBuilder();        
+        fbIn.appendXML(buf1);
+        StringBuilder buf2 = new StringBuilder();
+        BMLPredictionFeedback fbOut = new BMLPredictionFeedback();
+        fbOut.readXML(buf1.toString());
+        fbOut.appendXML(buf2);
+        assertEquals(buf1.toString(),buf2.toString());
     }
 }

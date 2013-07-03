@@ -154,7 +154,7 @@ public abstract class Behaviour extends BMLElement
     @Override
     public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
-        appendAttribute(buf, "id", id);
+        appendAttribute(buf, "id", bmlId+":"+id);
 
         // Append attribute notation of sync-points.
         Iterator<SyncPoint> iter = syncPoints.iterator();
@@ -186,7 +186,14 @@ public abstract class Behaviour extends BMLElement
     @Override
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
-
+        id = getRequiredAttribute("id", attrMap, tokenizer);
+        String[] idSplit = id.split(":");
+        if (idSplit.length == 2)
+        {
+            this.id = idSplit[1];
+            this.bmlId = idSplit[0];
+        }
+        
         for (String attr : BMLInfo.getCustomFloatAttributes(this.getClass()))
         {
             String value = getOptionalAttribute(attr, attrMap);
@@ -205,6 +212,12 @@ public abstract class Behaviour extends BMLElement
             }
         }
 
+        for (SyncPoint s : syncPoints)
+        {
+            s.setBehaviourId(id);
+            s.setBMLId(bmlId);
+        }
+        
         // Decode attribute notation of standard sync-points.
         for (SyncPoint s : syncPoints)
         {
@@ -220,19 +233,6 @@ public abstract class Behaviour extends BMLElement
                     throw new XMLScanException("Invalid sync ref", e);
                 }
             }
-        }
-
-        id = getRequiredAttribute("id", attrMap, tokenizer);
-        String[] idSplit = id.split(":");
-        if (idSplit.length == 2)
-        {
-            this.id = idSplit[1];
-            this.bmlId = idSplit[0];
-        }
-        for (SyncPoint s : syncPoints)
-        {
-            s.setBehaviourId(id);
-            s.setBMLId(bmlId);
         }
         super.decodeAttributes(attrMap, tokenizer);
     }

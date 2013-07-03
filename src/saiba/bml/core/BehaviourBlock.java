@@ -21,7 +21,6 @@ package saiba.bml.core;
 import hmi.xml.XMLFormatting;
 import hmi.xml.XMLTokenizer;
 
-import java.awt.List;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
