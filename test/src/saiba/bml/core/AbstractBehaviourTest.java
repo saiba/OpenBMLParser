@@ -108,4 +108,19 @@ public abstract class AbstractBehaviourTest
         assertEquals("blah", behOut.getStringParameterValue("customfaceattributes:attr1"));    
         assertTrue(behOut.specifiesParameter("customfaceattributes:attr1"));
     }
+    
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix()throws IOException
+    {
+        BMLInfo.addCustomStringAttribute(createBehaviour("bml1","").getClass(), "customfaceattributes","attr1");
+        Behaviour behIn = createBehaviour("bml1", "xmlns:custom=\"customfaceattributes\" custom:attr1=\"blah\"");
+        
+        StringBuilder buf = new StringBuilder();        
+        behIn.appendXML(buf);
+        System.out.println(buf);
+        
+        Behaviour behOut = parseBehaviour("bml1",buf.toString());
+        assertEquals("blah", behOut.getStringParameterValue("customfaceattributes:attr1"));    
+        assertTrue(behOut.specifiesParameter("customfaceattributes:attr1"));
+    }
 }

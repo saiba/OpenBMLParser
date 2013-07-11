@@ -65,6 +65,12 @@ public class BehaviourBlockBuilder
         return this;
     }
 
+    public BehaviourBlockBuilder setComposition(BMLBlockComposition c)
+    {
+        composition = c;
+        return this;
+    }
+    
     public BehaviourBlockBuilder addBehaviour(Behaviour b)
     {
         behaviours.add(b);

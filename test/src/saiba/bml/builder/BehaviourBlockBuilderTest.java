@@ -29,7 +29,36 @@ public class BehaviourBlockBuilderTest
         assertNotNull(bb.id);
         assertEquals(CoreComposition.MERGE, bb.getComposition());
     }
+    
+    @Test
+    public void checkDefaultCompositionOutput()
+    {
+        BehaviourBlock bbOut = builder.build();
+        StringBuilder buf = new StringBuilder();
+        bbOut.appendXML(buf);
+        BehaviourBlock bbIn = new BehaviourBlock();
+        bbIn.readXML(buf.toString());
+        BMLParser parser = new BMLParser();
+        parser.addBehaviourBlock(bbIn);
+        assertEquals(CoreComposition.MERGE, bbIn.getComposition());
+    }
 
+    //TODO
+    /*
+    @Test
+    public void checkCustomCompositionOutput()
+    {
+        BehaviourBlock bbOut = builder.setComposition().build();
+        StringBuilder buf = new StringBuilder();
+        bbOut.appendXML(buf);
+        BehaviourBlock bbIn = new BehaviourBlock();
+        bbIn.readXML(buf.toString());
+        BMLParser parser = new BMLParser();
+        parser.addBehaviourBlock(bbIn);
+        assertEquals(CoreComposition.MERGE, bbIn.getComposition());
+    }
+    */
+    
     @Test
     public void buildBlockWithId()
     {

@@ -114,7 +114,6 @@ public final class BMLInfo
       
     public static void addCustomFloatAttribute(Class<? extends Behaviour> beh, String namespace, String attributeName)
     {
-        //customStringAttributes.put(beh,namespace+":"+attributeName);
         customFloatAttributes.put(beh,namespace+":"+attributeName);
     }
     
