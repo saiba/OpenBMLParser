@@ -184,16 +184,18 @@ public abstract class Behaviour extends BMLElement
         
         for (Entry<String, String> entries : customStringAttributes.entrySet())
         {
-            String key[] = entries.getKey().split(":");
-            constructNSPrefix(key[0], fmt, buf);
-            appendNamespacedAttribute(buf, fmt, key[0], key[1], entries.getValue());            
+            String ns = entries.getKey().substring(0, entries.getKey().lastIndexOf(":"));
+            String attr = entries.getKey().substring(entries.getKey().lastIndexOf(":")+1);
+            constructNSPrefix(ns, fmt, buf);
+            appendNamespacedAttribute(buf, fmt, ns, attr, entries.getValue());            
         }
 
         for (Entry<String, Float> entries : customFloatAttributes.entrySet())
         {
-            String key[] = entries.getKey().split(":");
-            constructNSPrefix(key[0], fmt, buf);
-            appendNamespacedAttribute(buf, fmt, key[0], key[1], ""+entries.getValue());            
+            String ns = entries.getKey().substring(0, entries.getKey().lastIndexOf(":"));
+            String attr = entries.getKey().substring(entries.getKey().lastIndexOf(":")+1);
+            constructNSPrefix(ns, fmt, buf);
+            appendNamespacedAttribute(buf, fmt, ns, attr, ""+entries.getValue());  
         }
 
         return super.appendAttributeString(buf, fmt);
