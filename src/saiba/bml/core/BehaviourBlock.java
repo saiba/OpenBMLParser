@@ -183,8 +183,8 @@ public class BehaviourBlock extends BMLElement
     public StringBuilder appendAttributeString(StringBuilder buf)
     {
         appendAttribute(buf, "id", id);
-        //appendAttribute(buf, "composition", composition.toString());
-        appendAttribute(buf, "composition", composition.toString().toLowerCase(Locale.US));
+        appendAttribute(buf, "composition", composition.toString());
+        //appendAttribute(buf, "composition", composition.toString().toLowerCase(Locale.US));
         return super.appendAttributes(buf);
     }
 
