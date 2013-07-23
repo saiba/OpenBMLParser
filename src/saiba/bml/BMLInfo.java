@@ -29,6 +29,7 @@ import java.util.Set;
 import saiba.bml.core.Behaviour;
 import saiba.bml.core.FaceLexemeBehaviour;
 import saiba.bml.core.GazeBehaviour;
+import saiba.bml.core.GazeShiftBehaviour;
 import saiba.bml.core.GestureBehaviour;
 import saiba.bml.core.HeadBehaviour;
 import saiba.bml.core.LocomotionBehaviour;
@@ -57,16 +58,22 @@ public final class BMLInfo
     
     // /Behaviors that are parsed
     private static final ImmutableMap<String, Class<? extends Behaviour>> BEHAVIOR_TYPES = 
-        new ImmutableMap.Builder<String, Class<? extends Behaviour>>()
-            .put(HeadBehaviour.xmlTag(), HeadBehaviour.class).put(LocomotionBehaviour.xmlTag(), LocomotionBehaviour.class)
-            .put(FaceLexemeBehaviour.xmlTag(), FaceLexemeBehaviour.class).put(GazeBehaviour.xmlTag(), GazeBehaviour.class)
-            .put(PostureBehaviour.xmlTag(), PostureBehaviour.class).put(GestureBehaviour.xmlTag(), GestureBehaviour.class)
+          //@formatter:off
+          new ImmutableMap.Builder<String, Class<? extends Behaviour>>()
+            .put(HeadBehaviour.xmlTag(), HeadBehaviour.class)
+            .put(LocomotionBehaviour.xmlTag(), LocomotionBehaviour.class)
+            .put(FaceLexemeBehaviour.xmlTag(), FaceLexemeBehaviour.class)
+            .put(GazeShiftBehaviour.xmlTag(), GazeShiftBehaviour.class)
+            .put(GazeBehaviour.xmlTag(), GazeBehaviour.class)
+            .put(PostureBehaviour.xmlTag(), PostureBehaviour.class)
+            .put(GestureBehaviour.xmlTag(), GestureBehaviour.class)
             .put(SpeechBehaviour.xmlTag(), SpeechBehaviour.class)
             .put(WaitBehaviour.xmlTag(), WaitBehaviour.class)
             .put(PointingBehaviour.xmlTag(), PointingBehaviour.class)
             .put(FaceFacsBehaviour.xmlTag(), FaceFacsBehaviour.class)
             .put(PostureShiftBehaviour.xmlTag(), PostureShiftBehaviour.class)
             .build();
+        //@formatter:on
     // /Description levels that can be parsed
     private static final ImmutableMap<String, Class<? extends Behaviour>> DESCRIPTION_EXTENSIONS = 
         new ImmutableMap.Builder<String, Class<? extends Behaviour>>()            

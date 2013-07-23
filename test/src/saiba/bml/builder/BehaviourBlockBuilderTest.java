@@ -23,7 +23,10 @@ import saiba.bml.core.BMLBehaviorAttributeExtension;
 import saiba.bml.core.BMLBlockComposition;
 import saiba.bml.core.BehaviourBlock;
 import saiba.bml.core.CoreComposition;
+import saiba.bml.core.Mode;
+import saiba.bml.core.OffsetDirection;
 import saiba.bml.core.SpeechBehaviour;
+import saiba.bml.core.ext.FaceFacsBehaviour.Side;
 import saiba.bml.parser.BMLParser;
 
 /**
@@ -75,29 +78,30 @@ public class BehaviourBlockBuilderTest
     {
         class MyBMLBehaviorAttributeExtension implements BMLBehaviorAttributeExtension
         {
-            @Getter @Setter
+            @Getter
+            @Setter
             private String testVal;
-            
+
             @Override
             public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
             {
                 testVal = attrMap.get("http://mynamespace.net:test");
             }
 
-            //TODO: move to HmiXML
+            // TODO: move to HmiXML
             private void constructNSPrefix(String ns, XMLFormatting fmt, StringBuilder buf)
             {
-                if(fmt.getNamespacePrefix(ns.intern())==null)
+                if (fmt.getNamespacePrefix(ns.intern()) == null)
                 {
-                    String prefix = "ns"+UUID.randomUUID().toString();
-                    XMLNameSpace n = new XMLNameSpace(prefix,ns);
+                    String prefix = "ns" + UUID.randomUUID().toString();
+                    XMLNameSpace n = new XMLNameSpace(prefix, ns);
                     fmt.pushXMLNameSpace(n);
-                    buf.append(" xmlns:"+prefix+"=\""+ns+"\" ");
+                    buf.append(" xmlns:" + prefix + "=\"" + ns + "\" ");
                 }
             }
-            
+
             @Override
-            public StringBuilder appendAttributeString(StringBuilder buf,XMLFormatting fmt)
+            public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
             {
                 constructNSPrefix("http://mynamespace.net", fmt, buf);
                 XMLStructureAdapter.appendNamespacedAttribute(buf, fmt, "http://mynamespace.net", "test", testVal);
@@ -121,10 +125,10 @@ public class BehaviourBlockBuilderTest
         ext.setTestVal("test");
         BehaviourBlock bb = builder.addBMLBehaviorAttributeExtension(ext).build();
         assertEquals(ext, bb.getBMLBehaviorAttributeExtension(MyBMLBehaviorAttributeExtension.class));
-        
+
         BehaviourBlock bbOut = new BehaviourBlock();
         bbOut.addBMLBehaviorAttributeExtension(new MyBMLBehaviorAttributeExtension());
-        bbOut.readXML(bb.toBMLString());        
+        bbOut.readXML(bb.toBMLString());
     }
 
     @Test
@@ -158,20 +162,100 @@ public class BehaviourBlockBuilderTest
         assertEquals("bml1", bb.behaviours.get(0).getBmlId());
     }
 
+    @Test
     public void buildBlockWithHeadBehaviour()
     {
         //@formatter:off
         BehaviourBlock bb = 
                 builder.id("bml1")
-                       .addBehaviour(builder.createHeadBehaviourBuilder("h1", "NOD").amount(0.7f).build())
+                       .addHeadBehaviour("h1", "NOD",0.7f)
                        .build();
         //@formatter:on   
         assertEquals("h1", bb.behaviours.get(0).id);
-        assertEquals("nod", bb.behaviours.get(0).getStringParameterValue("lexeme"));
+        assertEquals("NOD", bb.behaviours.get(0).getStringParameterValue("lexeme"));
         assertEquals("bml1", bb.behaviours.get(0).getBmlId());
         assertEquals(0.7f, bb.behaviours.get(0).getFloatParameterValue("amount"), PARAM_PRECISION);
     }
 
+    @Test
+    public void buildBlockWithFaceLexemeBehaviour()
+    {
+        //@formatter:off
+        BehaviourBlock bb = 
+                builder.id("bml1")
+                       .addFaceLexemeBehaviour("f1", "RAISE_BROWS",0.7f)
+                       .build();
+        //@formatter:on
+        assertEquals("f1", bb.behaviours.get(0).id);
+        assertEquals("RAISE_BROWS", bb.behaviours.get(0).getStringParameterValue("lexeme"));
+        assertEquals("bml1", bb.behaviours.get(0).getBmlId());
+        assertEquals(0.7f, bb.behaviours.get(0).getFloatParameterValue("amount"), PARAM_PRECISION);
+    }
+
+    @Test
+    public void buildBlockWithFaceFacsBehaviour()
+    {
+      //@formatter:off
+        BehaviourBlock bb = 
+                builder.id("bml1")
+                       .addFaceFacsBehaviour("f1", 10, Side.LEFT, 0.7f)
+                       .build();
+        //@formatter:on
+        assertEquals("f1", bb.behaviours.get(0).id);
+        assertEquals("bml1", bb.behaviours.get(0).getBmlId());        
+        assertEquals(10f, bb.behaviours.get(0).getFloatParameterValue("au"), PARAM_PRECISION);
+        assertEquals(Side.LEFT.toString(), bb.behaviours.get(0).getStringParameterValue("side"));
+    }
+    
+    @Test
+    public void buildBlockWithGazeBehaviour()
+    {
+      //@formatter:off
+        BehaviourBlock bb = 
+                builder.id("bml1")
+                       .addGazeBehaviour("g1", "bluebox","SHOULDER", OffsetDirection.DOWNLEFT, 10)
+                       .build();
+        //@formatter:on
+        assertEquals("g1", bb.behaviours.get(0).id);
+        assertEquals("bluebox", bb.behaviours.get(0).getStringParameterValue("target"));
+        assertEquals("SHOULDER", bb.behaviours.get(0).getStringParameterValue("influence"));
+        assertEquals("bml1", bb.behaviours.get(0).getBmlId());
+        assertEquals(OffsetDirection.DOWNLEFT.toString(), bb.behaviours.get(0).getStringParameterValue("offsetDirection"));
+        assertEquals(10f, bb.behaviours.get(0).getFloatParameterValue("offsetAngle"), PARAM_PRECISION);
+    }
+    
+    @Test
+    public void buildBlockWithGazeShiftBehaviour()
+    {
+        //@formatter:off
+        BehaviourBlock bb = 
+                builder.id("bml1")
+                       .addGazeShiftBehaviour("g1", "bluebox","SHOULDER", OffsetDirection.DOWNLEFT, 10)
+                       .build();
+        //@formatter:on
+        assertEquals("g1", bb.behaviours.get(0).id);
+        assertEquals("bluebox", bb.behaviours.get(0).getStringParameterValue("target"));
+        assertEquals("SHOULDER", bb.behaviours.get(0).getStringParameterValue("influence"));
+        assertEquals("bml1", bb.behaviours.get(0).getBmlId());
+        assertEquals(OffsetDirection.DOWNLEFT.toString(), bb.behaviours.get(0).getStringParameterValue("offsetDirection"));
+        assertEquals(10f, bb.behaviours.get(0).getFloatParameterValue("offsetAngle"), PARAM_PRECISION);
+    }
+    
+    @Test
+    public void buildBlockWithGestureBehaviour()
+    {
+      //@formatter:off
+        BehaviourBlock bb = 
+                builder.id("bml1")
+                       .addGestureBehaviour("g1", "BEAT",Mode.LEFT_HAND)
+                       .build();
+        //@formatter:on
+        assertEquals("g1", bb.behaviours.get(0).id);
+        assertEquals("BEAT", bb.behaviours.get(0).getStringParameterValue("lexeme"));
+        assertEquals(Mode.LEFT_HAND.toString(), bb.behaviours.get(0).getStringParameterValue("mode"));
+        assertEquals("bml1", bb.behaviours.get(0).getBmlId());        
+    }    
+    
     @Test
     public void buildBlockWithSpeechBehaviour()
     {
@@ -193,7 +277,7 @@ public class BehaviourBlockBuilderTest
         BehaviourBlock bb = builder
                 .id("bml1")
                 .addSpeechBehaviour("speech1", "Hello world")
-                .addBehaviour(builder.createHeadBehaviourBuilder("h1", "NOD").build())
+                .addHeadBehaviour("h1", "NOD")
                 .addAtConstraint("speech1","start","h1","end")
                 .build();
         //@formatter:on
