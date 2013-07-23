@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static saiba.bml.parser.ParserTestUtil.assertEqualAfterConstraints;
 import static saiba.bml.parser.ParserTestUtil.assertEqualConstraints;
 import hmi.util.Resources;
+import hmi.xml.XMLFormatting;
 import hmi.xml.XMLScanException;
 import hmi.xml.XMLTokenizer;
 
@@ -67,7 +68,7 @@ public class ParserTest
     @Before
     public void setup()
     {
-        
+
         res = new Resources("bmltest");
         expectedConstraints = new ArrayList<ExpectedConstraint>();
         expectedReqConstraints = new ArrayList<ExpectedConstraint>();
@@ -81,21 +82,21 @@ public class ParserTest
         block.readXML(res.getReader(file));
         parser.addBehaviourBlock(block);
     }
-    
+
     private void read(String bml)
     {
-        read(bml, new BehaviourBlock());        
+        read(bml, new BehaviourBlock());
     }
-    
+
     private void read(String bml, BehaviourBlock block)
     {
         parser.clear();
         block.readXML(bml);
         parser.addBehaviourBlock(block);
     }
-    
+
     @Test(timeout = PARSE_TIMEOUT)
-    public void testRequiredConstraints()throws IOException
+    public void testRequiredConstraints() throws IOException
     {
         readXML("testspeech_synctimed2x_required.xml");
 
@@ -105,25 +106,24 @@ public class ParserTest
         expected1.expectedSyncs.add(new ExpectedSync("bml1", "speech2", "s1", -10));
         expectedConstraints.add(expected1);
         assertEqualConstraints(expectedConstraints, parser.getConstraints());
-        
+
         ExpectedConstraint expectedReq = new ExpectedConstraint();
         expectedReq.expectedSyncs.add(new ExpectedSync("bml1", "speech1", "s1", 10));
         expectedReq.expectedSyncs.add(new ExpectedSync("bml1", "speech2", "s1", 0));
         expectedReqConstraints.add(expectedReq);
         assertEqualConstraints(expectedReqConstraints, parser.getRequiredConstraints());
     }
-    
+
     @Test(timeout = PARSE_TIMEOUT)
-    public void testRequiredBehavior()throws IOException
+    public void testRequiredBehavior() throws IOException
     {
         readXML("testrequiredbeh.xml");
-        assertEquals(4,parser.getBehaviours().size());
-        assertTrue(parser.getBehaviour("bml1", "h1").isRequired());        
+        assertEquals(4, parser.getBehaviours().size());
+        assertTrue(parser.getBehaviour("bml1", "h1").isRequired());
         assertTrue(parser.getBehaviour("bml1", "h2").isRequired());
         assertFalse(parser.getBehaviour("bml1", "h3").isRequired());
         assertFalse(parser.getBehaviour("bml1", "h4").isRequired());
-        
-        
+
         ExpectedConstraint expected1 = new ExpectedConstraint();
         expected1.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 4));
         expected1.expectedSyncs.add(new ExpectedSync("bml1", "h1", "start", 0));
@@ -138,46 +138,46 @@ public class ParserTest
     public void afterConstraintTest() throws IOException
     {
         readXML("after.xml");
-        
+
         ExpectedAfterConstraint expected = new ExpectedAfterConstraint();
-        expected.expectedSync.add(new ExpectedSync("bml1","nod1","stroke",0));
-        expected.expectedSync.add(new ExpectedSync("bml1","beat1","stroke",2));
-        expected.expectedRef = new ExpectedSync("bml1","speech1","sync4",0);        
-        assertEqualAfterConstraints(ImmutableList.of(expected),parser.getAfterConstraints());
+        expected.expectedSync.add(new ExpectedSync("bml1", "nod1", "stroke", 0));
+        expected.expectedSync.add(new ExpectedSync("bml1", "beat1", "stroke", 2));
+        expected.expectedRef = new ExpectedSync("bml1", "speech1", "sync4", 0);
+        assertEqualAfterConstraints(ImmutableList.of(expected), parser.getAfterConstraints());
     }
-    
+
     @Test(timeout = PARSE_TIMEOUT)
     public void afterConstraintRequiredTest() throws IOException
     {
         readXML("after_required.xml");
-        
+
         ExpectedAfterConstraint expected = new ExpectedAfterConstraint();
-        expected.expectedSync.add(new ExpectedSync("bml1","nod1","stroke",0));
-        expected.expectedSync.add(new ExpectedSync("bml1","beat1","stroke",2));
-        expected.expectedRef = new ExpectedSync("bml1","speech1","sync4",0);        
-        assertEqualAfterConstraints(ImmutableList.of(expected),parser.getAfterConstraints());
-        
+        expected.expectedSync.add(new ExpectedSync("bml1", "nod1", "stroke", 0));
+        expected.expectedSync.add(new ExpectedSync("bml1", "beat1", "stroke", 2));
+        expected.expectedRef = new ExpectedSync("bml1", "speech1", "sync4", 0);
+        assertEqualAfterConstraints(ImmutableList.of(expected), parser.getAfterConstraints());
+
         ExpectedAfterConstraint expectedReq = new ExpectedAfterConstraint();
-        expectedReq.expectedSync.add(new ExpectedSync("bml1","nod1","stroke",0));
-        expectedReq.expectedRef = new ExpectedSync("bml1","speech1","sync4",0);        
-        assertEqualAfterConstraints(ImmutableList.of(expectedReq),parser.getRequiredAfterConstraints());
+        expectedReq.expectedSync.add(new ExpectedSync("bml1", "nod1", "stroke", 0));
+        expectedReq.expectedRef = new ExpectedSync("bml1", "speech1", "sync4", 0);
+        assertEqualAfterConstraints(ImmutableList.of(expectedReq), parser.getRequiredAfterConstraints());
     }
-    
+
     @Test(timeout = PARSE_TIMEOUT)
     public void beforeConstraintTest() throws IOException
     {
-        readXML("before.xml");        
-        ExpectedAfterConstraint expected1 = new ExpectedAfterConstraint();        
-        expected1.expectedSync.add(new ExpectedSync("bml1","speech1","sync4",0));
-        expected1.expectedRef = new ExpectedSync("bml1","nod1","stroke",0);
+        readXML("before.xml");
+        ExpectedAfterConstraint expected1 = new ExpectedAfterConstraint();
+        expected1.expectedSync.add(new ExpectedSync("bml1", "speech1", "sync4", 0));
+        expected1.expectedRef = new ExpectedSync("bml1", "nod1", "stroke", 0);
         ExpectedAfterConstraint expected2 = new ExpectedAfterConstraint();
-        expected2.expectedSync.add(new ExpectedSync("bml1","speech1","sync4",0));
-        expected2.expectedRef = new ExpectedSync("bml1","beat1","stroke",2);                
-        assertEqualAfterConstraints(ImmutableList.of(expected1,expected2),parser.getAfterConstraints());
+        expected2.expectedSync.add(new ExpectedSync("bml1", "speech1", "sync4", 0));
+        expected2.expectedRef = new ExpectedSync("bml1", "beat1", "stroke", 2);
+        assertEqualAfterConstraints(ImmutableList.of(expected1, expected2), parser.getAfterConstraints());
     }
-    
+
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeechRelTest()throws IOException
+    public void constraintSpeechRelTest() throws IOException
     {
         readXML("testspeechrel_offsets.xml");
 
@@ -201,7 +201,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testWaitDoubleSync()throws IOException
+    public void testWaitDoubleSync() throws IOException
     {
         readXML("waitdoublesync.xml");
         List<ExpectedConstraint> expectedConstraints = new ArrayList<ExpectedConstraint>();
@@ -221,7 +221,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintNodOffsetTest()throws IOException
+    public void constraintNodOffsetTest() throws IOException
     {
         readXML("testnod_offset.xml");
 
@@ -234,7 +234,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintTimeShiftTest()throws IOException
+    public void constraintTimeShiftTest() throws IOException
     {
         readXML("testtimeshift.xml");
 
@@ -247,7 +247,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintNodInvalidTimeTest()throws IOException
+    public void constraintNodInvalidTimeTest() throws IOException
     {
         readXML("testnod_invalidtime.xml");
 
@@ -265,25 +265,25 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testPostureShift()throws IOException
+    public void testPostureShift() throws IOException
     {
         readXML("testpostureshift.xml");
-        
+
         ExpectedConstraint expected1 = new ExpectedConstraint();
         expected1.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 0));
         expected1.expectedSyncs.add(new ExpectedSync("bml1", "shift1", "start", 0));
         expectedConstraints.add(expected1);
-        
+
         ExpectedConstraint expected2 = new ExpectedConstraint();
         expected2.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 3));
         expected2.expectedSyncs.add(new ExpectedSync("bml1", "shift1", "end", 0));
         expectedConstraints.add(expected2);
-        
-        assertEqualConstraints(expectedConstraints, parser.getConstraints());        
+
+        assertEqualConstraints(expectedConstraints, parser.getConstraints());
     }
-    
+
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintNodAbsoluteTimeTest()throws IOException
+    public void constraintNodAbsoluteTimeTest() throws IOException
     {
         readXML("testnod_absolute.xml");
 
@@ -301,7 +301,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintNod2xAbsoluteTimeTest()throws IOException
+    public void constraintNod2xAbsoluteTimeTest() throws IOException
     {
         readXML("testnod2x_absolute.xml");
 
@@ -319,7 +319,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeechEndTimedTest()throws IOException
+    public void constraintSpeechEndTimedTest() throws IOException
     {
         readXML("testspeech_endtimed.xml");
 
@@ -331,7 +331,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintNodTest()throws IOException
+    public void constraintNodTest() throws IOException
     {
         readXML("testnod.xml");
         List<Constraint> constraints = parser.getConstraints();
@@ -339,7 +339,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testSpeech2linked()throws IOException
+    public void testSpeech2linked() throws IOException
     {
         readXML("testspeech_2linked.xml");
 
@@ -352,7 +352,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintNodUnkownAttributeTest()throws IOException
+    public void constraintNodUnkownAttributeTest() throws IOException
     {
         readXML("testnod_unknownattributes.xml");
         List<Constraint> constraints = parser.getConstraints();
@@ -360,7 +360,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintOffsetTest()throws IOException
+    public void constraintOffsetTest() throws IOException
     {
         readXML("testoffset.xml");
 
@@ -380,7 +380,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintOffset2Test()throws IOException
+    public void constraintOffset2Test() throws IOException
     {
         readXML("testoffset2.xml");
 
@@ -400,7 +400,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintOffset3Test()throws IOException
+    public void constraintOffset3Test() throws IOException
     {
         readXML("testoffset3.xml");
 
@@ -422,7 +422,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintOffsetChainTest()throws IOException
+    public void constraintOffsetChainTest() throws IOException
     {
         readXML("testoffsetchain.xml");
 
@@ -438,7 +438,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintOffsetChainReversedTest()throws IOException
+    public void constraintOffsetChainReversedTest() throws IOException
     {
         readXML("testoffsetchainreversed.xml");
 
@@ -454,7 +454,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeech3xTest()throws IOException
+    public void constraintSpeech3xTest() throws IOException
     {
         readXML("testspeech3x.xml");
 
@@ -477,7 +477,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintEmptyTest()throws IOException
+    public void constraintEmptyTest() throws IOException
     {
         readXML("empty.xml");
         List<Constraint> constraints = parser.getConstraints();
@@ -485,7 +485,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void speechinvalidTimeSyncTest()throws IOException
+    public void speechinvalidTimeSyncTest() throws IOException
     {
         readXML("testspeech_invalidtimesync.xml");
 
@@ -498,7 +498,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeechInvalidTimeSync2Test()throws IOException
+    public void constraintSpeechInvalidTimeSync2Test() throws IOException
     {
         readXML("testspeech_invalidtimesync2.xml");
 
@@ -516,7 +516,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeechAndNodSyncTimedTest()throws IOException
+    public void constraintSpeechAndNodSyncTimedTest() throws IOException
     {
         readXML("testspeechandnod_synctimed.xml");
 
@@ -534,7 +534,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeechSyncTimedTest()throws IOException
+    public void constraintSpeechSyncTimedTest() throws IOException
     {
         readXML("testspeech_synctimed.xml");
 
@@ -547,7 +547,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeechSyncTimedTest2x()throws IOException
+    public void constraintSpeechSyncTimedTest2x() throws IOException
     {
         readXML("testspeech_synctimed2x.xml");
 
@@ -561,14 +561,14 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeechSyncAtStartTest()throws IOException
+    public void constraintSpeechSyncAtStartTest() throws IOException
     {
         readXML("testspeech_syncatstart.xml");
         assertEquals(0, parser.getConstraints().size());
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeechSyncAtStartAndToBeatTest()throws IOException
+    public void constraintSpeechSyncAtStartAndToBeatTest() throws IOException
     {
         readXML("testspeech_syncatstartandtobeat.xml");
 
@@ -587,13 +587,13 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT, expected = XMLScanException.class)
-    public void constraintSpeechUnknownBehaviorTest()throws IOException
+    public void constraintSpeechUnknownBehaviorTest() throws IOException
     {
         readXML("testspeech_unknownbehavior.xml");
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintSpeechUnknownSyncTest()throws IOException
+    public void constraintSpeechUnknownSyncTest() throws IOException
     {
         readXML("testspeech_unknownsync.xml");
 
@@ -606,7 +606,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintAbsTest()throws IOException
+    public void constraintAbsTest() throws IOException
     {
         readXML("testabs.xml");
 
@@ -629,7 +629,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintGazeReadyTimedTest()throws IOException
+    public void constraintGazeReadyTimedTest() throws IOException
     {
         readXML("testgazereadytimed.xml");
 
@@ -647,7 +647,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void constraintGazeOffsetTest()throws IOException
+    public void constraintGazeOffsetTest() throws IOException
     {
         readXML("testoffsetgaze.xml");
 
@@ -665,7 +665,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void beatreadytimed()throws IOException
+    public void beatreadytimed() throws IOException
     {
         readXML("testbeatreadytimed.xml");
 
@@ -683,7 +683,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testnods()throws IOException
+    public void testnods() throws IOException
     {
         readXML("testnods.xml");
 
@@ -701,7 +701,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testSpeechNodTimedToSync()throws IOException
+    public void testSpeechNodTimedToSync() throws IOException
     {
         readXML("testspeech_nodtimedtosync.xml");
 
@@ -724,7 +724,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testSpeechNodTimedToSyncOffset()throws IOException
+    public void testSpeechNodTimedToSyncOffset() throws IOException
     {
         readXML("testspeech_nodtimedtosyncoffset.xml");
 
@@ -747,7 +747,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testSpeechNodTimedToSyncCapitalization()throws IOException
+    public void testSpeechNodTimedToSyncCapitalization() throws IOException
     {
         readXML("testspeech_nodtimedtosync_capitalization.xml");
 
@@ -770,7 +770,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testbeatandnod()throws IOException
+    public void testbeatandnod() throws IOException
     {
         readXML("testbeatandnod.xml");
 
@@ -793,7 +793,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testnodandbeat()throws IOException
+    public void testnodandbeat() throws IOException
     {
         readXML("testnodandbeat.xml");
 
@@ -816,7 +816,7 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void testspeechgestures()throws IOException
+    public void testspeechgestures() throws IOException
     {
         readXML("testspeechgestures.xml");
 
@@ -834,19 +834,19 @@ public class ParserTest
     }
 
     @Test(timeout = PARSE_TIMEOUT, expected = XMLScanException.class)
-    public void testinvalidXML()throws IOException
+    public void testinvalidXML() throws IOException
     {
         readXML("testinvalidxml.xml");
     }
 
     @Test(timeout = PARSE_TIMEOUT, expected = XMLScanException.class)
-    public void testinvalidXML2()throws IOException
+    public void testinvalidXML2() throws IOException
     {
         readXML("testinvalidxml2.xml");
     }
 
     @Test(timeout = PARSE_TIMEOUT)
-    public void headselftimed()throws IOException
+    public void headselftimed() throws IOException
     {
         readXML("testhead_selftimed.xml");
 
@@ -858,142 +858,143 @@ public class ParserTest
 
         assertEqualConstraints(expectedConstraints, parser.getConstraints());
     }
-    
+
     @Test
     public void testNoDirectLink()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
         assertFalse(parser.directLink("bml1", "g1", "bml1", "g2"));
     }
 
     @Test
     public void testDirectLink()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS()
+                + "><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
         assertTrue(parser.directLink("bml1", "g1", "bml1", "g2"));
     }
-    
+
     @Test
     public void testNoDirectGround()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" lexeme=\"BEAT\"/></bml>");
         assertFalse(parser.directGround("bml1", "g1"));
     }
-    
+
     @Test
     public void testDirectGround()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture stroke=\"2\" id=\"g1\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture stroke=\"2\" id=\"g1\" lexeme=\"BEAT\"/></bml>");
         assertTrue(parser.directGround("bml1", "g1"));
     }
-    
+
     @Test
     public void testNoDirectAfterGround()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" lexeme=\"BEAT\"/></bml>");
         assertFalse(parser.directAfterGround("bml1", "g1"));
     }
-    
+
     @Test
     public void testDirectAfterGround()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/>" +
-                "<constraint><after ref=\"1\"><sync ref=\"g1:end\"/></after></constraint>"+
-        		"</bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" lexeme=\"BEAT\"/>"
+                + "<constraint><after ref=\"1\"><sync ref=\"g1:end\"/></after></constraint>" + "</bml>");
         assertTrue(parser.directAfterGround("bml1", "g1"));
     }
-    
+
     @Test
     public void testIsNotConnected()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
         assertFalse(parser.isConnected("bml1", "g1", "bml1", "g2"));
     }
-    
+
     @Test
     public void testIsConnectedDirect()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS()
+                + "><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/><gesture id=\"g2\" lexeme=\"BEAT\"/></bml>");
         assertTrue(parser.isConnected("bml1", "g1", "bml1", "g2"));
     }
-    
+
     @Test
     public void testIsConnectedTwoSteps()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>" +
-        		"<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>"
+                + "<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/></bml>");
         assertTrue(parser.isConnected("bml1", "g1", "bml1", "g3"));
     }
-    
+
     @Test
     public void testIsConnectedThreeSteps()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>" +
-                "<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/>" +
-                "<gesture id=\"g4\" ready=\"g3:strokeStart\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>"
+                + "<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/>"
+                + "<gesture id=\"g4\" ready=\"g3:strokeStart\" lexeme=\"BEAT\"/></bml>");
         assertTrue(parser.isConnected("bml1", "g1", "bml1", "g4"));
     }
-    
+
     @Test
     public void testIsNotGrounded()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" lexeme=\"BEAT\"/></bml>");
         assertFalse(parser.isGrounded("bml1", "g1"));
     }
-    
+
     @Test
     public void testIsGroundedDirect()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" stroke=\"1\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" stroke=\"1\" lexeme=\"BEAT\"/></bml>");
         assertTrue(parser.isGrounded("bml1", "g1"));
     }
-    
+
     @Test
     public void testIsGroundedTwoSteps()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>" +
-                "<gesture id=\"g2\" strokeStart=\"3\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>"
+                + "<gesture id=\"g2\" strokeStart=\"3\" lexeme=\"BEAT\"/></bml>");
         assertTrue(parser.isGrounded("bml1", "g1"));
     }
-    
+
     @Test
     public void testIsGroundedFourSteps()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>" +
-                "<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/>" +
-                "<gesture id=\"g4\" ready=\"g3:strokeStart\" start=\"0\" lexeme=\"BEAT\"/></bml>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" start=\"g2:start\" lexeme=\"BEAT\"/>"
+                + "<gesture id=\"g2\" lexeme=\"BEAT\"/><gesture id=\"g3\" start=\"g2:stroke\" lexeme=\"BEAT\"/>"
+                + "<gesture id=\"g4\" ready=\"g3:strokeStart\" start=\"0\" lexeme=\"BEAT\"/></bml>");
         assertTrue(parser.isGrounded("bml1", "g1"));
     }
-    
+
     @Test
     public void testNoDependencies()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"/>");
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "/>");
         assertTrue(parser.getDependencies("bml1").isEmpty());
     }
-    
+
     @Test
     public void testLinkDependency()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" stroke=\"bml2:beh1:start\" lexeme=\"BEAT\"/></bml>");
-        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bml2"));
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" stroke=\"bml2:beh1:start\" lexeme=\"BEAT\"/></bml>");
+        assertThat(parser.getDependencies("bml1"), IsIterableContainingInAnyOrder.containsInAnyOrder("bml2"));
     }
-    
+
     @Test
     public void testAfterDependency()
     {
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><gesture id=\"g1\" lexeme=\"BEAT\"/>" +
-                "<constraint><after ref=\"bml2:g1:start\"><sync ref=\"g1:end\"/><sync ref=\"bml3:g1:end\"/></after></constraint>"+
-                "</bml>");
-        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bml2","bml3"));
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture id=\"g1\" lexeme=\"BEAT\"/>"
+                + "<constraint><after ref=\"bml2:g1:start\"><sync ref=\"g1:end\"/><sync ref=\"bml3:g1:end\"/></after></constraint>"
+                + "</bml>");
+        assertThat(parser.getDependencies("bml1"), IsIterableContainingInAnyOrder.containsInAnyOrder("bml2", "bml3"));
     }
-    
-    private class BMLXBMLBehaviorAttributes implements BMLBehaviorAttributeExtension 
+
+    private class BMLXBMLBehaviorAttributes implements BMLBehaviorAttributeExtension
     {
         @Override
         public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
         {
-                       
+
         }
 
         @Override
@@ -1006,15 +1007,20 @@ public class ParserTest
         public Set<String> getOtherBlockDependencies()
         {
             return ImmutableSet.of("bmlx");
-        }        
+        }
+
+        public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
+        {
+            return buf;
+        }
     }
-    
-    private class BMLYBMLBehaviorAttributes implements BMLBehaviorAttributeExtension 
+
+    private class BMLYBMLBehaviorAttributes implements BMLBehaviorAttributeExtension
     {
         @Override
         public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
         {
-                       
+
         }
 
         @Override
@@ -1027,23 +1033,27 @@ public class ParserTest
         public Set<String> getOtherBlockDependencies()
         {
             return ImmutableSet.of("bmly");
-        }        
+        }
+
+        public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
+        {
+            return buf;
+        }
     }
-    
+
     @Test
     public void testBlockDependency()
     {
-        BehaviourBlock block = new BehaviourBlock(new BMLXBMLBehaviorAttributes(),new BMLYBMLBehaviorAttributes());
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"/>",block);
-        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx","bmly"));
+        BehaviourBlock block = new BehaviourBlock(new BMLXBMLBehaviorAttributes(), new BMLYBMLBehaviorAttributes());
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "/>", block);
+        assertThat(parser.getDependencies("bml1"), IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx", "bmly"));
     }
-    
-    
+
     @Test
     public void testBehaviorDependency()
     {
         BMLInfo.addBehaviourType(StubBehaviour.XMLTAG, StubBehaviour.class);
-        read("<bml id=\"bml1\" "+TestUtil.getDefNS()+"><stub id=\"s1\"/></bml>");
-        assertThat(parser.getDependencies("bml1"),IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx"));
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><stub id=\"s1\"/></bml>");
+        assertThat(parser.getDependencies("bml1"), IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx"));
     }
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import saiba.bml.core.BMLBehaviorAttributeExtension;
 import saiba.bml.core.BMLBlockComposition;
 import saiba.bml.core.Behaviour;
 import saiba.bml.core.BehaviourBlock;
@@ -24,7 +25,8 @@ public class BehaviourBlockBuilder
 {
     private List<Behaviour> behaviours = new ArrayList<Behaviour>();
     private List<ConstraintBlock> constraints = new ArrayList<ConstraintBlock>();
-
+    private List<BMLBehaviorAttributeExtension> extensions = new ArrayList<>();
+    
     private String id = generateUniqueIdBML("bml");
     private BMLBlockComposition composition = CoreComposition.MERGE;
 
@@ -40,7 +42,8 @@ public class BehaviourBlockBuilder
 
     public BehaviourBlock build()
     {
-        BehaviourBlock bb = new BehaviourBlock();
+        BehaviourBlock bb = new BehaviourBlock();        
+        bb.addAllBMLBehaviorAttributeExtensions(extensions);        
         bb.setBmlId(id);
         bb.setComposition(composition);
         bb.behaviours.addAll(behaviours);
@@ -68,6 +71,12 @@ public class BehaviourBlockBuilder
     public BehaviourBlockBuilder setComposition(BMLBlockComposition c)
     {
         composition = c;
+        return this;
+    }
+    
+    public BehaviourBlockBuilder addBMLBehaviorAttributeExtension(BMLBehaviorAttributeExtension ext)
+    {
+        extensions.add(ext);
         return this;
     }
     
