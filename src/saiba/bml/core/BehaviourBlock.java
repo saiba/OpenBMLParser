@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import saiba.bml.parser.BMLParser;
@@ -263,6 +262,13 @@ public class BehaviourBlock extends BMLElement
             }
             ensureDecodeProgress(tokenizer);
         }
+    }
+    
+    public String getBMLString()
+    {
+        StringBuilder buf = new StringBuilder();
+        appendXML(buf);
+        return buf.toString();
     }
 
     /**
