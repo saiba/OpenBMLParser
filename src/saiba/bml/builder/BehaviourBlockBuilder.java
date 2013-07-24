@@ -28,7 +28,7 @@ public class BehaviourBlockBuilder
 {
     private List<Behaviour> behaviours = new ArrayList<Behaviour>();
     private List<ConstraintBlock> constraints = new ArrayList<ConstraintBlock>();
-    private List<BMLBehaviorAttributeExtension> extensions = new ArrayList<>();
+    private List<BMLBehaviorAttributeExtension> extensions = new ArrayList<BMLBehaviorAttributeExtension>();
     
     private String id = generateUniqueIdBML("bml");
     private BMLBlockComposition composition = CoreComposition.MERGE;
