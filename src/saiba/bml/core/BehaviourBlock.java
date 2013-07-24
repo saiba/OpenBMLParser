@@ -274,14 +274,7 @@ public class BehaviourBlock extends BMLElement
             }
             ensureDecodeProgress(tokenizer);
         }
-    }
-    
-    public String getBMLString()
-    {
-        StringBuilder buf = new StringBuilder();
-        appendXML(buf);
-        return buf.toString();
-    }
+    }    
 
     /**
      * Recursively calls resolveIDs(Scheduler, Breadcrumb) on top level behaviours and on
