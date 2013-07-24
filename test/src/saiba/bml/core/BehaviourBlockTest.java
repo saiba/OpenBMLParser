@@ -23,7 +23,7 @@ public class BehaviourBlockTest
         BehaviourBlock bb = builder
                 .id("bml1")
                 .addSpeechBehaviour("speech1", "Hello world")
-                .addBehaviour(builder.createHeadBehaviourBuilder("h1", "NOD").build())
+                .addHeadBehaviour("h1", "NOD")
                 .addAtConstraint("speech1","start","h1","end")
                 .build();
         //@formatter:on

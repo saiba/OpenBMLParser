@@ -62,11 +62,20 @@ public class BehaviourBlock extends BMLElement
         behaviours = new ArrayList<Behaviour>();
     }
 
-    protected void addBMLBehaviorAttributeExtension(BMLBehaviorAttributeExtension ext)
+    public void addBMLBehaviorAttributeExtension(BMLBehaviorAttributeExtension ext)
     {
         bmlBehaviorAttributeExtensions.put(ext.getClass(), ext);
     }
 
+    public void addAllBMLBehaviorAttributeExtensions(Collection<BMLBehaviorAttributeExtension> exts)
+    {
+        for (BMLBehaviorAttributeExtension ext: exts)
+        {
+            addBMLBehaviorAttributeExtension(ext);
+        }        
+    }
+
+    
     @Override
     public String getBmlId()
     {
@@ -179,11 +188,14 @@ public class BehaviourBlock extends BMLElement
     }
 
     @Override
-    public StringBuilder appendAttributeString(StringBuilder buf)
+    public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
         appendAttribute(buf, "id", id);
         appendAttribute(buf, "composition", composition.toString());
-        //appendAttribute(buf, "composition", composition.toString().toLowerCase(Locale.US));
+        for(BMLBehaviorAttributeExtension ext:bmlBehaviorAttributeExtensions.values())
+        {
+            ext.appendAttributeString(buf, fmt);
+        }
         return super.appendAttributes(buf);
     }
 
@@ -203,7 +215,7 @@ public class BehaviourBlock extends BMLElement
                 composition = ext.handleComposition(sm);
             }
         }
-        super.decodeAttributes(attrMap, tokenizer);
+        //super.decodeAttributes(attrMap, tokenizer);
     }
 
     public Set<String> getOtherBlockDependencies()
@@ -298,5 +310,12 @@ public class BehaviourBlock extends BMLElement
         {
             ci.constructConstraints(scheduler);
         }
+    }
+    
+    public String toBMLString()
+    {
+        StringBuilder buf = new StringBuilder();
+        appendXML(buf);
+        return buf.toString();
     }
 }

@@ -50,7 +50,7 @@ public class FaceFacsBehaviour extends Behaviour
         readXML(tokenizer);
     }
 
-    private static enum Side
+    public static enum Side
     {
         LEFT, RIGHT, BOTH;
     }
@@ -170,11 +170,11 @@ public class FaceFacsBehaviour extends Behaviour
         }
     }
 
-    static final String BMLTNAMESPACE = "http://www.bml-initiative.org/bml/coreextensions-1.0";
+    public static final String BMLEXTNAMESPACE = "http://www.bml-initiative.org/bml/coreextensions-1.0";
 
     @Override
     public String getNamespace()
     {
-        return BMLTNAMESPACE;
+        return BMLEXTNAMESPACE;
     }
 }

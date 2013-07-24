@@ -21,6 +21,7 @@
  ******************************************************************************/
 package saiba.bml.core;
 
+import hmi.xml.XMLFormatting;
 import hmi.xml.XMLTokenizer;
 
 import java.util.HashMap;
@@ -39,6 +40,8 @@ import java.util.Set;
 public interface BMLBehaviorAttributeExtension
 {
     void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer);
+    
+    StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt);
     
     /**
      * Attempts to parse the composition mechanism described by sm
