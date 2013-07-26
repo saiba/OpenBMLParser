@@ -5,14 +5,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import hmi.xml.XMLFormatting;
-import hmi.xml.XMLNameSpace;
 import hmi.xml.XMLStructureAdapter;
 import hmi.xml.XMLTokenizer;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -88,22 +86,9 @@ public class BehaviourBlockBuilderTest
                 testVal = attrMap.get("http://mynamespace.net:test");
             }
 
-            // TODO: move to HmiXML
-            private void constructNSPrefix(String ns, XMLFormatting fmt, StringBuilder buf)
-            {
-                if (fmt.getNamespacePrefix(ns.intern()) == null)
-                {
-                    String prefix = "ns" + UUID.randomUUID().toString();
-                    XMLNameSpace n = new XMLNameSpace(prefix, ns);
-                    fmt.pushXMLNameSpace(n);
-                    buf.append(" xmlns:" + prefix + "=\"" + ns + "\" ");
-                }
-            }
-
             @Override
             public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
             {
-                constructNSPrefix("http://mynamespace.net", fmt, buf);
                 XMLStructureAdapter.appendNamespacedAttribute(buf, fmt, "http://mynamespace.net", "test", testVal);
                 return buf;
             }

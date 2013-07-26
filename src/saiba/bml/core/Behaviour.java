@@ -19,7 +19,6 @@
 package saiba.bml.core;
 
 import hmi.xml.XMLFormatting;
-import hmi.xml.XMLNameSpace;
 import hmi.xml.XMLScanException;
 import hmi.xml.XMLTokenizer;
 
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 
 import saiba.bml.BMLInfo;
 import saiba.bml.parser.BMLParser;
@@ -153,17 +151,6 @@ public abstract class Behaviour extends BMLElement
         return syncPoints;
     }
 
-    private void constructNSPrefix(String ns, XMLFormatting fmt, StringBuilder buf)
-    {
-        if(fmt.getNamespacePrefix(ns.intern())==null)
-        {
-            String prefix = "ns"+UUID.randomUUID().toString();
-            XMLNameSpace n = new XMLNameSpace(prefix,ns);
-            fmt.pushXMLNameSpace(n);
-            buf.append(" xmlns:"+prefix+"=\""+ns+"\" ");
-        }
-    }
-    
     @Override
     public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
@@ -186,7 +173,6 @@ public abstract class Behaviour extends BMLElement
         {
             String ns = entries.getKey().substring(0, entries.getKey().lastIndexOf(":"));
             String attr = entries.getKey().substring(entries.getKey().lastIndexOf(":")+1);
-            constructNSPrefix(ns, fmt, buf);
             appendNamespacedAttribute(buf, fmt, ns, attr, entries.getValue());            
         }
 
@@ -194,7 +180,6 @@ public abstract class Behaviour extends BMLElement
         {
             String ns = entries.getKey().substring(0, entries.getKey().lastIndexOf(":"));
             String attr = entries.getKey().substring(entries.getKey().lastIndexOf(":")+1);
-            constructNSPrefix(ns, fmt, buf);
             appendNamespacedAttribute(buf, fmt, ns, attr, ""+entries.getValue());  
         }
 
