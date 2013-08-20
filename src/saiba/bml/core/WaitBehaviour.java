@@ -37,7 +37,7 @@ import com.google.common.collect.ImmutableList;
  */
 public class WaitBehaviour extends Behaviour
 {
-    private float maxWait = 0;
+    private float maxWait = -1;
 
     /*
      * The XML Stag for XML encoding
@@ -81,6 +81,7 @@ public class WaitBehaviour extends Behaviour
     @Override
     public boolean specifiesParameter(String name)
     {
+        if(name.equals("max-wait"))return true;
         return super.specifiesParameter(name);
     }
 
@@ -93,16 +94,17 @@ public class WaitBehaviour extends Behaviour
     @Override
     public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
-        appendAttribute(buf, "max-wait", maxWait);
-
+        if(maxWait>0)
+        {
+            appendAttribute(buf, "max-wait", maxWait);
+        }
         return super.appendAttributeString(buf, fmt);
     }
 
     @Override
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
-        maxWait = getOptionalFloatAttribute("max-wait", attrMap, 0);
-
+        maxWait = getOptionalFloatAttribute("max-wait", attrMap, -1);
         super.decodeAttributes(attrMap, tokenizer);
     }
 
