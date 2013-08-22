@@ -23,11 +23,16 @@ import saiba.bml.core.Behaviour;
 import hmi.xml.XMLScanException;
 
 /**
+ * <p>
  * Represents a synchronization point that belongs to a behavior. A synchronization point is nothing
  * more than a point in time (time may be unknown). It may be referred to within a constraint
  * (scheduler-wise, has not much to do with BML's &lt;constraint&gt;) or specify an additional
  * offset relative to the given point.
- * 
+ * </p>
+ * <p>
+ * Represents e.g. a start="bmlx:behx:syncx" pair, where bmlId:behaviourId:name:offset is the left side
+ * and syncRef is the right side.
+ * </p>
  * @author PaulRC
  */
 public class SyncPoint
@@ -197,16 +202,18 @@ public class SyncPoint
     {
         return this.constraint;
     }
+    
     /**
+     * Find the syncpoint corresponding with the syncref
      * @throws MissingSyncPointException
      */
-    public SyncPoint getForeignSyncPoint(BMLParser scheduler)
+    public SyncPoint getForeignSyncPoint(BMLParser parser)
     {
         // Check whether ref.sourceId (prepended with bbId) is present.
         Behaviour behaviour = null;
         if (!ref.sourceId.equals("bml"))
         {
-            behaviour = (Behaviour) scheduler.getBMLElementById(ref.bbId + ':' + ref.sourceId);
+            behaviour = (Behaviour) parser.getBMLElementById(ref.bbId + ':' + ref.sourceId);
         }
 
         if (behaviour == null)

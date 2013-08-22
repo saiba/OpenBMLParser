@@ -251,12 +251,11 @@ public class BMLParser
             if (isConnected(b.getBmlId(), b.id, bmlId2, behId2, checkedBehaviours))
             {
                 return true;
-            }            
+            }
         }
         return false;
     }
-    
-    
+
     public boolean isGrounded(String bmlId, String behId, Set<Behaviour> checkedBehaviours)
     {
         if (directGround(bmlId, behId)) return true;
@@ -282,16 +281,16 @@ public class BMLParser
             if (isGrounded(b.getBmlId(), b.id, checkedBehaviours))
             {
                 return true;
-            }            
+            }
         }
         return false;
     }
-    
+
     public boolean isConnected(String bmlId1, String behId1, String bmlId2, String behId2)
     {
         return isConnected(bmlId1, behId1, bmlId2, behId2, new HashSet<Behaviour>());
     }
-    
+
     public boolean isGrounded(String bmlId, String behId)
     {
         return isGrounded(bmlId, behId, new HashSet<Behaviour>());
@@ -350,8 +349,6 @@ public class BMLParser
         }
         return false;
     }
-    
-    
 
     /**
      * Adds a behavior block.
@@ -381,7 +378,17 @@ public class BMLParser
     private void constructConstraints(BehaviourBlock bb)
     {
         bb.constructConstraints(this);
+        unifyConstraints();
+        unifyAfterConstraints();
+    }
 
+    private void unifyAfterConstraints()
+    {
+        // TODO
+    }
+
+    private void unifyConstraints()
+    {
         ArrayList<Constraint> cNewList = new ArrayList<Constraint>();
 
         double relOffset = 0;
@@ -458,11 +465,18 @@ public class BMLParser
 
     public void constructConstraints(Before before)
     {
-        SyncPoint syncRef = new SyncPoint(before.getBmlId(), before.getRef());
-        SyncPoint right = syncRef.getForeignSyncPoint(this);
+        SyncRef rightRef = before.getRef();
+        double rightOffset = rightRef.offset;        
         for (Sync sync : before.getSyncs())
         {
-            syncRef = new SyncPoint(sync.getBmlId(), sync.ref);
+            SyncPoint syncRef = new SyncPoint(sync.getBmlId(), sync.ref);
+            double refOffset = syncRef.getRef().offset;
+            syncRef.getRef().offset = 0;
+            
+            rightRef.offset = rightOffset-refOffset;
+            SyncPoint syncRight = new SyncPoint(sync.getBmlId(), rightRef);
+            SyncPoint right = syncRight.getForeignSyncPoint(this);            
+            
             SyncPoint ref = syncRef.getForeignSyncPoint(this);
             constructAfterConstraint(ref, right, before.isRequired());
         }
@@ -470,11 +484,15 @@ public class BMLParser
 
     public void constructConstraints(After after)
     {
+        double refOffset = after.getRef().offset;
         SyncPoint syncRef = new SyncPoint(after.getBmlId(), after.getRef());
+        syncRef.getRef().offset = 0;
         SyncPoint ref = syncRef.getForeignSyncPoint(this);
+
         for (Sync sync : after.getSyncs())
         {
             syncRef = new SyncPoint(sync.getBmlId(), sync.ref);
+            syncRef.getRef().offset -= refOffset;
             SyncPoint right = syncRef.getForeignSyncPoint(this);
             constructAfterConstraint(ref, right, after.isRequired());
         }
@@ -627,19 +645,19 @@ public class BMLParser
     {
         return bbs;
     }
-    
+
     private Set<String> getLinkDependencies(String bmlId)
     {
         Set<String> dependencies = new HashSet<String>();
-        
-        for (Constraint c: getConstraints())
+
+        for (Constraint c : getConstraints())
         {
             Set<String> ldeps = new HashSet<String>();
-            for(SyncPoint sp:c.getTargets())
+            for (SyncPoint sp : c.getTargets())
             {
-                ldeps.add(sp.getBmlId());                
+                ldeps.add(sp.getBmlId());
             }
-            if(ldeps.contains(bmlId))
+            if (ldeps.contains(bmlId))
             {
                 dependencies.addAll(ldeps);
             }
@@ -647,54 +665,55 @@ public class BMLParser
         dependencies.remove(bmlId);
         return dependencies;
     }
-    
+
     private Set<String> getLinkAfterDependencies(String bmlId)
     {
         Set<String> dependencies = new HashSet<String>();
-        for(AfterConstraint c: getAfterConstraints())
+        for (AfterConstraint c : getAfterConstraints())
         {
             Set<String> ldeps = new HashSet<String>();
-            for(SyncPoint sp:c.getTargets())
+            for (SyncPoint sp : c.getTargets())
             {
-                ldeps.add(sp.getBmlId());                
+                ldeps.add(sp.getBmlId());
             }
             ldeps.add(c.getRef().getBmlId());
-            if(ldeps.contains(bmlId))
+            if (ldeps.contains(bmlId))
             {
                 dependencies.addAll(ldeps);
             }
         }
-        
+
         dependencies.remove(bmlId);
         return dependencies;
     }
-    
+
     private Set<String> getBlockDependencies(String bmlId)
     {
-        for(BehaviourBlock bb: getBehaviourBlocks())
+        for (BehaviourBlock bb : getBehaviourBlocks())
         {
-            if(bb.getBmlId().equals(bmlId))
+            if (bb.getBmlId().equals(bmlId))
             {
                 return bb.getOtherBlockDependencies();
             }
         }
         return ImmutableSet.of();
     }
-    
+
     private Set<String> getBehaviourDependencies(String bmlId)
     {
         Set<String> dependencies = new HashSet<String>();
-        for(Behaviour b:getBehaviours())
+        for (Behaviour b : getBehaviours())
         {
-            if(b.getBmlId().equals(bmlId))
+            if (b.getBmlId().equals(bmlId))
             {
                 dependencies.addAll(b.getOtherBlockDependencies());
             }
         }
         return dependencies;
     }
+
     /**
-     * Get the BML blocks bmlId depends upon 
+     * Get the BML blocks bmlId depends upon
      */
     public Set<String> getDependencies(String bmlId)
     {
