@@ -42,7 +42,23 @@ public class BehaviourBlockBuilder
     {
 
     }
-
+    
+    /**
+     * Creates an empty BML block with a REPLACE composition and a unique id
+     */
+    public static BehaviourBlock resetBlock()
+    {
+        return new BehaviourBlockBuilder().setComposition(CoreComposition.REPLACE).build();        
+    }
+    
+    /**
+     * Creates an empty BML block with a REPLACE composition and id bmlId     
+     */
+    public static BehaviourBlock resetBlock(String bmlId)
+    {
+        return new BehaviourBlockBuilder().id(bmlId).setComposition(CoreComposition.REPLACE).build();        
+    }
+    
     public BehaviourBlock build()
     {
         BehaviourBlock bb = new BehaviourBlock();        
