@@ -21,6 +21,7 @@ public class BehaviourBuilder
     private final String type;
     private final String id;
     private final String bmlId;
+    private String content = "";
     private String namespace = BehaviourBlock.BMLNAMESPACE;
     private List<Param> params = new ArrayList<Param>();
     
@@ -62,6 +63,12 @@ public class BehaviourBuilder
         return this;
     }
     
+    public BehaviourBuilder content(String content)
+    {
+        this.content = content;
+        return this;
+    }
+    
     private String getXMLRepresentation()
     {
         StringBuilder xmlBuilder = new StringBuilder("<"+type+" id=\""+id+"\" xmlns=\""+namespace+"\" ");
@@ -69,7 +76,8 @@ public class BehaviourBuilder
         {
             xmlBuilder.append(p.getName()+"=\""+p.getValue()+"\" ");
         }
-        xmlBuilder.append("/>");
+        xmlBuilder.append(content);
+        xmlBuilder.append("</type>");
         return xmlBuilder.toString();
     }
     
