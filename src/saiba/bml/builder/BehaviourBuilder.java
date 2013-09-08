@@ -76,8 +76,9 @@ public class BehaviourBuilder
         {
             xmlBuilder.append(p.getName()+"=\""+p.getValue()+"\" ");
         }
+        xmlBuilder.append(">");
         xmlBuilder.append(content);
-        xmlBuilder.append("</type>");
+        xmlBuilder.append("</"+type+">");
         return xmlBuilder.toString();
     }
     
