@@ -378,13 +378,7 @@ public class BMLParser
     private void constructConstraints(BehaviourBlock bb)
     {
         bb.constructConstraints(this);
-        unifyConstraints();
-        unifyAfterConstraints();
-    }
-
-    private void unifyAfterConstraints()
-    {
-        // TODO
+        unifyConstraints();        
     }
 
     private void unifyConstraints()
