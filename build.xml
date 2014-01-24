@@ -123,11 +123,15 @@
       <fileset dir="${build}"/>      
       <fileset dir="${src}"/>      
     </jar>
+    
     <jar jarfile="${dist}/lib/openbmlparser-test.jar">
       <fileset dir="${build.test.classes.dir}"/>      
+      <fileset dir="${test.src.dir}"/> 
     </jar>
 
-
+    <jar jarfile="${dist}/lib/openbmlparser-testresource.jar">
+      <fileset dir="${test.resource.dir}"/>      
+    </jar>
   </target>
   
   <target name="clean"
