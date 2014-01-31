@@ -19,6 +19,7 @@
 package saiba.bml.core;
 
 import saiba.bml.parser.BMLParser;
+import hmi.xml.XMLScanException;
 import hmi.xml.XMLStructureAdapter;
 import hmi.xml.XMLTokenizer;
 
@@ -82,7 +83,7 @@ public class BMLElement extends XMLStructureAdapter
         int curChar = tokenizer.getCharPos();
         if (curLine == prevLine && curChar == prevChar)
         {
-            throw new RuntimeException(
+            throw new XMLScanException(
                     "Loop detected, no valid BML. Possibly, a STag was encountered that cannot be parsed. Line: "
                             + curLine + ", char: " + curChar);
         }

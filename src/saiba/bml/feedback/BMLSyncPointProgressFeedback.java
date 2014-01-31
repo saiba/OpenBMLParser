@@ -21,13 +21,14 @@
  ******************************************************************************/
 package saiba.bml.feedback;
 
+import hmi.xml.XMLScanException;
+import hmi.xml.XMLStructureAdapter;
+import hmi.xml.XMLTokenizer;
+
 import java.util.HashMap;
 
 import saiba.bml.parser.InvalidSyncRefException;
 import saiba.bml.parser.SyncRef;
-import hmi.xml.XMLScanException;
-import hmi.xml.XMLStructureAdapter;
-import hmi.xml.XMLTokenizer;
 
 /**
  * Sync point progress feedback XML
@@ -58,7 +59,7 @@ public class BMLSyncPointProgressFeedback extends XMLStructureAdapter implements
         }
         catch (InvalidSyncRefException e)
         {
-            throw new RuntimeException(e);
+            throw new XMLScanException("", e);
         }
         this.globalTime = globalTime;
         this.time = time;

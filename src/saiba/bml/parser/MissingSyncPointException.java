@@ -18,13 +18,15 @@
  ******************************************************************************/
 package saiba.bml.parser;
 
+import hmi.xml.XMLScanException;
+
 /**
  * Runtime exception thrown for invalid sync references
  * 
  * @author welberge
  */
 @SuppressWarnings("serial")
-public class MissingSyncPointException extends RuntimeException
+public class MissingSyncPointException extends XMLScanException
 {
     public MissingSyncPointException(String s)
     {
