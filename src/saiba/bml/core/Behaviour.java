@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import saiba.bml.BMLInfo;
@@ -55,14 +53,37 @@ public abstract class Behaviour extends BMLElement
 
     protected String bmlId;
 
-    private Map<String, String> customStringAttributes = new HashMap<String, String>();
-    private Map<String, Float> customFloatAttributes = new HashMap<String, Float>();
-
     private boolean required = false;
-    
+    private CustomAttributeHandler caHandler = new CustomAttributeHandler();
+
     public void setRequired(boolean required)
     {
         this.required = required;
+    }
+
+    public float getFloatParameterValue(String name)
+    {
+        return caHandler.getCustomFloatParameterValue(name);
+    }
+
+    public String getStringParameterValue(String name)
+    {
+        if (caHandler.specifiesCustomStringParameter(name))
+        {
+            return caHandler.getCustomStringParameterValue(name);
+        }
+        return "" + getFloatParameterValue(name);
+    }
+
+    public boolean specifiesParameter(String name)
+    {
+        if(caHandler.specifiesCustomParameter(name))return true;
+        return false;
+    }
+
+    public boolean satisfiesConstraint(String name, String value)
+    {
+        return caHandler.satisfiesCustomConstraint(name, value);
     }
 
     /**
@@ -72,7 +93,7 @@ public abstract class Behaviour extends BMLElement
     {
         return ImmutableSet.of();
     }
-    
+
     public boolean isRequired()
     {
         return required;
@@ -90,43 +111,6 @@ public abstract class Behaviour extends BMLElement
         descriptions = new ArrayList<Description>();
         this.bmlId = bmlId;
         addDefaultSyncPoints();
-    }
-
-    public float getFloatParameterValue(String name)
-    {
-        if (customFloatAttributes.containsKey(name))
-        {
-            return customFloatAttributes.get(name);
-        }
-        throw new IllegalArgumentException("Parameter " + name + " not found/not a float.");
-    }
-
-    public String getStringParameterValue(String name)
-    {
-        if (customStringAttributes.containsKey(name))
-        {
-            return customStringAttributes.get(name);
-        }
-        return ""+getFloatParameterValue(name);
-    }
-
-    /**
-     * Does the behavior prescribe a value for parameter with name name?
-     */
-    public boolean specifiesParameter(String name)
-    {
-        if (customFloatAttributes.containsKey(name)) return true;
-        if (customStringAttributes.containsKey(name)) return true;
-        return false;
-    }
-
-    public boolean satisfiesConstraint(String name, String value)
-    {
-        if (customStringAttributes.containsKey(name))
-        {
-            return customStringAttributes.get(name).equals(value);            
-        }
-        return false;
     }
 
     public abstract void addDefaultSyncPoints();
@@ -154,7 +138,7 @@ public abstract class Behaviour extends BMLElement
     @Override
     public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
-        appendAttribute(buf, "id", bmlId+":"+id);
+        appendAttribute(buf, "id", bmlId + ":" + id);
 
         // Append attribute notation of sync-points.
         Iterator<SyncPoint> iter = syncPoints.iterator();
@@ -168,24 +152,11 @@ public abstract class Behaviour extends BMLElement
             appendAttribute(buf, s.getName(), ref);
         }
 
-        
-        for (Entry<String, String> entries : customStringAttributes.entrySet())
-        {
-            String ns = entries.getKey().substring(0, entries.getKey().lastIndexOf(":"));
-            String attr = entries.getKey().substring(entries.getKey().lastIndexOf(":")+1);
-            appendNamespacedAttribute(buf, fmt, ns, attr, entries.getValue());            
-        }
-
-        for (Entry<String, Float> entries : customFloatAttributes.entrySet())
-        {
-            String ns = entries.getKey().substring(0, entries.getKey().lastIndexOf(":"));
-            String attr = entries.getKey().substring(entries.getKey().lastIndexOf(":")+1);
-            appendNamespacedAttribute(buf, fmt, ns, attr, ""+entries.getValue());  
-        }
+        caHandler.appendCustomAttributeString(buf, fmt);
 
         return super.appendAttributeString(buf, fmt);
     }
-    
+
     @Override
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
@@ -196,31 +167,16 @@ public abstract class Behaviour extends BMLElement
             this.id = idSplit[1];
             this.bmlId = idSplit[0];
         }
-        
-        for (String attr : BMLInfo.getCustomFloatAttributes(this.getClass()))
-        {
-            String value = getOptionalAttribute(attr, attrMap);
-            if (value != null)
-            {
-                customFloatAttributes.put(attr, Float.parseFloat(value));
-            }
-        }
 
-        for (String attr : BMLInfo.getCustomStringAttributes(this.getClass()))
-        {
-            String value = getOptionalAttribute(attr, attrMap);
-            if (value != null)
-            {
-                customStringAttributes.put(attr, value);
-            }
-        }
+        caHandler.decodeCustomAttributes(attrMap, tokenizer, BMLInfo.getCustomFloatAttributes(getClass()),
+                BMLInfo.getCustomStringAttributes(getClass()), this);
 
         for (SyncPoint s : syncPoints)
         {
             s.setBehaviourId(id);
             s.setBMLId(bmlId);
         }
-        
+
         // Decode attribute notation of standard sync-points.
         for (SyncPoint s : syncPoints)
         {

@@ -21,11 +21,16 @@
  ******************************************************************************/
 package saiba.bml.feedback;
 
+import hmi.xml.XMLFormatting;
 import hmi.xml.XMLScanException;
 import hmi.xml.XMLStructureAdapter;
 import hmi.xml.XMLTokenizer;
 
 import java.util.HashMap;
+
+import lombok.Delegate;
+import saiba.bml.BMLInfo;
+import saiba.bml.core.CustomAttributeHandler;
 
 /**
  * XML parser for a bml block prediction feedback element
@@ -37,6 +42,9 @@ public final class BMLBlockPredictionFeedback extends XMLStructureAdapter implem
     public static final double UNKNOWN_TIME = -Double.MAX_VALUE;
     private String id;
     private double globalStart, globalEnd;
+
+    @Delegate
+    private CustomAttributeHandler caHandler = new CustomAttributeHandler();
 
     public String getId()
     {
@@ -81,22 +89,25 @@ public final class BMLBlockPredictionFeedback extends XMLStructureAdapter implem
         {
             throw new XMLScanException("<bml> feedback element should specify at least one of globalStart, globalEnd");
         }
+        caHandler.decodeCustomAttributes(attrMap, tokenizer, BMLInfo.getCustomFeedbackFloatAttributes(getClass()),
+                BMLInfo.getCustomFeedbackStringAttributes(getClass()), this);
     }
 
     @Override
-    public StringBuilder appendAttributes(StringBuilder buf)
+    public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
         appendAttribute(buf, "id", id);
-        if(globalStart!=UNKNOWN_TIME)
+        if (globalStart != UNKNOWN_TIME)
         {
             appendAttribute(buf, "globalStart", globalStart);
         }
-        if(globalEnd!=UNKNOWN_TIME)
+        if (globalEnd != UNKNOWN_TIME)
         {
             appendAttribute(buf, "globalEnd", globalEnd);
         }
+        caHandler.appendCustomAttributeString(buf, fmt);
         return buf;
-    }   
+    }
 
     /**
      * The XML Stag for XML encoding
@@ -121,7 +132,7 @@ public final class BMLBlockPredictionFeedback extends XMLStructureAdapter implem
     {
         return XMLTAG;
     }
-    
+
     public static final String BMLNAMESPACE = "http://www.bml-initiative.org/bml/bml-1.0";
 
     @Override

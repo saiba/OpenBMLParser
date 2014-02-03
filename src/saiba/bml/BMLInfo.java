@@ -18,7 +18,6 @@
  ******************************************************************************/
 package saiba.bml;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,6 +38,7 @@ import saiba.bml.core.PostureShiftBehaviour;
 import saiba.bml.core.SpeechBehaviour;
 import saiba.bml.core.WaitBehaviour;
 import saiba.bml.core.ext.FaceFacsBehaviour;
+import saiba.bml.feedback.BMLFeedback;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
@@ -51,14 +51,14 @@ import com.google.common.collect.SetMultimap;
  */
 public final class BMLInfo
 {
-    
+
     private static Set<String> externalBlockIds = new HashSet<String>();
-    
-    public static final String BMLNAMESPACE = "http://www.bml-initiative.org/bml/bml-1.0";                                               
-    
+
+    public static final String BMLNAMESPACE = "http://www.bml-initiative.org/bml/bml-1.0";
+
     // /Behaviors that are parsed
     private static final ImmutableMap<String, Class<? extends Behaviour>> BEHAVIOR_TYPES = 
-          //@formatter:off
+//@formatter:off
           new ImmutableMap.Builder<String, Class<? extends Behaviour>>()
             .put(HeadBehaviour.xmlTag(), HeadBehaviour.class)
             .put(LocomotionBehaviour.xmlTag(), LocomotionBehaviour.class)
@@ -75,8 +75,7 @@ public final class BMLInfo
             .build();
         //@formatter:on
     // /Description levels that can be parsed
-    private static final ImmutableMap<String, Class<? extends Behaviour>> DESCRIPTION_EXTENSIONS = 
-        new ImmutableMap.Builder<String, Class<? extends Behaviour>>()            
+    private static final ImmutableMap<String, Class<? extends Behaviour>> DESCRIPTION_EXTENSIONS = new ImmutableMap.Builder<String, Class<? extends Behaviour>>()
             .build();
 
     // /supported extensions in the scheduler. Will be filled by scheduler.
@@ -84,9 +83,11 @@ public final class BMLInfo
 
     private static Map<String, Class<? extends Behaviour>> behaviourTypes = new HashMap<String, Class<? extends Behaviour>>();
     private static Map<String, Class<? extends Behaviour>> descriptionExtensions = new HashMap<String, Class<? extends Behaviour>>();
-    private static SetMultimap<Class<? extends Behaviour>, String> customStringAttributes = HashMultimap.create(); 
+    private static SetMultimap<Class<? extends Behaviour>, String> customStringAttributes = HashMultimap.create();
     private static SetMultimap<Class<? extends Behaviour>, String> customFloatAttributes = HashMultimap.create();
-    
+    private static SetMultimap<Class<? extends BMLFeedback>, String> customFeedbackStringAttributes = HashMultimap.create();
+    private static SetMultimap<Class<? extends BMLFeedback>, String> customFeedbackFloatAttributes = HashMultimap.create();
+
     static
     {
         behaviourTypes.putAll(BEHAVIOR_TYPES);
@@ -94,64 +95,84 @@ public final class BMLInfo
     }
 
     /**
-     * These ids might also be used instead of BML ids. Used in Elckerlyc/Asap for anticipators:<syncid>     
+     * These ids might also be used instead of BML ids. Used in Elckerlyc/Asap for anticipators:<syncid>
      */
     public static void addExternalBlockId(String id)
     {
         externalBlockIds.add(id);
     }
-    
+
     public static boolean isExternalBlockId(String id)
     {
         return externalBlockIds.contains(id);
     }
-    
+
     public static void addCustomStringAttribute(Class<? extends Behaviour> beh, String namespace, String attributeName)
     {
-        customStringAttributes.put(beh,namespace+":"+attributeName);
+        customStringAttributes.put(beh, namespace + ":" + attributeName);
     }
-    
+
+    public static void addCustomFeedbackStringAttribute(Class<? extends BMLFeedback> beh, String namespace, String attributeName)
+    {
+        customFeedbackStringAttributes.put(beh, namespace + ":" + attributeName);
+    }
+
     public static void addCustomStringAttribute(Class<? extends Behaviour> beh, String namespace, List<String> attributeNames)
     {
-        for(String att:attributeNames)
+        for (String att : attributeNames)
         {
-            addCustomStringAttribute(beh,namespace,att);
+            addCustomStringAttribute(beh, namespace, att);
         }
     }
-      
+
     public static void addCustomFloatAttribute(Class<? extends Behaviour> beh, String namespace, String attributeName)
     {
-        customFloatAttributes.put(beh,namespace+":"+attributeName);
+        customFloatAttributes.put(beh, namespace + ":" + attributeName);
     }
-    
+
+    public static void addCustomFeedbackFloatAttribute(Class<? extends BMLFeedback> beh, String namespace, String attributeName)
+    {
+        customFeedbackFloatAttributes.put(beh, namespace + ":" + attributeName);
+    }
+
     public static void addCustomFloatAttribute(Class<? extends Behaviour> beh, String namespace, List<String> attributeNames)
     {
-        for(String att:attributeNames)
+        for (String att : attributeNames)
         {
-            addCustomFloatAttribute(beh,namespace,att);
+            addCustomFloatAttribute(beh, namespace, att);
         }
     }
-    
+
     public static Set<String> getCustomFloatAttributes(Class<? extends Behaviour> beh)
     {
         return customFloatAttributes.get(beh);
     }
-    
+
     public static Set<String> getCustomStringAttributes(Class<? extends Behaviour> beh)
     {
         return customStringAttributes.get(beh);
     }
-    
+
+    public static Set<String> getCustomFeedbackFloatAttributes(Class<? extends BMLFeedback> beh)
+    {
+        return customFeedbackFloatAttributes.get(beh);
+    }
+
+    public static Set<String> getCustomFeedbackStringAttributes(Class<? extends BMLFeedback> beh)
+    {
+        return customFeedbackStringAttributes.get(beh);
+    }
+
     public static void addBehaviourTypes(ImmutableMap<String, Class<? extends Behaviour>> behs)
     {
         behaviourTypes.putAll(behs);
     }
-    
+
     public static void addDescriptionExtensions(ImmutableMap<String, Class<? extends Behaviour>> descs)
     {
         descriptionExtensions.putAll(descs);
     }
-    
+
     public static void addBehaviourType(String name, Class<? extends Behaviour> beh)
     {
         behaviourTypes.put(name, beh);
