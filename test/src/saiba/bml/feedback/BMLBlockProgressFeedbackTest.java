@@ -30,49 +30,94 @@ import org.junit.Test;
 import saiba.utils.TestUtil;
 
 /**
- * Unit tests for XMLBMLBlockProgressTest 
+ * Unit tests for XMLBMLBlockProgressTest
  * @author Herwin
- *
+ * 
  */
 public class BMLBlockProgressFeedbackTest
 {
     private static final double PRECISION = 0.00001;
     private FeedbackExtensionTests<BMLBlockProgressFeedback> fe = new FeedbackExtensionTests<BMLBlockProgressFeedback>();
-    
-    BMLBlockProgressFeedback fb = new BMLBlockProgressFeedback();        
-    
+
+    BMLBlockProgressFeedback fb = new BMLBlockProgressFeedback();
+
     @Test
     public void testReadXML()
     {
-        String str = "<blockProgress "+TestUtil.getDefNS()+"id=\"bml1:start\" globalTime=\"10\" characterId=\"doctor\"/>";
+        String str = "<blockProgress " + TestUtil.getDefNS() + "id=\"bml1:start\" globalTime=\"10\" characterId=\"doctor\"/>";
         fb.readXML(str);
-        assertEquals("bml1",fb.getBmlId());
-        assertEquals("start",fb.getSyncId());
+        assertEquals("bml1", fb.getBmlId());
+        assertEquals("start", fb.getSyncId());
         assertEquals(10, fb.getGlobalTime(), PRECISION);
         assertEquals("doctor", fb.getCharacterId());
     }
-    
+
     @Test
     public void testWriteXML()
     {
-        String str = "<blockProgress "+TestUtil.getDefNS()+"id=\"bml1:start\" globalTime=\"10\" characterId=\"doctor\"/>";
-        
-        BMLBlockProgressFeedback progressIn = new BMLBlockProgressFeedback();        
+        String str = "<blockProgress " + TestUtil.getDefNS() + "id=\"bml1:start\" globalTime=\"10\" characterId=\"doctor\"/>";
+
+        BMLBlockProgressFeedback progressIn = new BMLBlockProgressFeedback();
         progressIn.readXML(str);
         StringBuilder buf = new StringBuilder();
-        progressIn.appendXML(buf);        
-        
-        BMLBlockProgressFeedback progressOut = new BMLBlockProgressFeedback();  
+        progressIn.appendXML(buf);
+
+        BMLBlockProgressFeedback progressOut = new BMLBlockProgressFeedback();
         progressOut.readXML(buf.toString());
-        assertEquals("bml1",progressOut.getBmlId());
-        assertEquals("start",progressOut.getSyncId());
+        assertEquals("bml1", progressOut.getBmlId());
+        assertEquals("start", progressOut.getSyncId());
         assertEquals(10, progressOut.getGlobalTime(), PRECISION);
         assertEquals("doctor", progressOut.getCharacterId());
     }
-    
+
     @Test
     public void testCustomFloatAttribute() throws IOException
     {
-        fe.testCustomFloatAttribute(fb,"bml1:start", "globalTime=\"10\"");
+        fe.testCustomFloatAttribute(fb, "bml1:start", "globalTime=\"10\"");
+    }
+
+    @Test
+    public void testNoFloatAttribute() throws IOException
+    {
+        fe.testNoFloatAttribute(fb, "bml1:start", "globalTime=\"1.0\"");
+    }
+
+    @Test
+    public void testCustomStringAttribute() throws IOException
+    {
+        fe.testCustomStringAttribute(fb, "bml1:start", "globalTime=\"1.0\"");
+    }
+
+    @Test
+    public void testNoCustomStringAttribute() throws IOException
+    {
+        fe.testNoCustomStringAttribute(fb, "bml1:start", "globalTime=\"1.0\"");
+    }
+
+    @Test
+    public void testWriteCustomFloatAttribute() throws IOException
+    {
+        fe.testWriteCustomFloatAttribute(new BMLBlockProgressFeedback(), new BMLBlockProgressFeedback(), "bml1:start", "globalTime=\"1.0\"");
+    }
+
+    @Test
+    public void testWriteCustomStringAttribute() throws IOException
+    {
+        fe.testWriteCustomStringAttribute(new BMLBlockProgressFeedback(), new BMLBlockProgressFeedback(), "bml1:start",
+                "globalTime=\"1.0\"");
+    }
+
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix() throws IOException
+    {
+        fe.testWriteCustomStringAttributeNoPrefix(new BMLBlockProgressFeedback(), new BMLBlockProgressFeedback(), "bml1:start",
+                "globalTime=\"1.0\"");
+    }
+    
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix2() throws IOException
+    {
+        fe.testWriteCustomStringAttributeNoPrefix2(new BMLBlockProgressFeedback(), new BMLBlockProgressFeedback(), "bml1:start",
+                "globalTime=\"1.0\"");
     }
 }
