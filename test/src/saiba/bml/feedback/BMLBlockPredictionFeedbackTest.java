@@ -47,11 +47,12 @@ import com.google.common.collect.ImmutableList;
 public class BMLBlockPredictionFeedbackTest
 {
     private static final double PRECISION = 0.0001;
+    private BMLBlockPredictionFeedback fb = new BMLBlockPredictionFeedback();
+    private FeedbackExtensionTests<BMLBlockPredictionFeedback> fe = new FeedbackExtensionTests<BMLBlockPredictionFeedback>();
 
     @Test
     public void testReadXML()
     {
-        BMLBlockPredictionFeedback fb = new BMLBlockPredictionFeedback();
         String str = "<bml " + TestUtil.getDefNS() + " id=\"bml1\" globalStart=\"1\" globalEnd=\"2\"/>";
         fb.readXML(str);
         assertEquals("bml1", fb.getId());
@@ -62,7 +63,6 @@ public class BMLBlockPredictionFeedbackTest
     @Test(expected = XMLScanException.class)
     public void testEndOrStartRequired()
     {
-        BMLBlockPredictionFeedback fb = new BMLBlockPredictionFeedback();
         String str = "<bml id=\"bml1\"/>";
         fb.readXML(str);
     }
@@ -79,20 +79,13 @@ public class BMLBlockPredictionFeedbackTest
     @Test
     public void testCustomFloatAttribute() throws IOException
     {
-        BMLInfo.addCustomFeedbackFloatAttribute(BMLBlockPredictionFeedback.class, "customfaceattributes", "attr2");
-        BMLBlockPredictionFeedback fb = new BMLBlockPredictionFeedback();
-        String str = "<bml " + TestUtil.getDefNS()
-                + " id=\"bml1\" xmlns:custom=\"customfaceattributes\" custom:attr2=\"10\" globalEnd=\"2\"/>";
-        fb.readXML(str);
-        assertEquals(10, fb.getCustomFloatParameterValue("customfaceattributes:attr2"), PRECISION);
-        assertTrue(fb.specifiesCustomParameter("customfaceattributes:attr2"));
+        fe.testCustomFloatAttribute(fb,"bml1", "globalStart=\"1.0\"");
     }
 
     @Test
     public void testNoFloatAttribute() throws IOException
     {
         BMLInfo.addCustomFeedbackFloatAttribute(BMLBlockPredictionFeedback.class, "customfaceattributes", "attr2");
-        BMLBlockPredictionFeedback fb = new BMLBlockPredictionFeedback();
         String str = "<bml " + TestUtil.getDefNS() + " id=\"bml1\" xmlns:custom=\"customfaceattributes\" globalEnd=\"2\"/>";
         fb.readXML(str);
         assertFalse(fb.specifiesCustomParameter("customfaceattributes:attr2"));
@@ -102,7 +95,6 @@ public class BMLBlockPredictionFeedbackTest
     public void testCustomStringAttribute() throws IOException
     {
         BMLInfo.addCustomFeedbackStringAttribute(BMLBlockPredictionFeedback.class, "customfaceattributes", "attr1");
-        BMLBlockPredictionFeedback fb = new BMLBlockPredictionFeedback();
         String str = "<bml " + TestUtil.getDefNS()
                 + " id=\"bml1\" xmlns:custom=\"customfaceattributes\" custom:attr1=\"blah\" globalEnd=\"2\"/>";
         fb.readXML(str);
@@ -116,7 +108,6 @@ public class BMLBlockPredictionFeedbackTest
     public void testNoCustomStringAttribute() throws IOException
     {
         BMLInfo.addCustomFeedbackStringAttribute(BMLBlockPredictionFeedback.class, "customfaceattributes", "attr1");
-        BMLBlockPredictionFeedback fb = new BMLBlockPredictionFeedback();
         String str = "<bml " + TestUtil.getDefNS() + " id=\"bml1\" xmlns:custom=\"customfaceattributes\" globalEnd=\"2\"/>";
         fb.readXML(str);
         assertFalse(fb.specifiesCustomParameter("customfaceattributes:attr2"));
@@ -140,8 +131,7 @@ public class BMLBlockPredictionFeedbackTest
         assertEquals(10, fbOut.getCustomFloatParameterValue("customfaceattributes:attr2"), PRECISION);
         assertTrue(fbOut.specifiesCustomParameter("customfaceattributes:attr2"));
     }
-    
-    
+
     @Test
     public void testWriteCustomStringAttribute() throws IOException
     {
@@ -171,7 +161,7 @@ public class BMLBlockPredictionFeedbackTest
         fbIn.readXML(str);
 
         StringBuilder buf = new StringBuilder();
-        fbIn.appendXML(buf, new XMLFormatting(), ImmutableList.of(new XMLNameSpace("custom", "customfaceattributes")));
+        fbIn.appendXML(buf);
 
         BMLBlockPredictionFeedback fbOut = new BMLBlockPredictionFeedback();
         fbOut.readXML(buf.toString());
@@ -179,34 +169,23 @@ public class BMLBlockPredictionFeedbackTest
         assertEquals("blah", fbOut.getCustomStringParameterValue("customfaceattributes:attr1"));
         assertTrue(fbOut.specifiesCustomParameter("customfaceattributes:attr1"));
     }
-    
-    // @Test
-    // public void testWriteCustomStringAttributeNoPrefix()throws IOException
-    // {
-    // BMLInfo.addCustomStringAttribute(createBehaviour("bml1","").getClass(), "customfaceattributes","attr1");
-    // Behaviour behIn = createBehaviour("bml1", "xmlns:custom=\"customfaceattributes\" custom:attr1=\"blah\"");
-    //
-    // StringBuilder buf = new StringBuilder();
-    // behIn.appendXML(buf);
-    //
-    // Behaviour behOut = parseBehaviour("bml1",buf.toString());
-    // assertEquals("blah", behOut.getStringParameterValue("customfaceattributes:attr1"));
-    // assertTrue(behOut.specifiesParameter("customfaceattributes:attr1"));
-    // }
-    
-    // @Test
-    // public void testWriteCustomStringAttributeNoPrefix2()throws IOException
-    // {
-    // BMLInfo.addCustomStringAttribute(createBehaviour("bml1","").getClass(), "http://customfaceattributes.com","attr1");
-    // Behaviour behIn = createBehaviour("bml1", "xmlns:custom=\"http://customfaceattributes.com\" custom:attr1=\"blah\"");
-    //
-    // StringBuilder buf = new StringBuilder();
-    // behIn.appendXML(buf);
-    // System.out.println(buf);
-    //
-    // Behaviour behOut = parseBehaviour("bml1",buf.toString());
-    // assertEquals("blah", behOut.getStringParameterValue("http://customfaceattributes.com:attr1"));
-    // assertTrue(behOut.specifiesParameter("http://customfaceattributes.com:attr1"));
-    // }
 
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix2() throws IOException
+    {
+        BMLInfo.addCustomFeedbackStringAttribute(BMLBlockPredictionFeedback.class, "http://customfaceattributes.com", "attr1");
+        BMLBlockPredictionFeedback fbIn = new BMLBlockPredictionFeedback();
+        String str = "<bml " + TestUtil.getDefNS()
+                + " id=\"bml1\" xmlns:custom=\"http://customfaceattributes.com\" custom:attr1=\"blah\" globalEnd=\"2\"/>";
+        fbIn.readXML(str);
+
+        StringBuilder buf = new StringBuilder();
+        fbIn.appendXML(buf);
+
+        BMLBlockPredictionFeedback fbOut = new BMLBlockPredictionFeedback();
+        fbOut.readXML(buf.toString());
+
+        assertEquals("blah", fbOut.getCustomStringParameterValue("http://customfaceattributes.com:attr1"));
+        assertTrue(fbOut.specifiesCustomParameter("http://customfaceattributes.com:attr1"));
+    }
 }

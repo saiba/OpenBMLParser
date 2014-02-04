@@ -23,6 +23,8 @@ package saiba.bml.feedback;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import saiba.utils.TestUtil;
@@ -35,17 +37,19 @@ import saiba.utils.TestUtil;
 public class BMLBlockProgressFeedbackTest
 {
     private static final double PRECISION = 0.00001;
+    private FeedbackExtensionTests<BMLBlockProgressFeedback> fe = new FeedbackExtensionTests<BMLBlockProgressFeedback>();
+    
+    BMLBlockProgressFeedback fb = new BMLBlockProgressFeedback();        
     
     @Test
     public void testReadXML()
     {
         String str = "<blockProgress "+TestUtil.getDefNS()+"id=\"bml1:start\" globalTime=\"10\" characterId=\"doctor\"/>";
-        BMLBlockProgressFeedback progress = new BMLBlockProgressFeedback();        
-        progress.readXML(str);
-        assertEquals("bml1",progress.getBmlId());
-        assertEquals("start",progress.getSyncId());
-        assertEquals(10, progress.getGlobalTime(), PRECISION);
-        assertEquals("doctor", progress.getCharacterId());
+        fb.readXML(str);
+        assertEquals("bml1",fb.getBmlId());
+        assertEquals("start",fb.getSyncId());
+        assertEquals(10, fb.getGlobalTime(), PRECISION);
+        assertEquals("doctor", fb.getCharacterId());
     }
     
     @Test
@@ -64,5 +68,11 @@ public class BMLBlockProgressFeedbackTest
         assertEquals("start",progressOut.getSyncId());
         assertEquals(10, progressOut.getGlobalTime(), PRECISION);
         assertEquals("doctor", progressOut.getCharacterId());
+    }
+    
+    @Test
+    public void testCustomFloatAttribute() throws IOException
+    {
+        fe.testCustomFloatAttribute(fb,"bml1:start", "globalTime=\"10\"");
     }
 }
