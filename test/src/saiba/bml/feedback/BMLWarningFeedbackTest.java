@@ -21,46 +21,99 @@
  ******************************************************************************/
 package saiba.bml.feedback;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
 
 import org.junit.Test;
 
-import saiba.bml.feedback.BMLWarningFeedback;
 import saiba.utils.TestUtil;
 
 /**
  * unit tests for XMLBMLWarning
  * @author Herwin
- *
+ * 
  */
 public class BMLWarningFeedbackTest
 {
+    private FeedbackExtensionTests<BMLWarningFeedback> fe = new FeedbackExtensionTests<BMLWarningFeedback>();
+    private BMLWarningFeedback fb = new BMLWarningFeedback();
+
     @Test
     public void testReadXML()
     {
-        String str = "<warningFeedback "+TestUtil.getDefNS()+"id=\"bml1\" characterId=\"doctor\" type=\"PARSING_FAILURE\">content</warningFeedback>";
-        BMLWarningFeedback warning = new BMLWarningFeedback();
-        warning.readXML(str);
-        assertEquals("bml1",warning.getId());
-        assertEquals("doctor",warning.getCharacterId());
-        assertEquals(BMLWarningFeedback.PARSING_FAILURE,warning.getType());
-        assertEquals("content",warning.getDescription());
+        String str = "<warningFeedback " + TestUtil.getDefNS()
+                + "id=\"bml1\" characterId=\"doctor\" type=\"PARSING_FAILURE\">content</warningFeedback>";
+        fb.readXML(str);
+        assertEquals("bml1", fb.getId());
+        assertEquals("doctor", fb.getCharacterId());
+        assertEquals(BMLWarningFeedback.PARSING_FAILURE, fb.getType());
+        assertEquals("content", fb.getDescription());
     }
-    
+
     @Test
     public void testWriteXML()
     {
-        String str = "<warningFeedback "+TestUtil.getDefNS()+"id=\"bml1\" characterId=\"doctor\" type=\"PARSING_FAILURE\">content</warningFeedback>";
+        String str = "<warningFeedback " + TestUtil.getDefNS()
+                + "id=\"bml1\" characterId=\"doctor\" type=\"PARSING_FAILURE\">content</warningFeedback>";
         BMLWarningFeedback warningIn = new BMLWarningFeedback();
         warningIn.readXML(str);
         StringBuilder buf = new StringBuilder();
-        warningIn.appendXML(buf);     
-        
+        warningIn.appendXML(buf);
+
         BMLWarningFeedback warningOut = new BMLWarningFeedback();
         warningOut.readXML(buf.toString());
-        assertEquals("bml1",warningOut.getId());
-        assertEquals("doctor",warningOut.getCharacterId());
-        assertEquals(BMLWarningFeedback.PARSING_FAILURE,warningOut.getType());
-        assertEquals("content",warningOut.getDescription());
+        assertEquals("bml1", warningOut.getId());
+        assertEquals("doctor", warningOut.getCharacterId());
+        assertEquals(BMLWarningFeedback.PARSING_FAILURE, warningOut.getType());
+        assertEquals("content", warningOut.getDescription());
+    }
+
+    @Test
+    public void testCustomFloatAttribute() throws IOException
+    {
+        fe.testCustomFloatAttribute(fb, "bml1", "type=\"PARSING_FAILURE\"");
+    }
+
+    @Test
+    public void testNoFloatAttribute() throws IOException
+    {
+        fe.testNoFloatAttribute(fb, "bml1", "type=\"PARSING_FAILURE\"");
+    }
+
+    @Test
+    public void testCustomStringAttribute() throws IOException
+    {
+        fe.testCustomStringAttribute(fb, "bml1", "type=\"PARSING_FAILURE\"");
+    }
+
+    @Test
+    public void testNoCustomStringAttribute() throws IOException
+    {
+        fe.testNoCustomStringAttribute(fb, "bml1", "type=\"PARSING_FAILURE\"");
+    }
+
+    @Test
+    public void testWriteCustomFloatAttribute() throws IOException
+    {
+        fe.testWriteCustomFloatAttribute(new BMLWarningFeedback(), new BMLWarningFeedback(), "bml1", "type=\"PARSING_FAILURE\"");
+    }
+
+    @Test
+    public void testWriteCustomStringAttribute() throws IOException
+    {
+        fe.testWriteCustomStringAttribute(new BMLWarningFeedback(), new BMLWarningFeedback(), "bml1", "type=\"PARSING_FAILURE\"");
+    }
+
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix() throws IOException
+    {
+        fe.testWriteCustomStringAttributeNoPrefix(new BMLWarningFeedback(), new BMLWarningFeedback(), "bml1", "type=\"PARSING_FAILURE\"");
+    }
+
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix2() throws IOException
+    {
+        fe.testWriteCustomStringAttributeNoPrefix2(new BMLWarningFeedback(), new BMLWarningFeedback(), "bml1", "type=\"PARSING_FAILURE\"");
     }
 }
