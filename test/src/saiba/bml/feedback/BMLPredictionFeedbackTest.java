@@ -23,7 +23,6 @@ package saiba.bml.feedback;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
@@ -45,6 +44,9 @@ import saiba.utils.TestUtil;
 public class BMLPredictionFeedbackTest
 {
     private static final double PREDICTION_PRECISION = 0.0001;
+    
+    private BMLPredictionFeedback fb = new BMLPredictionFeedback();
+    private FeedbackExtensionTests<BMLPredictionFeedback> fe = new FeedbackExtensionTests<BMLPredictionFeedback>();
     
     private void assertEqualBlockFeedbackElement(BMLBlockPredictionFeedback fb1, BMLBlockPredictionFeedback fb2)
     {
@@ -96,7 +98,6 @@ public class BMLPredictionFeedbackTest
                 + "<head id=\"bml1:head1\" lexeme=\"NOD\" start=\"0\" ready=\"1\" " +
                 "strokeStart=\"3\" stroke=\"4\" strokeEnd=\"5\" relax=\"6\" end=\"7\"/>"
                 + "</predictionFeedback>";
-        BMLPredictionFeedback fb = new BMLPredictionFeedback();
         fb.readXML(feedback);
         assertEquals(1,fb.getBmlBlockPredictions().size());
         assertEquals(2,fb.getBmlBehaviorPredictions().size());
@@ -122,8 +123,7 @@ public class BMLPredictionFeedbackTest
     {
         String feedback = "<predictionFeedback "+TestUtil.getDefNS()+">"
                 + "<speech id=\"bml1:s1\" start=\"1\" end=\"10\"><text>Hello <sync id=\"sync1\" ref=\"2\"/> world</text></speech>"
-                + "</predictionFeedback>";
-        BMLPredictionFeedback fb = new BMLPredictionFeedback();
+                + "</predictionFeedback>";        
         fb.readXML(feedback);        
         
         assertEquals(0,fb.getBmlBlockPredictions().size());
@@ -174,5 +174,53 @@ public class BMLPredictionFeedbackTest
         fbOut.readXML(buf1.toString());
         fbOut.appendXML(buf2);
         assertEquals(buf1.toString(),buf2.toString());
+    }
+    
+    @Test
+    public void testCustomFloatAttribute() throws IOException
+    {
+        fe.testCustomFloatAttribute(fb, "bml1");
+    }
+
+    @Test
+    public void testNoFloatAttribute() throws IOException
+    {
+        fe.testNoFloatAttribute(fb, "bml1");
+    }
+
+    @Test
+    public void testCustomStringAttribute() throws IOException
+    {
+        fe.testCustomStringAttribute(fb, "bml1");
+    }
+
+    @Test
+    public void testNoCustomStringAttribute() throws IOException
+    {
+        fe.testNoCustomStringAttribute(fb, "bml1");
+    }
+
+    @Test
+    public void testWriteCustomFloatAttribute() throws IOException
+    {
+        fe.testWriteCustomFloatAttribute(new BMLPredictionFeedback(), new BMLPredictionFeedback(), "bml1");
+    }
+
+    @Test
+    public void testWriteCustomStringAttribute() throws IOException
+    {
+        fe.testWriteCustomStringAttribute(new BMLPredictionFeedback(), new BMLPredictionFeedback(), "bml1");
+    }
+
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix() throws IOException
+    {
+        fe.testWriteCustomStringAttributeNoPrefix(new BMLPredictionFeedback(), new BMLPredictionFeedback(), "bml1");
+    }
+
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix2() throws IOException
+    {
+        fe.testWriteCustomStringAttributeNoPrefix2(new BMLPredictionFeedback(), new BMLPredictionFeedback(), "bml1");
     }
 }
