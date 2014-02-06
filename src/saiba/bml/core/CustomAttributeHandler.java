@@ -38,6 +38,12 @@ public class CustomAttributeHandler
         return false;
     }
     
+    public boolean specifiesCustomFloatParameter(String name)
+    {
+        if (customFloatAttributes.containsKey(name)) return true;
+        return false;
+    }
+    
     public boolean specifiesCustomParameter(String name)
     {
         if (customStringAttributes.containsKey(name)) return true;
