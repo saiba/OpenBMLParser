@@ -34,7 +34,7 @@ import saiba.bml.BMLInfo;
  * @author hvanwelbergen
  * 
  */
-public final class BMLBlockPredictionFeedback extends AbstractBMLFeedback
+public class BMLBlockPredictionFeedback extends AbstractBMLFeedback
 {
     private String id;
     private double globalStart, globalEnd;
