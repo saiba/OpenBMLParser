@@ -21,9 +21,10 @@
  ******************************************************************************/
 package saiba.bml.feedback;
 
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertNull;
+
 import java.io.IOException;
 
 import org.junit.Test;
@@ -84,6 +85,15 @@ public class BMLFeedbackParserTest
     {
         String str = "<warningFeedback "+TestUtil.getDefNS()+"id=\"bml1\" characterId=\"doctor\" type=\"PARSING_FAILURE\">content</warningFeedback>";
         assertFeedbackType(BMLWarningFeedback.class, str);
+    }
+    
+    @Test(timeout=200)
+    public void testLoop() throws IOException
+    {
+        String str = "<predictionFeedback xmlns=\"http://www.bml-initiative.org/bml/bml-1.0\">"+
+        "<unknown id=\"unknown\"/>"+        
+        "</predictionFeedback>";
+        assertFeedbackType(BMLPredictionFeedback.class, str);
     }
 }
 

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import saiba.bml.BMLInfo;
 import saiba.bml.core.Behaviour;
 import saiba.bml.core.BehaviourParser;
@@ -37,6 +38,7 @@ import saiba.bml.core.BehaviourParser;
  * Prediction feedback for the timing of BML blocks and behaviours. 
  * @author hvanwelbergen
  */
+@Slf4j
 public final class BMLPredictionFeedback extends AbstractBMLFeedback
 {
     private List<BMLBlockPredictionFeedback> bmlBlockPredictions = new ArrayList<BMLBlockPredictionFeedback>();
@@ -103,7 +105,12 @@ public final class BMLPredictionFeedback extends AbstractBMLFeedback
                 {
                     bmlBehaviorPredictions.add(b);
                 }
-            }
+                else
+                {
+                    log.warn("Skipping in prediction: {}", tokenizer.getTagName());
+                    tokenizer.skipTag();
+                }
+            }            
         }
     }
     
