@@ -22,6 +22,7 @@
 package saiba.bml.feedback;
 
 import hmi.xml.XMLFormatting;
+import hmi.xml.XMLStructure;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
@@ -33,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 import saiba.bml.BMLInfo;
 import saiba.bml.core.Behaviour;
 import saiba.bml.core.BehaviourParser;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Prediction feedback for the timing of BML blocks and behaviours. 
@@ -83,7 +86,8 @@ public final class BMLPredictionFeedback extends AbstractBMLFeedback
     public StringBuilder appendContent(StringBuilder buf, XMLFormatting fmt)
     {
         appendXMLStructureList(buf, fmt, bmlBlockPredictions);
-        appendXMLStructureList(buf, fmt, bmlBehaviorPredictions);        
+        appendXMLStructureList(buf, fmt, bmlBehaviorPredictions);
+        //appendXMLStructureList(buf, fmt, new ImmutableList.Builder<XMLStructure>().addAll(bmlBlockPredictions).addAll(bmlBehaviorPredictions).build());
         return buf;
     }
     

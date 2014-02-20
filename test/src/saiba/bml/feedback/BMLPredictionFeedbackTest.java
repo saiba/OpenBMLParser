@@ -30,8 +30,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import saiba.bml.BMLInfo;
 import saiba.bml.core.Behaviour;
 import saiba.bml.core.SpeechBehaviour;
+import saiba.bml.parser.ExternalStubBehavior;
 import saiba.bml.parser.InvalidSyncRefException;
 import saiba.bml.parser.SyncPoint;
 import saiba.utils.TestUtil;
@@ -222,5 +224,26 @@ public class BMLPredictionFeedbackTest
     public void testWriteCustomStringAttributeNoPrefix2() throws IOException
     {
         fe.testWriteCustomStringAttributeNoPrefix2(new BMLPredictionFeedback(), new BMLPredictionFeedback(), "bml1");
+    }
+    
+    @Test
+    public void testNSInBMLAndBehaviors()
+    {
+        BMLInfo.addBehaviourType("stubexternal", ExternalStubBehavior.class);
+        BMLInfo.addCustomFeedbackStringAttribute(BMLBlockPredictionFeedback.class, "stubnamespace", "stubtime");
+        String feedback="<predictionFeedback xmlns=\"http://www.bml-initiative.org/bml/bml-1.0\">"+
+                        "<bml id=\"bml1\" globalStart=\"3\" xmlns:stub=\"stubnamespace\" stub:stubtime=\"blah\"/>"+
+                        "<stub:stubexternal xmlns:stub=\"stubnamespace\" id=\"bml1:s1\" start=\"1\"/>"+
+                        "<stub:stubexternal xmlns:stub=\"stubnamespace\" id=\"bml1:s2\" start=\"2\"/>"+
+                        "</predictionFeedback>";
+        BMLPredictionFeedback fbOut = new BMLPredictionFeedback();
+        fbOut.readXML(feedback);
+        StringBuilder buf1 = new StringBuilder();
+        fbOut.appendXML(buf1);
+        
+        BMLPredictionFeedback fbIn = new BMLPredictionFeedback();
+        fbIn.readXML(buf1.toString());
+        assertEquals(2, fbIn.getBmlBehaviorPredictions().size());
+        assertEquals(1, fbIn.getBmlBlockPredictions().size());
     }
 }
