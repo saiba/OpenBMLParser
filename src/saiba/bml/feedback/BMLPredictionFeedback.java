@@ -39,7 +39,7 @@ import saiba.bml.core.BehaviourParser;
  * @author hvanwelbergen
  */
 @Slf4j
-public final class BMLPredictionFeedback extends AbstractBMLFeedback
+public class BMLPredictionFeedback extends AbstractBMLFeedback
 {
     private List<BMLBlockPredictionFeedback> bmlBlockPredictions = new ArrayList<BMLBlockPredictionFeedback>();
     private List<Behaviour> bmlBehaviorPredictions = new ArrayList<Behaviour>();
