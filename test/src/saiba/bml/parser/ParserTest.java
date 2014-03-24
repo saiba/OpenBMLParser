@@ -323,6 +323,24 @@ public class ParserTest
 
         assertEqualConstraints(expectedConstraints, parser.getConstraints());
     }
+    
+    @Test(timeout = PARSE_TIMEOUT)
+    public void testGazeShift() throws IOException
+    {
+        readXML("testgazeshift.xml");
+
+        ExpectedConstraint expected1 = new ExpectedConstraint();
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 0));
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", "shift1", "start", 0));
+        expectedConstraints.add(expected1);
+
+        ExpectedConstraint expected2 = new ExpectedConstraint();
+        expected2.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 3));
+        expected2.expectedSyncs.add(new ExpectedSync("bml1", "shift1", "end", 0));
+        expectedConstraints.add(expected2);
+
+        assertEqualConstraints(expectedConstraints, parser.getConstraints());
+    }
 
     @Test(timeout = PARSE_TIMEOUT)
     public void constraintNodAbsoluteTimeTest() throws IOException
