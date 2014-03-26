@@ -186,12 +186,12 @@ public class BehaviourBlockBuilder
         return this;
     }
 
-    public BehaviourBlockBuilder addAtConstraint(String beh1, String sync1, String beh2, String sync2)
+    public BehaviourBlockBuilder addAtConstraint(String ref1, String ref2)
     {
         ConstraintBlock cb = new ConstraintBlock(id);        
-        StringBuffer buf = new StringBuffer("<synchronize "+" xmlns=\"" + BehaviourBlock.BMLNAMESPACE+ "\">");
-        buf.append("<sync ref=\""+beh1+":"+sync1+"\"/>");
-        buf.append("<sync ref=\""+beh2+":"+sync2+"\"/>");
+        StringBuffer buf = new StringBuffer("<synchronize "+" xmlns=\"" + BehaviourBlock.BMLNAMESPACE+ "\">");        
+        buf.append("<sync ref=\""+ref1+"\"/>");
+        buf.append("<sync ref=\""+ref2+"\"/>");
         buf.append("</synchronize>");
         try
         {
@@ -203,5 +203,15 @@ public class BehaviourBlockBuilder
         }        
         constraints.add(cb);
         return this;
+    }
+    
+    public BehaviourBlockBuilder addAtConstraint(String beh1, String sync1, String beh2, String sync2)
+    {
+        return addAtConstraint(beh1+":"+sync1, beh2+":"+sync2);
+    }
+    
+    public BehaviourBlockBuilder addAtConstraint(String beh1, String sync1, double blockOffset)
+    {
+        return addAtConstraint(beh1+":"+sync1, ""+blockOffset);
     }
 }
