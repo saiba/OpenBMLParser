@@ -35,6 +35,7 @@ import saiba.bml.parser.SyncPoint;
 import saiba.bml.parser.SyncRef;
 
 import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
 
 /**
@@ -305,6 +306,13 @@ public class BehaviourBlock extends BMLElement
         {
             ci.constructConstraints(scheduler);
         }
+    }
+    
+    public String toBMLString(XMLNameSpace... xmlNamespaces)
+    {
+        StringBuilder buf = new StringBuilder();
+        appendXML(buf, new XMLFormatting(), ImmutableList.copyOf(xmlNamespaces));
+        return buf.toString();
     }
     
     public String toBMLString(List<XMLNameSpace> xmlNamespaceList)
