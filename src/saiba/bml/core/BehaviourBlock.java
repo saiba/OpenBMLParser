@@ -310,22 +310,13 @@ public class BehaviourBlock extends BMLElement
     
     public String toBMLString(XMLNameSpace... xmlNamespaces)
     {
-        StringBuilder buf = new StringBuilder();
-        appendXML(buf, new XMLFormatting(), ImmutableList.copyOf(xmlNamespaces));
-        return buf.toString();
+        return toBMLString(ImmutableList.copyOf(xmlNamespaces));        
     }
     
     public String toBMLString(List<XMLNameSpace> xmlNamespaceList)
     {
         StringBuilder buf = new StringBuilder();
         appendXML(buf, new XMLFormatting(), xmlNamespaceList);
-        return buf.toString();
-    }
-    
-    public String toBMLString()
-    {
-        StringBuilder buf = new StringBuilder();
-        appendXML(buf);
         return buf.toString();
     }
 }
