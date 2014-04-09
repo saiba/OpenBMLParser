@@ -19,6 +19,7 @@
 package saiba.bml.core;
 
 import hmi.xml.XMLFormatting;
+import hmi.xml.XMLNameSpace;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import saiba.bml.parser.BMLParser;
@@ -303,6 +305,13 @@ public class BehaviourBlock extends BMLElement
         {
             ci.constructConstraints(scheduler);
         }
+    }
+    
+    public String toBMLString(List<XMLNameSpace> xmlNamespaceList)
+    {
+        StringBuilder buf = new StringBuilder();
+        appendXML(buf, new XMLFormatting(), xmlNamespaceList);
+        return buf.toString();
     }
     
     public String toBMLString()
