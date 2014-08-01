@@ -1052,9 +1052,9 @@ public class ParserTest
     private class BMLXBMLBehaviorAttributes implements BMLBehaviorAttributeExtension
     {
         @Override
-        public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
+        public Set<String> decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
         {
-
+            return ImmutableSet.of();
         }
 
         @Override
@@ -1078,9 +1078,9 @@ public class ParserTest
     private class BMLYBMLBehaviorAttributes implements BMLBehaviorAttributeExtension
     {
         @Override
-        public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
+        public Set<String> decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
         {
-
+            return ImmutableSet.of();
         }
 
         @Override

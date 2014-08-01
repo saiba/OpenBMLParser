@@ -20,6 +20,7 @@ package saiba.bml.core;
 
 import hmi.xml.XMLFormatting;
 import hmi.xml.XMLNameSpace;
+import hmi.xml.XMLScanException;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
@@ -37,6 +38,7 @@ import saiba.bml.parser.SyncRef;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
+import com.google.common.collect.Sets;
 
 /**
  * This class represents a block of behaviour. This is represented in BML by the <code>&lt;bml&gt;</code>-tag.
@@ -205,20 +207,30 @@ public class BehaviourBlock extends BMLElement
     @Override
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
+        HashSet<String> decodedAttributes = new HashSet<String>();
+        HashSet<String> encodedAttributes = new HashSet<String>(attrMap.keySet());
+        encodedAttributes.remove("id");
+        encodedAttributes.remove("composition");
+        
         id = getRequiredAttribute("id", attrMap, tokenizer);
+        
         String sm = getOptionalAttribute("composition", attrMap, "MERGE");
-
+        
         composition = CoreComposition.parse(sm);
 
         for (BMLBehaviorAttributeExtension ext : bmlBehaviorAttributeExtensions.values())
         {
-            ext.decodeAttributes(this, attrMap, tokenizer);
+            decodedAttributes.addAll(ext.decodeAttributes(this, attrMap, tokenizer));
             if (composition == CoreComposition.UNKNOWN)
             {
                 composition = ext.handleComposition(sm);
             }
         }
-        //super.decodeAttributes(attrMap, tokenizer);
+        encodedAttributes.removeAll(decodedAttributes);
+        if(!encodedAttributes.isEmpty())
+        {
+            throw new XMLScanException("Invalid attribute(s) "+encodedAttributes+" in bml block");
+        }        
     }
 
     public Set<String> getOtherBlockDependencies()

@@ -1,6 +1,7 @@
 package saiba.bml.core;
 
 import static org.junit.Assert.assertEquals;
+import hmi.xml.XMLScanException;
 
 import org.junit.Test;
 
@@ -36,5 +37,12 @@ public class BehaviourBlockTest
         assertEquals("bml2", parser.getBehaviours().get(1).bmlId);
         assertEquals("bml2", parser.getConstraints().get(0).getTargets().get(0).getBmlId());
         assertEquals("bml2", parser.getConstraints().get(0).getTargets().get(1).getBmlId());
+    }
+    
+    @Test(expected=XMLScanException.class)
+    public void testInvalidAttribute()
+    {
+        BehaviourBlock bb = new BehaviourBlock();
+        bb.readXML("<bml id=\"bml1\" bmla:appendAfter=\"bml1\" "+"xmlns=\""+BehaviourBlock.BMLNAMESPACE+"\"/>");
     }
 }

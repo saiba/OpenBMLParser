@@ -39,7 +39,10 @@ import java.util.Set;
  */
 public interface BMLBehaviorAttributeExtension
 {
-    void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer);
+    /**
+     * Decodes the attributes in attrMap, returns the set of decoded attributes
+     */
+    Set<String> decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer);
     
     StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt);
     

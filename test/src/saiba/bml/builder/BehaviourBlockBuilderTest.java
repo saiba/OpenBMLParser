@@ -17,6 +17,8 @@ import lombok.Setter;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableSet;
+
 import saiba.bml.core.BMLBehaviorAttributeExtension;
 import saiba.bml.core.BMLBlockComposition;
 import saiba.bml.core.BehaviourBlock;
@@ -81,9 +83,10 @@ public class BehaviourBlockBuilderTest
             private String testVal;
 
             @Override
-            public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
+            public Set<String> decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
             {
                 testVal = attrMap.get("http://mynamespace.net:test");
+                return ImmutableSet.of("http://mynamespace.net:test");
             }
 
             @Override
