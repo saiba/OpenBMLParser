@@ -262,10 +262,12 @@ public class BehaviourBlock extends BMLElement
                 requiredBlocks.add(rb);
                 behaviours.addAll(rb.behaviours);
                 constraintBlocks.addAll(rb.constraintBlocks);
+                continue;
             }
             if (tag.equals(ConstraintBlock.xmlTag()))
             {
                 constraintBlocks.add(new ConstraintBlock(id, tokenizer));
+                continue;
             }
 
             Behaviour b = BehaviourParser.parseBehaviour(id, tokenizer);
@@ -280,7 +282,10 @@ public class BehaviourBlock extends BMLElement
                     behaviours.add(b);
                 }
             }
-            ensureDecodeProgress(tokenizer);
+            else
+            {
+                throw new XMLScanException("Invalid behavior/construct "+tag+" in BML block "+getBmlId());
+            }
         }
     }    
 

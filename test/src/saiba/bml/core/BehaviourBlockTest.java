@@ -38,11 +38,20 @@ public class BehaviourBlockTest
         assertEquals("bml2", parser.getConstraints().get(0).getTargets().get(0).getBmlId());
         assertEquals("bml2", parser.getConstraints().get(0).getTargets().get(1).getBmlId());
     }
-    
-    @Test(expected=XMLScanException.class)
+
+    @Test(timeout = 300, expected = XMLScanException.class)
     public void testInvalidAttribute()
     {
         BehaviourBlock bb = new BehaviourBlock();
-        bb.readXML("<bml id=\"bml1\" bmla:appendAfter=\"bml1\" "+"xmlns=\""+BehaviourBlock.BMLNAMESPACE+"\"/>");
+        bb.readXML("<bml id=\"bml1\" bmla:appendAfter=\"bml1\" " + "xmlns=\"" + BehaviourBlock.BMLNAMESPACE + "\"/>");
+    }
+
+    @Test(timeout = 300, expected = XMLScanException.class)
+    public void testUnregisteredBehaviour()
+    {
+        String beh = "<bml id=\"bml1\" xmlns=\"http://www.bml-initiative.org/bml/bml-1.0\" xmlns:pe=\"http://hmi.ewi.utwente.nl/pictureengine\">"
+                + "<pe:invalidbeh/>" + "</bml>";
+        BehaviourBlock bb = new BehaviourBlock();
+        bb.readXML(beh);
     }
 }
