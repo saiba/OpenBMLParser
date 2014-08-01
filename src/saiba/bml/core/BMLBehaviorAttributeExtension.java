@@ -40,9 +40,11 @@ import java.util.Set;
 public interface BMLBehaviorAttributeExtension
 {
     /**
-     * Decodes the attributes in attrMap, returns the set of decoded attributes
+     * Decodes the attributes in attrMap. Once decoded, they should be removed from attrMap. The easiest way to do this is using
+     * bb.getRequiredAttribute, bb.getOptionalAttribute, etc.
+     * 
      */
-    Set<String> decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer);
+    void decodeAttributes(BehaviourBlock bb, HashMap<String, String> attrMap, XMLTokenizer tokenizer);
     
     StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt);
     
