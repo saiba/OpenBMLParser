@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import saiba.bml.parser.BMLParser;
 import saiba.bml.parser.SyncPoint;
 import saiba.bml.parser.SyncRef;
@@ -52,6 +54,10 @@ public class BehaviourBlock extends BMLElement
 
     public ArrayList<Behaviour> behaviours;
 
+    @Setter
+    @Getter
+    private String characterId = null;
+    
     ClassToInstanceMap<BMLBehaviorAttributeExtension> bmlBehaviorAttributeExtensions;
 
     public BehaviourBlock(BMLBehaviorAttributeExtension... bmlBehaviorAttributeExtensions)
@@ -196,6 +202,10 @@ public class BehaviourBlock extends BMLElement
     {
         appendAttribute(buf, "id", id);
         appendAttribute(buf, "composition", composition.toString());
+        if(characterId!=null)
+        {
+            appendAttribute(buf,"characterId",characterId);
+        }
         for(BMLBehaviorAttributeExtension ext:bmlBehaviorAttributeExtensions.values())
         {
             ext.appendAttributeString(buf, fmt);
@@ -207,8 +217,9 @@ public class BehaviourBlock extends BMLElement
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
         id = getRequiredAttribute("id", attrMap, tokenizer);
-        
+        characterId = getOptionalAttribute("characterId",attrMap, null);
         String sm = getOptionalAttribute("composition", attrMap, "MERGE");
+        
         
         composition = CoreComposition.parse(sm);
 

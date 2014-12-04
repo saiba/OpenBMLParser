@@ -31,6 +31,7 @@ public class BehaviourBlockBuilder
     private List<BMLBehaviorAttributeExtension> extensions = new ArrayList<BMLBehaviorAttributeExtension>();
     
     private String id = generateUniqueIdBML("bml");
+    private String characterId = null;
     private BMLBlockComposition composition = CoreComposition.MERGE;
 
     private String generateUniqueIdBML(String prefix)
@@ -64,6 +65,7 @@ public class BehaviourBlockBuilder
         BehaviourBlock bb = new BehaviourBlock();        
         bb.addAllBMLBehaviorAttributeExtensions(extensions);        
         bb.setBmlId(id);
+        bb.setCharacterId(characterId);
         bb.setComposition(composition);
         bb.behaviours.addAll(behaviours);
         bb.constraintBlocks.addAll(constraints);
@@ -75,6 +77,13 @@ public class BehaviourBlockBuilder
         this.id = id;
         return this;
     }
+    
+    public BehaviourBlockBuilder characterId(String characterId)
+    {
+        this.characterId = characterId;
+        return this;
+    }
+
 
     public BehaviourBlockBuilder addFaceLexemeBehaviour(String behId, String lexeme)
     {

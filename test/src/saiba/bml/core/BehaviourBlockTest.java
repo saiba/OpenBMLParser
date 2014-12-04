@@ -39,6 +39,14 @@ public class BehaviourBlockTest
         assertEquals("bml2", parser.getConstraints().get(0).getTargets().get(1).getBmlId());
     }
 
+    @Test(timeout = 300)
+    public void testCharacterId()
+    {
+        BehaviourBlock bb = new BehaviourBlock();
+        bb.readXML("<bml id=\"bml1\" characterId=\"Alice\"" + " xmlns=\"" + BehaviourBlock.BMLNAMESPACE +"\"/>");
+        assertEquals("Alice",bb.getCharacterId());
+    }
+    
     @Test(timeout = 300, expected = XMLScanException.class)
     public void testInvalidAttribute()
     {
