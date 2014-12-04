@@ -127,7 +127,7 @@ public class BehaviourBlockBuilderTest
     public void buildBlockWithCharacterId()
     {
         BehaviourBlock bb = builder.characterId("Alice").build();
-        assertEquals("bml1", bb.getCharacterId());
+        assertEquals("Alice", bb.getCharacterId());
     }
     
     @Test
