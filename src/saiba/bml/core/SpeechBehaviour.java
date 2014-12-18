@@ -34,8 +34,7 @@ import saiba.bml.parser.SyncPoint;
 import com.google.common.collect.ImmutableList;
 
 /**
- * This class represents speech behaviour. This is represented in BML by the
- * <code>&lt;speech&gt;</code>-tag.
+ * This class represents speech behaviour. This is represented in BML by the <code>&lt;speech&gt;</code>-tag.
  * 
  * @author PaulRC
  */
@@ -58,22 +57,23 @@ public class SpeechBehaviour extends Behaviour
     {
         return XMLTAG;
     }
-    
+
     @Override
     public void addDefaultSyncPoints()
     {
-        for(String s:getDefaultSyncPoints())
+        for (String s : getDefaultSyncPoints())
         {
             addSyncPoint(new SyncPoint(bmlId, id, s));
-        }        
+        }
     }
 
-    private static final List<String> DEFAULT_SYNCS = ImmutableList.of("start","end");
+    private static final List<String> DEFAULT_SYNCS = ImmutableList.of("start", "end");
+
     public static List<String> getDefaultSyncPoints()
     {
         return DEFAULT_SYNCS;
     }
-    
+
     @Override
     public String getStringParameterValue(String name)
     {
@@ -92,9 +92,15 @@ public class SpeechBehaviour extends Behaviour
         return super.specifiesParameter(name);
     }
 
-    public SpeechBehaviour(String bmlId,XMLTokenizer tokenizer) throws IOException
+    public SpeechBehaviour(String bmlId, XMLTokenizer tokenizer) throws IOException
     {
         super(bmlId);
+        readXML(tokenizer);
+    }
+
+    public SpeechBehaviour(String bmlId, String id, XMLTokenizer tokenizer) throws IOException
+    {
+        super(bmlId, id);
         readXML(tokenizer);
     }
 
@@ -119,7 +125,7 @@ public class SpeechBehaviour extends Behaviour
     @Override
     public StringBuilder appendContent(StringBuilder buf, XMLFormatting fmt)
     {
-        if (content != null) buf.append("<text>"+content+"</text>");
+        if (content != null) buf.append("<text>" + content + "</text>");
         return super.appendContent(buf, fmt); // Description is registered at Behavior.
     }
 
@@ -134,10 +140,10 @@ public class SpeechBehaviour extends Behaviour
                 text.readXML(tokenizer);
                 content = text.content;
                 syncs = text.syncs;
-                for(Sync sync:syncs)
+                for (Sync sync : syncs)
                 {
-                    SyncPoint s = new SyncPoint(bmlId, id, sync.id);        
-                    if(sync.ref!=null)
+                    SyncPoint s = new SyncPoint(bmlId, id, sync.id);
+                    if (sync.ref != null)
                     {
                         try
                         {
@@ -145,7 +151,7 @@ public class SpeechBehaviour extends Behaviour
                         }
                         catch (InvalidSyncRefException e)
                         {
-                            throw new XMLScanException("",e);
+                            throw new XMLScanException("", e);
                         }
                     }
                     addSyncPoint(s);
@@ -159,8 +165,6 @@ public class SpeechBehaviour extends Behaviour
             ensureDecodeProgress(tokenizer);
         }
     }
-
-
 
     /**
      * The XML Stag for XML encoding -- use this method to find out the run-time xml tag of an
@@ -212,6 +216,7 @@ public class SpeechBehaviour extends Behaviour
         {
             return "text";
         }
+
         public static final String BMLNAMESPACE = "http://www.bml-initiative.org/bml/bml-1.0";
 
         @Override
