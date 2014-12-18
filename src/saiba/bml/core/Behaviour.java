@@ -77,7 +77,7 @@ public abstract class Behaviour extends BMLElement
 
     public boolean specifiesParameter(String name)
     {
-        if(caHandler.specifiesCustomParameter(name))return true;
+        if (caHandler.specifiesCustomParameter(name)) return true;
         return false;
     }
 
@@ -107,10 +107,17 @@ public abstract class Behaviour extends BMLElement
 
     public Behaviour(String bmlId)
     {
+        id = null;
         syncPoints = new ArrayList<SyncPoint>();
         descriptions = new ArrayList<Description>();
         this.bmlId = bmlId;
         addDefaultSyncPoints();
+    }
+
+    public Behaviour(String bmlId, String id)
+    {
+        this(bmlId);
+        this.id = id;
     }
 
     public abstract void addDefaultSyncPoints();
@@ -160,14 +167,16 @@ public abstract class Behaviour extends BMLElement
     @Override
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
-        id = getRequiredAttribute("id", attrMap, tokenizer);
-        String[] idSplit = id.split(":");
-        if (idSplit.length == 2)
+        if(id==null)
         {
-            this.id = idSplit[1];
-            this.bmlId = idSplit[0];
+            id = getRequiredAttribute("id", attrMap, tokenizer);
+            String[] idSplit = id.split(":");
+            if (idSplit.length == 2)
+            {
+                this.id = idSplit[1];
+                this.bmlId = idSplit[0];
+            }
         }
-
         caHandler.decodeCustomAttributes(attrMap, tokenizer, BMLInfo.getCustomFloatAttributes(getClass()),
                 BMLInfo.getCustomStringAttributes(getClass()), this);
 

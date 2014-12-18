@@ -22,9 +22,11 @@
 package saiba.bml.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import saiba.bml.BMLInfo;
 import saiba.utils.TestUtil;
 
 /**
@@ -101,5 +103,19 @@ public class BehaviourTest
         b.readXML("<stubbehaviour " + TestUtil.getDefNS() + "id=\"bml2:beh1\"/>");
         assertEquals("bml2", b.bmlId);
         assertEquals("beh1", b.id);
+    }
+
+    @Test
+    public void testDescription()
+    {
+        BMLInfo.addDescriptionExtension(StubDescription.xmlTag(), StubDescription.class);
+        BMLInfo.supportedExtensions.add(StubDescription.class);
+        StubBehaviour b = new StubBehaviour("bml1");
+        b.readXML("<stubbehaviour " + TestUtil.getDefNS() + "id=\"bml2:beh1\"><description priority=\"1\" type=\""
+                + StubDescription.xmlTag() + "\"><stubdescription/></description></stubbehaviour>");
+        assertNotNull(b.descBehaviour);
+        Behaviour bdesc = b.descBehaviour;
+        assertEquals("beh1", bdesc.id);
+        assertEquals("bml2", bdesc.bmlId);
     }
 }
