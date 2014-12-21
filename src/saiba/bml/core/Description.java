@@ -115,8 +115,8 @@ public class Description extends BMLElement
                     behaviour = null;
                     try
                     {
-                        Constructor<? extends Behaviour> c = desc.getConstructor(new Class[] { String.class, XMLTokenizer.class });
-                        behaviour = c.newInstance(bmlId, tokenizer);
+                        Constructor<? extends Behaviour> c = desc.getConstructor(new Class[] { String.class, String.class, XMLTokenizer.class });
+                        behaviour = c.newInstance(bmlId, id, tokenizer);
                         isParsed = true;
                     }
                     catch (InstantiationException e)
