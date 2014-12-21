@@ -122,15 +122,18 @@
     <jar jarfile="${dist}/lib/openbmlparser.jar">
       <fileset dir="${build}"/>      
       <fileset dir="${src}"/>      
+	  <fileset file="license.txt"/>
     </jar>
     
     <jar jarfile="${dist}/lib/openbmlparser-test.jar">
       <fileset dir="${build.test.classes.dir}"/>      
       <fileset dir="${test.src.dir}"/> 
+	  <fileset file="license.txt"/>
     </jar>
 
     <jar jarfile="${dist}/lib/openbmlparser-testresource.jar">
-      <fileset dir="${test.resource.dir}"/>      
+      <fileset dir="${test.resource.dir}"/>
+      <fileset file="license.txt"/>      
     </jar>
   </target>
   
