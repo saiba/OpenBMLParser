@@ -88,6 +88,11 @@ public class ParserTest
         read(bml, new BehaviourBlock());
     }
 
+    private void readNotStrict(String bml)
+    {
+        read(bml, new BehaviourBlock(false));
+    }
+    
     private void read(String bml, BehaviourBlock block)
     {
         parser.clear();
@@ -1115,5 +1120,23 @@ public class ParserTest
         BMLInfo.addBehaviourType(StubBehaviour.XMLTAG, StubBehaviour.class);
         read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><stub id=\"s1\"/></bml>");
         assertThat(parser.getDependencies("bml1"), IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx"));
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT, expected=XMLScanException.class)
+    public void testIgnoreUnknownBehaviourStrict()
+    {
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><unknown xmlns=\"unknown\" id=\"s1\"/></bml>");
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT)
+    public void testIgnoreUnknownBehaviourNotStrict()
+    {
+        readNotStrict("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><unknown xmlns=\"unknown\" id=\"s1\"/></bml>");
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT)
+    public void testIgnoreBmlBehaviorWithAlternativeNamespaceNotStrict()
+    {
+        readNotStrict("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture xmlns=\"unknown\" id=\"s1\"/></bml>");
     }
 }

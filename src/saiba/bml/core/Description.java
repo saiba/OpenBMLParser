@@ -26,9 +26,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import saiba.bml.BMLInfo;
 
 /**
@@ -37,6 +35,7 @@ import saiba.bml.BMLInfo;
  * 
  * @author PaulRC
  */
+@Slf4j
 public class Description extends BMLElement
 {
     public int priority;
@@ -46,9 +45,7 @@ public class Description extends BMLElement
 
     public boolean isParsed;
 
-    public Behaviour behaviour;
-
-    private Logger logger = LoggerFactory.getLogger(Description.class.getName());
+    public Behaviour behaviour;    
 
     @Override
     public String getBmlId()
@@ -121,38 +118,38 @@ public class Description extends BMLElement
                     }
                     catch (InstantiationException e)
                     {
-                        logger.warn("InstantiationException when trying to initialize Description " + type + " description level ignored.",
+                        log.warn("InstantiationException when trying to initialize Description " + type + " description level ignored.",
                                 e);
                         behaviour = null;
 
                     }
                     catch (IllegalAccessException e)
                     {
-                        logger.warn("IllegalAccessException when trying to initialize Description " + type + " description level ignored.",
+                        log.warn("IllegalAccessException when trying to initialize Description " + type + " description level ignored.",
                                 e);
                         behaviour = null;
                     }
                     catch (IllegalArgumentException e)
                     {
-                        logger.warn("IllegalArgumentException when trying to initialize Description " + type
+                        log.warn("IllegalArgumentException when trying to initialize Description " + type
                                 + " description level ignored.", e);
                         behaviour = null;
                     }
                     catch (InvocationTargetException e)
                     {
-                        logger.warn("InvocationTargetException when trying to initialize Description " + type
+                        log.warn("InvocationTargetException when trying to initialize Description " + type
                                 + " description level ignored.", e);
                         e.printStackTrace();
                         behaviour = null;
                     }
                     catch (SecurityException e)
                     {
-                        logger.warn("SecurityException when trying to initialize Description " + type + " description level ignored.", e);
+                        log.warn("SecurityException when trying to initialize Description " + type + " description level ignored.", e);
                         behaviour = null;
                     }
                     catch (NoSuchMethodException e)
                     {
-                        logger.warn("NoSuchMethodException when trying to initialize Description " + type + " description level ignored.",
+                        log.warn("NoSuchMethodException when trying to initialize Description " + type + " description level ignored.",
                                 e);
                         behaviour = null;
                     }
@@ -163,7 +160,7 @@ public class Description extends BMLElement
         if (behaviour == null)
         {
             String content = tokenizer.getXMLSection();
-            logger.info("skipped content: {}", content);
+            log.info("skipped content: {}", content);
         }
     }
 

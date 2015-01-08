@@ -38,50 +38,57 @@ import saiba.bml.parser.SyncPoint;
  */
 public final class BehaviourParser
 {
-    private BehaviourParser(){}
+    private BehaviourParser()
+    {
+    }
+
     /**
      * @param bmlId id of the bml block
-     * @param tokenizer  
+     * @param tokenizer
      * @return the parsed behavior, or null if it cannot be constructed
-     * @throws IOException 
+     * @throws IOException
      */
     public static Behaviour parseBehaviour(String bmlId, XMLTokenizer tokenizer) throws IOException
     {
         String tag = tokenizer.getTagName();
         for (String str : BMLInfo.getBehaviourTypes().keySet())
         {
+            if (str.equals(tokenizer.getNamespace()+":"+tag))
+            {
+                tag = tokenizer.getNamespace()+":"+tag;
+            }
             if (str.equals(tag))
             {
                 Behaviour b = null;
                 try
                 {
-                    Constructor<? extends Behaviour> c = BMLInfo.getBehaviourTypes().get(tag).getConstructor(
-                            new Class[] { String.class, XMLTokenizer.class });
+                    Constructor<? extends Behaviour> c = BMLInfo.getBehaviourTypes().get(tag)
+                            .getConstructor(new Class[] { String.class, XMLTokenizer.class });
                     b = c.newInstance(bmlId, tokenizer);
                 }
                 catch (InstantiationException e)
                 {
-                    throw new XMLScanException(e.getMessage(),e);
+                    throw new XMLScanException(e.getMessage(), e);
                 }
                 catch (IllegalAccessException e)
                 {
-                    throw new XMLScanException(e.getMessage(),e);
+                    throw new XMLScanException(e.getMessage(), e);
                 }
                 catch (IllegalArgumentException e)
                 {
-                    throw new XMLScanException(e.getMessage(),e);
+                    throw new XMLScanException(e.getMessage(), e);
                 }
                 catch (InvocationTargetException e)
                 {
-                    throw new XMLScanException(e.getCause().getMessage(),e.getCause());
+                    throw new XMLScanException(e.getCause().getMessage(), e.getCause());
                 }
                 catch (SecurityException e)
                 {
-                    throw new XMLScanException(e.getMessage(),e);
+                    throw new XMLScanException(e.getMessage(), e);
                 }
                 catch (NoSuchMethodException e)
                 {
-                    throw new XMLScanException(e.getMessage(),e);
+                    throw new XMLScanException(e.getMessage(), e);
                 }
                 if (b != null)
                 {
@@ -125,7 +132,7 @@ public final class BehaviourParser
                         b.descBehaviour.addSyncPoints(addList);
                         return b;
                     }
-                }                
+                }
             }
         }
         return null;

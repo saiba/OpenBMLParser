@@ -33,6 +33,7 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import saiba.bml.parser.BMLParser;
 import saiba.bml.parser.SyncPoint;
 import saiba.bml.parser.SyncRef;
@@ -46,6 +47,7 @@ import com.google.common.collect.MutableClassToInstanceMap;
  * 
  * @author PaulRC
  */
+@Slf4j
 public class BehaviourBlock extends BMLElement
 {
     public ArrayList<RequiredBlock> requiredBlocks;
@@ -58,8 +60,15 @@ public class BehaviourBlock extends BMLElement
     @Getter
     private String characterId = null;
     
-    ClassToInstanceMap<BMLBehaviorAttributeExtension> bmlBehaviorAttributeExtensions;
-
+    private ClassToInstanceMap<BMLBehaviorAttributeExtension> bmlBehaviorAttributeExtensions;
+    private boolean strict = true;
+    
+    public BehaviourBlock(boolean strict, BMLBehaviorAttributeExtension... bmlBehaviorAttributeExtensions)
+    {
+        this(bmlBehaviorAttributeExtensions);
+        this.strict = strict;        
+    }
+    
     public BehaviourBlock(BMLBehaviorAttributeExtension... bmlBehaviorAttributeExtensions)
     {
         this.bmlBehaviorAttributeExtensions = MutableClassToInstanceMap.create();
@@ -295,7 +304,12 @@ public class BehaviourBlock extends BMLElement
             }
             else
             {
-                throw new XMLScanException("Invalid behavior/construct "+tag+" in BML block "+getBmlId());
+                if(strict)
+                {
+                    throw new XMLScanException("Invalid behavior/construct "+tag+" in BML block "+getBmlId());
+                }
+                String skippedContent = tokenizer.getXMLSection();
+                log.info("skipped content: {}", skippedContent);
             }
         }
     }    

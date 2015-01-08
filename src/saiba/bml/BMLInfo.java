@@ -56,22 +56,27 @@ public final class BMLInfo
 
     public static final String BMLNAMESPACE = "http://www.bml-initiative.org/bml/bml-1.0";
 
+    public static String behTag(String tag)
+    {
+        return BMLNAMESPACE+":"+tag; 
+    }
+    
     // /Behaviors that are parsed
     private static final ImmutableMap<String, Class<? extends Behaviour>> BEHAVIOR_TYPES = 
 //@formatter:off
           new ImmutableMap.Builder<String, Class<? extends Behaviour>>()
-            .put(HeadBehaviour.xmlTag(), HeadBehaviour.class)
-            .put(LocomotionBehaviour.xmlTag(), LocomotionBehaviour.class)
-            .put(FaceLexemeBehaviour.xmlTag(), FaceLexemeBehaviour.class)
-            .put(GazeShiftBehaviour.xmlTag(), GazeShiftBehaviour.class)
-            .put(GazeBehaviour.xmlTag(), GazeBehaviour.class)
-            .put(PostureBehaviour.xmlTag(), PostureBehaviour.class)
-            .put(GestureBehaviour.xmlTag(), GestureBehaviour.class)
-            .put(SpeechBehaviour.xmlTag(), SpeechBehaviour.class)
-            .put(WaitBehaviour.xmlTag(), WaitBehaviour.class)
-            .put(PointingBehaviour.xmlTag(), PointingBehaviour.class)
-            .put(FaceFacsBehaviour.xmlTag(), FaceFacsBehaviour.class)
-            .put(PostureShiftBehaviour.xmlTag(), PostureShiftBehaviour.class)
+            .put(behTag(HeadBehaviour.xmlTag()), HeadBehaviour.class)
+            .put(behTag(LocomotionBehaviour.xmlTag()), LocomotionBehaviour.class)
+            .put(behTag(FaceLexemeBehaviour.xmlTag()), FaceLexemeBehaviour.class)
+            .put(behTag(GazeShiftBehaviour.xmlTag()), GazeShiftBehaviour.class)
+            .put(behTag(GazeBehaviour.xmlTag()), GazeBehaviour.class)
+            .put(behTag(PostureBehaviour.xmlTag()), PostureBehaviour.class)
+            .put(behTag(GestureBehaviour.xmlTag()), GestureBehaviour.class)
+            .put(behTag(SpeechBehaviour.xmlTag()), SpeechBehaviour.class)
+            .put(behTag(WaitBehaviour.xmlTag()), WaitBehaviour.class)
+            .put(behTag(PointingBehaviour.xmlTag()), PointingBehaviour.class)
+            .put(behTag(FaceFacsBehaviour.xmlTag()), FaceFacsBehaviour.class)
+            .put(behTag(PostureShiftBehaviour.xmlTag()), PostureShiftBehaviour.class)
             .build();
         //@formatter:on
     // /Description levels that can be parsed
