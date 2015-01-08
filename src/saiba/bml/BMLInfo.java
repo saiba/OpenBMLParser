@@ -55,10 +55,16 @@ public final class BMLInfo
     private static Set<String> externalBlockIds = new HashSet<String>();
 
     public static final String BMLNAMESPACE = "http://www.bml-initiative.org/bml/bml-1.0";
-
+    public static final String BMLEXTNAMESPACE = "http://www.bml-initiative.org/bml/coreextensions-1.0";
+    
     public static String behTag(String tag)
     {
         return BMLNAMESPACE+":"+tag; 
+    }
+    
+    public static String behExtTag(String tag)
+    {
+        return BMLEXTNAMESPACE+":"+tag; 
     }
     
     // /Behaviors that are parsed
@@ -75,7 +81,7 @@ public final class BMLInfo
             .put(behTag(SpeechBehaviour.xmlTag()), SpeechBehaviour.class)
             .put(behTag(WaitBehaviour.xmlTag()), WaitBehaviour.class)
             .put(behTag(PointingBehaviour.xmlTag()), PointingBehaviour.class)
-            .put(behTag(FaceFacsBehaviour.xmlTag()), FaceFacsBehaviour.class)
+            .put(behExtTag(FaceFacsBehaviour.xmlTag()), FaceFacsBehaviour.class)
             .put(behTag(PostureShiftBehaviour.xmlTag()), PostureShiftBehaviour.class)
             .build();
         //@formatter:on
