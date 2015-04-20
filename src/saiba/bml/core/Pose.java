@@ -35,11 +35,7 @@ import hmi.xml.XMLTokenizer;
  */
 public class Pose extends XMLStructureAdapter
 {
-    private enum Part
-    {
-        ARMS, LEFT_ARM, RIGHT_ARM, LEGS, LEFT_LEG, RIGHT_LEG, HEAD, WHOLE_BODY;
-    }
-    private Part part;
+    private String part;
     private String lexeme;
     
     public String getPart()
@@ -55,7 +51,7 @@ public class Pose extends XMLStructureAdapter
     @Override
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
-        part = Part.valueOf(getRequiredAttribute("part", attrMap, tokenizer));
+        part = getRequiredAttribute("part", attrMap, tokenizer);
         lexeme = getRequiredAttribute("lexeme", attrMap, tokenizer);
         super.decodeAttributes(attrMap,tokenizer);
     }
