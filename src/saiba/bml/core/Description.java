@@ -19,6 +19,7 @@
 package saiba.bml.core;
 
 import hmi.xml.XMLFormatting;
+import hmi.xml.XMLScanException;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class Description extends BMLElement
 
     public boolean isParsed;
 
-    public Behaviour behaviour;    
+    public Behaviour behaviour;
 
     @Override
     public String getBmlId()
@@ -109,50 +110,17 @@ public class Description extends BMLElement
             {
                 if (BMLInfo.supportedExtensions.contains(desc))
                 {
-                    behaviour = null;
+                    behaviour = null;                    
                     try
                     {
                         Constructor<? extends Behaviour> c = desc.getConstructor(new Class[] { String.class, String.class, XMLTokenizer.class });
                         behaviour = c.newInstance(bmlId, id, tokenizer);
-                        isParsed = true;
                     }
-                    catch (InstantiationException e)
+                    catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
                     {
-                        log.warn("InstantiationException when trying to initialize Description " + type + " description level ignored.",
-                                e);
-                        behaviour = null;
-
+                        throw new XMLScanException("Error parsing/constructing description", e);
                     }
-                    catch (IllegalAccessException e)
-                    {
-                        log.warn("IllegalAccessException when trying to initialize Description " + type + " description level ignored.",
-                                e);
-                        behaviour = null;
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        log.warn("IllegalArgumentException when trying to initialize Description " + type
-                                + " description level ignored.", e);
-                        behaviour = null;
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        log.warn("InvocationTargetException when trying to initialize Description " + type
-                                + " description level ignored.", e);
-                        e.printStackTrace();
-                        behaviour = null;
-                    }
-                    catch (SecurityException e)
-                    {
-                        log.warn("SecurityException when trying to initialize Description " + type + " description level ignored.", e);
-                        behaviour = null;
-                    }
-                    catch (NoSuchMethodException e)
-                    {
-                        log.warn("NoSuchMethodException when trying to initialize Description " + type + " description level ignored.",
-                                e);
-                        behaviour = null;
-                    }
+                    isParsed = true;
                 }
             }
         }
