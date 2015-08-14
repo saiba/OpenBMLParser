@@ -118,7 +118,9 @@ public class Description extends BMLElement
                     }
                     catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
                     {
-                        throw new XMLScanException("Error parsing/constructing description", e);
+                        String cause = e.getMessage()==null?"":e.getMessage();
+                        String causeOfCause = e.getCause()==null?"":e.getCause().getMessage();                        
+                        throw new XMLScanException("Error parsing/constructing description.\n"+cause+"\n"+causeOfCause+"\n", e);
                     }
                     isParsed = true;
                 }
