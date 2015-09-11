@@ -100,7 +100,7 @@
     <!-- Compile the java code from ${src} into ${build} -->
     <javac debug="true" includeantruntime="false" 
 	srcdir="${src}" destdir="${build}"
-	source="1.6" target="1.6">
+	source="1.7" target="1.7">
 	<classpath refid="javac-classpath"/>
             
     </javac>
@@ -122,15 +122,18 @@
     <jar jarfile="${dist}/lib/openbmlparser.jar">
       <fileset dir="${build}"/>      
       <fileset dir="${src}"/>      
+	  <fileset file="license.txt"/>
     </jar>
     
     <jar jarfile="${dist}/lib/openbmlparser-test.jar">
       <fileset dir="${build.test.classes.dir}"/>      
       <fileset dir="${test.src.dir}"/> 
+	  <fileset file="license.txt"/>
     </jar>
 
     <jar jarfile="${dist}/lib/openbmlparser-testresource.jar">
-      <fileset dir="${test.resource.dir}"/>      
+      <fileset dir="${test.resource.dir}"/>
+      <fileset file="license.txt"/>      
     </jar>
   </target>
   

@@ -24,10 +24,12 @@ package saiba.bml.parser;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import saiba.bml.core.Behaviour;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -51,7 +53,17 @@ public class StubBehaviour extends Behaviour
     @Override
     public void addDefaultSyncPoints()
     {
-                    
+        for(String s:getDefaultSyncPoints())
+        {
+            addSyncPoint(new SyncPoint(bmlId, id, s));
+        }        
+    }
+
+    private static final List<String> DEFAULT_SYNCS = ImmutableList.of("start","end");
+    
+    public static List<String> getDefaultSyncPoints()
+    {
+        return DEFAULT_SYNCS;
     }
     
     public Set<String> getOtherBlockDependencies()

@@ -22,7 +22,6 @@
 package saiba.bml.feedback;
 
 import hmi.xml.XMLFormatting;
-import hmi.xml.XMLStructureAdapter;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
@@ -30,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+import saiba.bml.BMLInfo;
 import saiba.bml.core.Behaviour;
 import saiba.bml.core.BehaviourParser;
 
@@ -37,7 +38,8 @@ import saiba.bml.core.BehaviourParser;
  * Prediction feedback for the timing of BML blocks and behaviours. 
  * @author hvanwelbergen
  */
-public final class BMLPredictionFeedback extends XMLStructureAdapter implements BMLFeedback
+@Slf4j
+public class BMLPredictionFeedback extends AbstractBMLFeedback
 {
     private List<BMLBlockPredictionFeedback> bmlBlockPredictions = new ArrayList<BMLBlockPredictionFeedback>();
     private List<Behaviour> bmlBehaviorPredictions = new ArrayList<Behaviour>();
@@ -59,12 +61,13 @@ public final class BMLPredictionFeedback extends XMLStructureAdapter implements 
     }
     
     @Override
-    public StringBuilder appendAttributeString(StringBuilder buf)
+    public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
         if(characterId!=null)
         {
             appendAttribute(buf, "characterId", characterId);
         }
+        caHandler.appendCustomAttributeString(buf, fmt);
         return super.appendAttributeString(buf);
     }
     
@@ -72,13 +75,16 @@ public final class BMLPredictionFeedback extends XMLStructureAdapter implements 
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
         characterId = getOptionalAttribute("characterId", attrMap, null);
+        caHandler.decodeCustomAttributes(attrMap, tokenizer, BMLInfo.getCustomFeedbackFloatAttributes(getClass()),
+                BMLInfo.getCustomFeedbackStringAttributes(getClass()), this);
     }
     
     @Override
     public StringBuilder appendContent(StringBuilder buf, XMLFormatting fmt)
     {
         appendXMLStructureList(buf, fmt, bmlBlockPredictions);
-        appendXMLStructureList(buf, fmt, bmlBehaviorPredictions);        
+        appendXMLStructureList(buf, fmt, bmlBehaviorPredictions);
+        //appendXMLStructureList(buf, fmt, new ImmutableList.Builder<XMLStructure>().addAll(bmlBlockPredictions).addAll(bmlBehaviorPredictions).build());
         return buf;
     }
     
@@ -100,7 +106,12 @@ public final class BMLPredictionFeedback extends XMLStructureAdapter implements 
                 {
                     bmlBehaviorPredictions.add(b);
                 }
-            }
+                else
+                {
+                    log.warn("Skipping in prediction: {}", tokenizer.getTagName());
+                    tokenizer.skipTag();
+                }
+            }            
         }
     }
     

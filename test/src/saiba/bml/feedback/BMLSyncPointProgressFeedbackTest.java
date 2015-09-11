@@ -24,6 +24,8 @@ package saiba.bml.feedback;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import saiba.utils.TestUtil;
@@ -35,47 +37,102 @@ import saiba.utils.TestUtil;
 public class BMLSyncPointProgressFeedbackTest
 {
     private static final double PRECISION = 0.00001;
-    
+    private FeedbackExtensionTests<BMLSyncPointProgressFeedback> fe = new FeedbackExtensionTests<BMLSyncPointProgressFeedback>();
+    private BMLSyncPointProgressFeedback fb = new BMLSyncPointProgressFeedback();
+
     @Test
     public void testReadXML()
     {
-        String str = "<syncPointProgress "+TestUtil.getDefNS()+" characterId=\"doctor\" id=\"bml1:gesture1:stroke\" time=\"10\" globalTime=\"111\"/>";
-        BMLSyncPointProgressFeedback progress = new BMLSyncPointProgressFeedback();
-        progress.readXML(str);
-        assertEquals("doctor", progress.getCharacterId());
-        assertEquals(10, progress.getTime(),PRECISION);
-        assertEquals(111, progress.getGlobalTime(),PRECISION);        
+        String str = "<syncPointProgress " + TestUtil.getDefNS()
+                + " characterId=\"doctor\" id=\"bml1:gesture1:stroke\" time=\"10\" globalTime=\"111\"/>";
+        fb.readXML(str);
+        assertEquals("doctor", fb.getCharacterId());
+        assertEquals(10, fb.getTime(), PRECISION);
+        assertEquals(111, fb.getGlobalTime(), PRECISION);
     }
-    
+
     @Test
     public void testWriteXML()
     {
-        String str = "<syncPointProgress "+TestUtil.getDefNS()+"characterId=\"doctor\" id=\"bml1:gesture1:stroke\" time=\"10\" globalTime=\"111\"/>";
+        String str = "<syncPointProgress " + TestUtil.getDefNS()
+                + "characterId=\"doctor\" id=\"bml1:gesture1:stroke\" time=\"10\" globalTime=\"111\"/>";
         BMLSyncPointProgressFeedback progressIn = new BMLSyncPointProgressFeedback();
         progressIn.readXML(str);
         StringBuilder buf = new StringBuilder();
-        progressIn.appendXML(buf);        
-        
-        BMLSyncPointProgressFeedback progressOut = new BMLSyncPointProgressFeedback();  
-        progressOut.readXML(buf.toString());        
+        progressIn.appendXML(buf);
+
+        BMLSyncPointProgressFeedback progressOut = new BMLSyncPointProgressFeedback();
+        progressOut.readXML(buf.toString());
         assertEquals("doctor", progressOut.getCharacterId());
-        assertEquals(10, progressOut.getTime(),PRECISION);
-        assertEquals(111, progressOut.getGlobalTime(),PRECISION);        
+        assertEquals(10, progressOut.getTime(), PRECISION);
+        assertEquals(111, progressOut.getGlobalTime(), PRECISION);
     }
-    
+
     @Test
     public void testWriteXMLNoCharacterId()
     {
-        String str = "<syncPointProgress "+TestUtil.getDefNS()+"id=\"bml1:gesture1:stroke\" time=\"10\" globalTime=\"111\"/>";
+        String str = "<syncPointProgress " + TestUtil.getDefNS() + "id=\"bml1:gesture1:stroke\" time=\"10\" globalTime=\"111\"/>";
         BMLSyncPointProgressFeedback progressIn = new BMLSyncPointProgressFeedback();
         progressIn.readXML(str);
         StringBuilder buf = new StringBuilder();
-        progressIn.appendXML(buf);        
-        
-        BMLSyncPointProgressFeedback progressOut = new BMLSyncPointProgressFeedback();  
-        progressOut.readXML(buf.toString());        
+        progressIn.appendXML(buf);
+
+        BMLSyncPointProgressFeedback progressOut = new BMLSyncPointProgressFeedback();
+        progressOut.readXML(buf.toString());
         assertNull(progressOut.getCharacterId());
-        assertEquals(10, progressOut.getTime(),PRECISION);
-        assertEquals(111, progressOut.getGlobalTime(),PRECISION);        
+        assertEquals(10, progressOut.getTime(), PRECISION);
+        assertEquals(111, progressOut.getGlobalTime(), PRECISION);
+    }
+
+    @Test
+    public void testCustomFloatAttribute() throws IOException
+    {
+        fe.testCustomFloatAttribute(fb, "bml1:speech1:s1", "globalTime=\"0\" time=\"0\"");
+    }
+
+    @Test
+    public void testNoFloatAttribute() throws IOException
+    {
+        fe.testNoFloatAttribute(fb, "bml1:speech1:s1", "globalTime=\"0\" time=\"0\"");
+    }
+
+    @Test
+    public void testCustomStringAttribute() throws IOException
+    {
+        fe.testCustomStringAttribute(fb, "bml1:speech1:s1", "globalTime=\"0\" time=\"0\"");
+    }
+
+    @Test
+    public void testNoCustomStringAttribute() throws IOException
+    {
+        fe.testNoCustomStringAttribute(fb, "bml1:speech1:s1", "globalTime=\"0\" time=\"0\"");
+    }
+
+    @Test
+    public void testWriteCustomFloatAttribute() throws IOException
+    {
+        fe.testWriteCustomFloatAttribute(new BMLSyncPointProgressFeedback(), new BMLSyncPointProgressFeedback(), "bml1:speech1:s1",
+                "globalTime=\"0\" time=\"0\"");
+    }
+
+    @Test
+    public void testWriteCustomStringAttribute() throws IOException
+    {
+        fe.testWriteCustomStringAttribute(new BMLSyncPointProgressFeedback(), new BMLSyncPointProgressFeedback(), "bml1:speech1:s1",
+                "globalTime=\"0\" time=\"0\"");
+    }
+
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix() throws IOException
+    {
+        fe.testWriteCustomStringAttributeNoPrefix(new BMLSyncPointProgressFeedback(), new BMLSyncPointProgressFeedback(),
+                "bml1:speech1:s1", "globalTime=\"0\" time=\"0\"");
+    }
+
+    @Test
+    public void testWriteCustomStringAttributeNoPrefix2() throws IOException
+    {
+        fe.testWriteCustomStringAttributeNoPrefix(new BMLSyncPointProgressFeedback(), new BMLSyncPointProgressFeedback(),
+                "bml1:speech1:s1", "globalTime=\"0\" time=\"0\"");
     }
 }

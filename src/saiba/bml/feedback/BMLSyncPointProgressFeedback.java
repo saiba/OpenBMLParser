@@ -21,12 +21,13 @@
  ******************************************************************************/
 package saiba.bml.feedback;
 
+import hmi.xml.XMLFormatting;
 import hmi.xml.XMLScanException;
-import hmi.xml.XMLStructureAdapter;
 import hmi.xml.XMLTokenizer;
 
 import java.util.HashMap;
 
+import saiba.bml.BMLInfo;
 import saiba.bml.parser.InvalidSyncRefException;
 import saiba.bml.parser.SyncRef;
 
@@ -34,7 +35,7 @@ import saiba.bml.parser.SyncRef;
  * Sync point progress feedback XML
  * @author Herwin
  */
-public class BMLSyncPointProgressFeedback extends XMLStructureAdapter implements BMLFeedback
+public class BMLSyncPointProgressFeedback extends AbstractBMLFeedback
 {
     private String characterId;
     public void setCharacterId(String characterId)
@@ -80,10 +81,12 @@ public class BMLSyncPointProgressFeedback extends XMLStructureAdapter implements
         }
         globalTime = getRequiredFloatAttribute("globalTime", attrMap, tokenizer);
         time = getRequiredFloatAttribute("time", attrMap, tokenizer);
+        caHandler.decodeCustomAttributes(attrMap, tokenizer, BMLInfo.getCustomFeedbackFloatAttributes(getClass()),
+                BMLInfo.getCustomFeedbackStringAttributes(getClass()), this);
     }
     
     @Override
-    public StringBuilder appendAttributes(StringBuilder buf)
+    public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
         if(characterId!=null && characterId.length()>0)
         {
@@ -92,7 +95,8 @@ public class BMLSyncPointProgressFeedback extends XMLStructureAdapter implements
         appendAttribute(buf, "id", syncRef.toString());
         appendAttribute(buf, "time", time);
         appendAttribute(buf, "globalTime", globalTime);
-        return buf;
+        caHandler.appendCustomAttributeString(buf, fmt);
+        return super.appendAttributeString(buf);
     }
     public String getBMLId()
     {

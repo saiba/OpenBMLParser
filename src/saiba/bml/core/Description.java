@@ -19,6 +19,7 @@
 package saiba.bml.core;
 
 import hmi.xml.XMLFormatting;
+import hmi.xml.XMLScanException;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
@@ -26,9 +27,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import saiba.bml.BMLInfo;
 
 /**
@@ -37,6 +36,7 @@ import saiba.bml.BMLInfo;
  * 
  * @author PaulRC
  */
+@Slf4j
 public class Description extends BMLElement
 {
     public int priority;
@@ -47,8 +47,6 @@ public class Description extends BMLElement
     public boolean isParsed;
 
     public Behaviour behaviour;
-
-    private Logger logger = LoggerFactory.getLogger(Description.class.getName());
 
     @Override
     public String getBmlId()
@@ -112,50 +110,19 @@ public class Description extends BMLElement
             {
                 if (BMLInfo.supportedExtensions.contains(desc))
                 {
-                    behaviour = null;
+                    behaviour = null;                    
                     try
                     {
-                        Constructor<? extends Behaviour> c = desc.getConstructor(new Class[] { String.class, XMLTokenizer.class });
-                        behaviour = c.newInstance(bmlId, tokenizer);
-                        isParsed = true;
+                        Constructor<? extends Behaviour> c = desc.getConstructor(new Class[] { String.class, String.class, XMLTokenizer.class });
+                        behaviour = c.newInstance(bmlId, id, tokenizer);
                     }
-                    catch (InstantiationException e)
+                    catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
                     {
-                        logger.warn("InstantiationException when trying to initialize Description " + type + " description level ignored.",
-                                e);
-                        behaviour = null;
-
+                        String cause = e.getMessage()==null?"":e.getMessage();
+                        String causeOfCause = e.getCause()==null?"":e.getCause().getMessage();                        
+                        throw new XMLScanException("Error parsing/constructing description.\n"+cause+"\n"+causeOfCause+"\n", e);
                     }
-                    catch (IllegalAccessException e)
-                    {
-                        logger.warn("IllegalAccessException when trying to initialize Description " + type + " description level ignored.",
-                                e);
-                        behaviour = null;
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        logger.warn("IllegalArgumentException when trying to initialize Description " + type
-                                + " description level ignored.", e);
-                        behaviour = null;
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        logger.warn("InvocationTargetException when trying to initialize Description " + type
-                                + " description level ignored.", e);
-                        e.printStackTrace();
-                        behaviour = null;
-                    }
-                    catch (SecurityException e)
-                    {
-                        logger.warn("SecurityException when trying to initialize Description " + type + " description level ignored.", e);
-                        behaviour = null;
-                    }
-                    catch (NoSuchMethodException e)
-                    {
-                        logger.warn("NoSuchMethodException when trying to initialize Description " + type + " description level ignored.",
-                                e);
-                        behaviour = null;
-                    }
+                    isParsed = true;
                 }
             }
         }
@@ -163,7 +130,7 @@ public class Description extends BMLElement
         if (behaviour == null)
         {
             String content = tokenizer.getXMLSection();
-            logger.info("skipped content: {}", content);
+            log.info("skipped content: {}", content);
         }
     }
 

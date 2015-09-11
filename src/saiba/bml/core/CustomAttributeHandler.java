@@ -23,6 +23,16 @@ public class CustomAttributeHandler
         throw new IllegalArgumentException("Parameter " + name + " not found/not a float.");
     }
 
+    public void addCustomStringParameterValue(String name, String value)
+    {
+        customStringAttributes.put(name, value);
+    }
+
+    public void addCustomFloatParameterValue(String name, float value)
+    {
+        customFloatAttributes.put(name, value);
+    }
+
     public String getCustomStringParameterValue(String name)
     {
         if (customStringAttributes.containsKey(name))
@@ -37,14 +47,20 @@ public class CustomAttributeHandler
         if (customStringAttributes.containsKey(name)) return true;
         return false;
     }
-    
+
+    public boolean specifiesCustomFloatParameter(String name)
+    {
+        if (customFloatAttributes.containsKey(name)) return true;
+        return false;
+    }
+
     public boolean specifiesCustomParameter(String name)
     {
         if (customStringAttributes.containsKey(name)) return true;
-        if (customFloatAttributes.containsKey(name)) return true;        
+        if (customFloatAttributes.containsKey(name)) return true;
         return false;
     }
-    
+
     public boolean satisfiesCustomConstraint(String name, String value)
     {
         if (customStringAttributes.containsKey(name))

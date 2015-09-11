@@ -23,28 +23,21 @@ package saiba.bml.feedback;
 
 import hmi.xml.XMLFormatting;
 import hmi.xml.XMLScanException;
-import hmi.xml.XMLStructureAdapter;
 import hmi.xml.XMLTokenizer;
 
 import java.util.HashMap;
 
-import lombok.Delegate;
 import saiba.bml.BMLInfo;
-import saiba.bml.core.CustomAttributeHandler;
 
 /**
  * XML parser for a bml block prediction feedback element
  * @author hvanwelbergen
  * 
  */
-public final class BMLBlockPredictionFeedback extends XMLStructureAdapter implements BMLFeedback
+public class BMLBlockPredictionFeedback extends AbstractBMLFeedback
 {
-    public static final double UNKNOWN_TIME = -Double.MAX_VALUE;
     private String id;
     private double globalStart, globalEnd;
-
-    @Delegate
-    private CustomAttributeHandler caHandler = new CustomAttributeHandler();
 
     public String getId()
     {

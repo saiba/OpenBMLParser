@@ -1,6 +1,7 @@
 package saiba.bml.core;
 
 import static org.junit.Assert.assertEquals;
+import hmi.xml.XMLScanException;
 
 import org.junit.Test;
 
@@ -36,5 +37,29 @@ public class BehaviourBlockTest
         assertEquals("bml2", parser.getBehaviours().get(1).bmlId);
         assertEquals("bml2", parser.getConstraints().get(0).getTargets().get(0).getBmlId());
         assertEquals("bml2", parser.getConstraints().get(0).getTargets().get(1).getBmlId());
+    }
+
+    @Test(timeout = 300)
+    public void testCharacterId()
+    {
+        BehaviourBlock bb = new BehaviourBlock();
+        bb.readXML("<bml id=\"bml1\" characterId=\"Alice\"" + " xmlns=\"" + BehaviourBlock.BMLNAMESPACE +"\"/>");
+        assertEquals("Alice",bb.getCharacterId());
+    }
+    
+    @Test(timeout = 300, expected = XMLScanException.class)
+    public void testInvalidAttribute()
+    {
+        BehaviourBlock bb = new BehaviourBlock();
+        bb.readXML("<bml id=\"bml1\" bmla:appendAfter=\"bml1\" " + "xmlns=\"" + BehaviourBlock.BMLNAMESPACE + "\"/>");
+    }
+
+    @Test(timeout = 300, expected = XMLScanException.class)
+    public void testUnregisteredBehaviour()
+    {
+        String beh = "<bml id=\"bml1\" xmlns=\"http://www.bml-initiative.org/bml/bml-1.0\" xmlns:pe=\"http://hmi.ewi.utwente.nl/pictureengine\">"
+                + "<pe:invalidbeh/>" + "</bml>";
+        BehaviourBlock bb = new BehaviourBlock();
+        bb.readXML(beh);
     }
 }

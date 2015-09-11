@@ -21,12 +21,14 @@
  ******************************************************************************/
 package saiba.bml.feedback;
 
-import hmi.xml.XMLStructureAdapter;
+import hmi.xml.XMLFormatting;
 import hmi.xml.XMLTokenizer;
 
 import java.util.HashMap;
 
-public class BMLBlockProgressFeedback extends XMLStructureAdapter implements BMLFeedback
+import saiba.bml.BMLInfo;
+
+public class BMLBlockProgressFeedback extends AbstractBMLFeedback
 {
     private String bmlId;
     private String syncId;
@@ -64,11 +66,13 @@ public class BMLBlockProgressFeedback extends XMLStructureAdapter implements BML
         bmlId = idSplit[0];
         syncId = idSplit[1];
         globalTime = getRequiredFloatAttribute("globalTime", attrMap, tokenizer);
-        characterId = getOptionalAttribute("characterId", attrMap);        
+        characterId = getOptionalAttribute("characterId", attrMap);
+        caHandler.decodeCustomAttributes(attrMap, tokenizer, BMLInfo.getCustomFeedbackFloatAttributes(getClass()),
+                BMLInfo.getCustomFeedbackStringAttributes(getClass()), this);
     }
     
     @Override
-    public StringBuilder appendAttributes(StringBuilder buf)
+    public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
         if(characterId!=null)
         {
@@ -76,6 +80,7 @@ public class BMLBlockProgressFeedback extends XMLStructureAdapter implements BML
         }
         appendAttribute(buf, "id", bmlId+":"+syncId);
         appendAttribute(buf, "globalTime", globalTime);
+        caHandler.appendCustomAttributeString(buf, fmt);
         return buf;
     }
 

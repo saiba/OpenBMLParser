@@ -81,9 +81,9 @@ public class BehaviourBlockBuilderTest
             private String testVal;
 
             @Override
-            public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
+            public void decodeAttributes(BehaviourBlock bb, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
             {
-                testVal = attrMap.get("http://mynamespace.net:test");
+                testVal = bb.getRequiredAttribute("http://mynamespace.net:test", attrMap, tokenizer);                
             }
 
             @Override
@@ -123,6 +123,13 @@ public class BehaviourBlockBuilderTest
         assertEquals("bml1", bb.id);
     }
 
+    @Test
+    public void buildBlockWithCharacterId()
+    {
+        BehaviourBlock bb = builder.characterId("Alice").build();
+        assertEquals("Alice", bb.getCharacterId());
+    }
+    
     @Test
     public void buildBlockWithIdPrefix()
     {
@@ -180,22 +187,22 @@ public class BehaviourBlockBuilderTest
     @Test
     public void buildBlockWithFaceFacsBehaviour()
     {
-      //@formatter:off
+        //@formatter:off
         BehaviourBlock bb = 
                 builder.id("bml1")
                        .addFaceFacsBehaviour("f1", 10, Side.LEFT, 0.7f)
                        .build();
         //@formatter:on
         assertEquals("f1", bb.behaviours.get(0).id);
-        assertEquals("bml1", bb.behaviours.get(0).getBmlId());        
+        assertEquals("bml1", bb.behaviours.get(0).getBmlId());
         assertEquals(10f, bb.behaviours.get(0).getFloatParameterValue("au"), PARAM_PRECISION);
         assertEquals(Side.LEFT.toString(), bb.behaviours.get(0).getStringParameterValue("side"));
     }
-    
+
     @Test
     public void buildBlockWithGazeBehaviour()
     {
-      //@formatter:off
+        //@formatter:off
         BehaviourBlock bb = 
                 builder.id("bml1")
                        .addGazeBehaviour("g1", "bluebox","SHOULDER", OffsetDirection.DOWNLEFT, 10)
@@ -208,7 +215,7 @@ public class BehaviourBlockBuilderTest
         assertEquals(OffsetDirection.DOWNLEFT.toString(), bb.behaviours.get(0).getStringParameterValue("offsetDirection"));
         assertEquals(10f, bb.behaviours.get(0).getFloatParameterValue("offsetAngle"), PARAM_PRECISION);
     }
-    
+
     @Test
     public void buildBlockWithGazeShiftBehaviour()
     {
@@ -225,11 +232,11 @@ public class BehaviourBlockBuilderTest
         assertEquals(OffsetDirection.DOWNLEFT.toString(), bb.behaviours.get(0).getStringParameterValue("offsetDirection"));
         assertEquals(10f, bb.behaviours.get(0).getFloatParameterValue("offsetAngle"), PARAM_PRECISION);
     }
-    
+
     @Test
     public void buildBlockWithGestureBehaviour()
     {
-      //@formatter:off
+        //@formatter:off
         BehaviourBlock bb = 
                 builder.id("bml1")
                        .addGestureBehaviour("g1", "BEAT",Mode.LEFT_HAND)
@@ -238,9 +245,9 @@ public class BehaviourBlockBuilderTest
         assertEquals("g1", bb.behaviours.get(0).id);
         assertEquals("BEAT", bb.behaviours.get(0).getStringParameterValue("lexeme"));
         assertEquals(Mode.LEFT_HAND.toString(), bb.behaviours.get(0).getStringParameterValue("mode"));
-        assertEquals("bml1", bb.behaviours.get(0).getBmlId());        
-    }    
-    
+        assertEquals("bml1", bb.behaviours.get(0).getBmlId());
+    }
+
     @Test
     public void buildBlockWithSpeechBehaviour()
     {

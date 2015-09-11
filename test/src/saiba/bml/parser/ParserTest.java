@@ -88,6 +88,11 @@ public class ParserTest
         read(bml, new BehaviourBlock());
     }
 
+    private void readNotStrict(String bml)
+    {
+        read(bml, new BehaviourBlock(false));
+    }
+    
     private void read(String bml, BehaviourBlock block)
     {
         parser.clear();
@@ -310,6 +315,24 @@ public class ParserTest
     public void testPostureShift() throws IOException
     {
         readXML("testpostureshift.xml");
+
+        ExpectedConstraint expected1 = new ExpectedConstraint();
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 0));
+        expected1.expectedSyncs.add(new ExpectedSync("bml1", "shift1", "start", 0));
+        expectedConstraints.add(expected1);
+
+        ExpectedConstraint expected2 = new ExpectedConstraint();
+        expected2.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 3));
+        expected2.expectedSyncs.add(new ExpectedSync("bml1", "shift1", "end", 0));
+        expectedConstraints.add(expected2);
+
+        assertEqualConstraints(expectedConstraints, parser.getConstraints());
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT)
+    public void testGazeShift() throws IOException
+    {
+        readXML("testgazeshift.xml");
 
         ExpectedConstraint expected1 = new ExpectedConstraint();
         expected1.expectedSyncs.add(new ExpectedSync("bml1", null, "bml:start", 0));
@@ -1036,7 +1059,7 @@ public class ParserTest
         @Override
         public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
         {
-
+            
         }
 
         @Override
@@ -1062,7 +1085,7 @@ public class ParserTest
         @Override
         public void decodeAttributes(BehaviourBlock behavior, HashMap<String, String> attrMap, XMLTokenizer tokenizer)
         {
-
+            
         }
 
         @Override
@@ -1097,5 +1120,23 @@ public class ParserTest
         BMLInfo.addBehaviourType(StubBehaviour.XMLTAG, StubBehaviour.class);
         read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><stub id=\"s1\"/></bml>");
         assertThat(parser.getDependencies("bml1"), IsIterableContainingInAnyOrder.containsInAnyOrder("bmlx"));
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT, expected=XMLScanException.class)
+    public void testIgnoreUnknownBehaviourStrict()
+    {
+        read("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><unknown xmlns=\"unknown\" id=\"s1\"/></bml>");
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT)
+    public void testIgnoreUnknownBehaviourNotStrict()
+    {
+        readNotStrict("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><unknown xmlns=\"unknown\" id=\"s1\"/></bml>");
+    }
+    
+    @Test(timeout = PARSE_TIMEOUT)
+    public void testIgnoreBmlBehaviorWithAlternativeNamespaceNotStrict()
+    {
+        readNotStrict("<bml id=\"bml1\" " + TestUtil.getDefNS() + "><gesture xmlns=\"unknown\" id=\"s1\"/></bml>");
     }
 }

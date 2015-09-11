@@ -1,0 +1,15 @@
+<!--
+Required timing:
+shift1:start = 0
+shift1:end = 3
+
+Constraints:
+c1 shift1:start, 0
+c2 shift1:end, 3 
+
+Constraints tested in: test.bml.ParserTest
+Timing tested in: test.bml.TestScheduler
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+	<gazeShift id="shift1" start="0" end="3" influence="EYES" target="bluebox"/>	  
+</bml>

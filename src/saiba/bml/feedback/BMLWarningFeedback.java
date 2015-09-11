@@ -23,18 +23,19 @@ package saiba.bml.feedback;
 
 import hmi.xml.CharDataConversion;
 import hmi.xml.XMLFormatting;
-import hmi.xml.XMLStructureAdapter;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import saiba.bml.BMLInfo;
 
 /**
  * Warning feedback
  * @author Herwin
  * 
  */
-public class BMLWarningFeedback extends XMLStructureAdapter implements BMLFeedback
+public class BMLWarningFeedback extends AbstractBMLFeedback
 {
     public static final String PARSING_FAILURE = "PARSING_FAILURE";
     public static final String NO_SUCH_TARGET = "NO_SUCH_TARGET";
@@ -47,7 +48,7 @@ public class BMLWarningFeedback extends XMLStructureAdapter implements BMLFeedba
     private String characterId;
     private String type;
     private String id;
-    private String description;
+    private String description="";
 
     public BMLWarningFeedback()
     {
@@ -93,10 +94,12 @@ public class BMLWarningFeedback extends XMLStructureAdapter implements BMLFeedba
         characterId = getOptionalAttribute("characterId", attrMap);
         id = getRequiredAttribute("id", attrMap, tokenizer);
         type = getRequiredAttribute("type", attrMap, tokenizer);
+        caHandler.decodeCustomAttributes(attrMap, tokenizer, BMLInfo.getCustomFeedbackFloatAttributes(getClass()),
+                BMLInfo.getCustomFeedbackStringAttributes(getClass()), this);
     }
 
     @Override
-    public StringBuilder appendAttributes(StringBuilder buf)
+    public StringBuilder appendAttributeString(StringBuilder buf, XMLFormatting fmt)
     {
         if(characterId!=null)
         {
@@ -104,7 +107,8 @@ public class BMLWarningFeedback extends XMLStructureAdapter implements BMLFeedba
         }
         appendAttribute(buf, "id", id);
         appendAttribute(buf, "type", type);
-        return buf;
+        caHandler.appendCustomAttributeString(buf, fmt);
+        return super.appendAttributeString(buf);
     }
 
     @Override

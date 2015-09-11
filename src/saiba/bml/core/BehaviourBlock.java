@@ -19,6 +19,8 @@
 package saiba.bml.core;
 
 import hmi.xml.XMLFormatting;
+import hmi.xml.XMLNameSpace;
+import hmi.xml.XMLScanException;
 import hmi.xml.XMLTokenizer;
 
 import java.io.IOException;
@@ -26,13 +28,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import saiba.bml.parser.BMLParser;
 import saiba.bml.parser.SyncPoint;
 import saiba.bml.parser.SyncRef;
 
 import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
 
 /**
@@ -40,6 +47,7 @@ import com.google.common.collect.MutableClassToInstanceMap;
  * 
  * @author PaulRC
  */
+@Slf4j
 public class BehaviourBlock extends BMLElement
 {
     public ArrayList<RequiredBlock> requiredBlocks;
@@ -48,8 +56,19 @@ public class BehaviourBlock extends BMLElement
 
     public ArrayList<Behaviour> behaviours;
 
-    ClassToInstanceMap<BMLBehaviorAttributeExtension> bmlBehaviorAttributeExtensions;
-
+    @Setter
+    @Getter
+    private String characterId = null;
+    
+    private ClassToInstanceMap<BMLBehaviorAttributeExtension> bmlBehaviorAttributeExtensions;
+    private boolean strict = true;
+    
+    public BehaviourBlock(boolean strict, BMLBehaviorAttributeExtension... bmlBehaviorAttributeExtensions)
+    {
+        this(bmlBehaviorAttributeExtensions);
+        this.strict = strict;        
+    }
+    
     public BehaviourBlock(BMLBehaviorAttributeExtension... bmlBehaviorAttributeExtensions)
     {
         this.bmlBehaviorAttributeExtensions = MutableClassToInstanceMap.create();
@@ -192,6 +211,10 @@ public class BehaviourBlock extends BMLElement
     {
         appendAttribute(buf, "id", id);
         appendAttribute(buf, "composition", composition.toString());
+        if(characterId!=null)
+        {
+            appendAttribute(buf,"characterId",characterId);
+        }
         for(BMLBehaviorAttributeExtension ext:bmlBehaviorAttributeExtensions.values())
         {
             ext.appendAttributeString(buf, fmt);
@@ -203,8 +226,10 @@ public class BehaviourBlock extends BMLElement
     public void decodeAttributes(HashMap<String, String> attrMap, XMLTokenizer tokenizer)
     {
         id = getRequiredAttribute("id", attrMap, tokenizer);
+        characterId = getOptionalAttribute("characterId",attrMap, null);
         String sm = getOptionalAttribute("composition", attrMap, "MERGE");
-
+        
+        
         composition = CoreComposition.parse(sm);
 
         for (BMLBehaviorAttributeExtension ext : bmlBehaviorAttributeExtensions.values())
@@ -215,7 +240,10 @@ public class BehaviourBlock extends BMLElement
                 composition = ext.handleComposition(sm);
             }
         }
-        //super.decodeAttributes(attrMap, tokenizer);
+        if(!attrMap.isEmpty())
+        {
+            throw new XMLScanException("Invalid attribute(s) "+attrMap.keySet()+" in bml block");
+        }        
     }
 
     public Set<String> getOtherBlockDependencies()
@@ -254,10 +282,12 @@ public class BehaviourBlock extends BMLElement
                 requiredBlocks.add(rb);
                 behaviours.addAll(rb.behaviours);
                 constraintBlocks.addAll(rb.constraintBlocks);
+                continue;
             }
             if (tag.equals(ConstraintBlock.xmlTag()))
             {
                 constraintBlocks.add(new ConstraintBlock(id, tokenizer));
+                continue;
             }
 
             Behaviour b = BehaviourParser.parseBehaviour(id, tokenizer);
@@ -272,7 +302,15 @@ public class BehaviourBlock extends BMLElement
                     behaviours.add(b);
                 }
             }
-            ensureDecodeProgress(tokenizer);
+            else
+            {
+                if(strict)
+                {
+                    throw new XMLScanException("Invalid behavior/construct "+tag+" in BML block "+getBmlId());
+                }
+                String skippedContent = tokenizer.getXMLSection();
+                log.info("skipped content: {}", skippedContent);
+            }
         }
     }    
 
@@ -305,10 +343,15 @@ public class BehaviourBlock extends BMLElement
         }
     }
     
-    public String toBMLString()
+    public String toBMLString(XMLNameSpace... xmlNamespaces)
+    {
+        return toBMLString(ImmutableList.copyOf(xmlNamespaces));        
+    }
+    
+    public String toBMLString(List<XMLNameSpace> xmlNamespaceList)
     {
         StringBuilder buf = new StringBuilder();
-        appendXML(buf);
+        appendXML(buf, new XMLFormatting(), xmlNamespaceList);
         return buf.toString();
     }
 }
