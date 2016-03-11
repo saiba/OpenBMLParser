@@ -31,6 +31,7 @@ import saiba.bml.core.GazeBehaviour;
 import saiba.bml.core.GazeShiftBehaviour;
 import saiba.bml.core.GestureBehaviour;
 import saiba.bml.core.HeadBehaviour;
+import saiba.bml.core.HeadDirectionShiftBehaviour;
 import saiba.bml.core.LocomotionBehaviour;
 import saiba.bml.core.PointingBehaviour;
 import saiba.bml.core.PostureBehaviour;
@@ -72,6 +73,7 @@ public final class BMLInfo
 //@formatter:off
           new ImmutableMap.Builder<String, Class<? extends Behaviour>>()
             .put(behTag(HeadBehaviour.xmlTag()), HeadBehaviour.class)
+            .put(behTag(HeadDirectionShiftBehaviour.xmlTag()), HeadDirectionShiftBehaviour.class)
             .put(behTag(LocomotionBehaviour.xmlTag()), LocomotionBehaviour.class)
             .put(behTag(FaceLexemeBehaviour.xmlTag()), FaceLexemeBehaviour.class)
             .put(behTag(GazeShiftBehaviour.xmlTag()), GazeShiftBehaviour.class)
