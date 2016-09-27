@@ -72,6 +72,14 @@ public class PointingBehaviour extends Behaviour
     }
 
     @Override
+    public boolean satisfiesConstraint(String name, String value)
+    {
+        if (name.equals("mode")) return mode.toString().equals(value);
+        if (name.equals("target")) return target.equals(value);
+        return super.satisfiesConstraint(name, value);
+    }
+
+    @Override
     public void addDefaultSyncPoints()
     {
         for(String s:getDefaultSyncPoints())
